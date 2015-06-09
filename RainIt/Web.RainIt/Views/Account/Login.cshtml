@@ -1,0 +1,71 @@
+﻿
+@using System.Collections.Concurrent
+@using RainIt.Domain.DTO
+@using Web.RainIt.Models
+@model RainIt.Domain.DTO.Login
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Login";
+}
+<link href="~/Content/loginstyle.css" rel="stylesheet" />
+<style>
+body {
+    background-color: #000000;
+        background-color: rgba(0, 0, 0, 0.2);
+}    
+
+#registerForm{
+    padding-top:0px;
+    margin-top:-10px;
+}
+</style>
+@{
+    var message = TempData["StatusMessage"] as StatusMessage;
+    if (message != null)
+    {
+        <div id="statusMessage" class="@(message.IsError ? "error-status-message" : "valid-status-message")">
+            @message.Message
+        </div>
+    }
+}
+
+<div class="container">
+    @using (Html.BeginForm("Login", "Account", new { ReturnUrl = @Request.QueryString["ReturnUrl"]}, FormMethod.Post, new { @id = "logInForm", @onsubmit = "LoginProperties.Form.Validate()" }))
+    {
+        <div id="loginForm" class="form-signin">
+            <h2 class="form-signin-heading">Please sign in</h2>
+            @Html.LabelFor(m => m.Username, new { @class = "sr-only" })
+            @Html.TextBoxFor(m => m.Username, new { @placeholder = "Username", @class = "form-control intermediate-form-field" })
+            @Html.ValidationMessageFor(m => m.Username)
+            @Html.LabelFor(m => m.Password, new { @class = "sr-only" })
+            @Html.TextBoxFor(m => m.Password, new { @placeholder = "Password", @class = "form-control last-form-field", @type = "password" })
+            @Html.ValidationMessageFor(m => m.Password)
+            @Html.ValidationSummary(true)            
+            <button class="btn btn-lg btn-primary btn-block" type="submit" name="signIn" value="signIn">Sign In</button>                        
+        </div>
+    }    
+@using (Html.BeginForm("Register", "Account", FormMethod.Get))
+{
+    <div id="registerForm" class="form-signin">
+        <span class="form-signin-text">or</span>
+        <button class="btn btn-lg btn-primary btn-block alternate-button" type="submit" name="register" value="register" id="register">Register</button>                        
+        </div>
+}
+    </div>
+
+@section Scripts{
+    <script type="text/javascript">
+        (function () {
+            this.LoginProperties = this.LoginProperties || {};
+            LoginProperties.Form = (function () {
+                var properties = {};
+                properties.Validate = function () {                    
+                    return $('#logInForm').validate();
+                }
+                return properties;
+            }());            
+        }());
+        
+    </script>
+}

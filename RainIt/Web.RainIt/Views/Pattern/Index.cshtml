@@ -1,0 +1,135 @@
+﻿@using Newtonsoft.Json
+@model System.Collections.Generic.List<RainIt.Domain.DTO.PatternList>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "All Patterns";
+}
+<style>
+#gallery {
+    position: relative;
+    width: 880px;
+}
+#gallery .image-holder, #gallery .image-adder {
+    height: 200px;
+    width: 200px;
+    position: absolute;
+}
+.delete-button
+{
+    display:block;
+    position:relative;
+    top:10px;
+    right:0px;
+    width:27px;
+    height:27px;
+    background:url('http://cdn-sg1.pgimgs.com/images/pg/close-button.png') no-repeat center center;
+    margin-left: 180px;
+}
+</style>
+
+<div class="container" style="margin-top: 50px;">
+    <div id="gallery">
+        <img id="addImage" src="/Content/addimageicon.png" alt="Add an image" class="image-holder">
+    </div>
+</div>
+<script src="~/Scripts/jquery.shapeshift.js"></script>
+<script type="text/javascript">
+    (function() {
+        this.PatternIndexProperties = this.PatternIndexProperties || {};
+
+        var passedImages = @Html.Raw(JsonConvert.SerializeObject(Model));
+
+        PatternIndexProperties.Gallery = (function() {
+            var properties = {};
+            function createImage(image) {
+                var imageToPlace = $('<img>').attr("id", "image" + image.PatternId).attr("src", image.Path);
+                var imageHolder = $('<div>').attr("class", "image-holder").attr("id", "image-holder_" + image.PatternId);
+                var deleteButton = $('<div>').attr("class", "delete-button").attr("id", "delete_" + image.PatternId);
+                deleteButton.appendTo(imageHolder);
+                imageToPlace.appendTo(imageHolder);
+                return imageHolder;
+            }
+            function initializeUserImages() {
+                $.each(passedImages, function(index, imageData) {
+                    var imageAdder = $('#addImage');
+                    var image = createImage(imageData);
+                    image.insertBefore(imageAdder);
+                });
+            }
+
+            properties.Parameters = {
+                enableDrag: false,
+                cutoffEnd: passedImages.length - 1,
+                enableCrossDrop: false
+            };
+            properties.Initialize = function() {
+                initializeUserImages();
+                $('#gallery').shapeshift(properties.Parameters);
+            }
+            properties.Update = function(newParameters) {
+                $('#gallery').shapeshift(newParameters);
+            }
+            properties.DeleteImageAdder = function() {
+                $('#addImage').remove();
+            }
+            return properties;
+        }());
+
+        var addImage = (function() {
+            var properties = {};
+            function onAjaxSuccess(data) {
+                $('#mainBody').html(data);
+            }
+            function onAjaxError() {
+                alert("something happened");
+            }
+            function makeAddAjaxCall() {
+                $.ajax({
+                    url: '@Url.Action("Add", "Pattern")',
+                    success: onAjaxSuccess,
+                    error: onAjaxError,
+                    dataType: 'html'
+                });
+            }
+            properties.AddClickListener = function() {
+                $('#addImage').click(function() {
+                    makeAddAjaxCall();
+                });
+            }
+            return properties;
+        }());
+
+        var deleteButton = (function() {
+            var properties = {};
+
+            function onAjaxSuccess(data) {
+                window.location.href = data;
+            }
+            function makeDeleteAjaxCall(patternToDelete) {
+                $.post(
+                    "@Url.Action("Delete", "Pattern")",
+                    { patternId: patternToDelete },
+                    onAjaxSuccess
+                );
+            }
+
+            properties.AddClickListener = function() {
+                $('.delete-button').click(function(e) {
+                    var patternToDelete = $(e.target).attr("id").split("_")[1];
+                    makeDeleteAjaxCall(patternToDelete);
+                });
+            }
+            return properties;
+        }());
+        
+        PatternIndexProperties.SetupPage = function() {
+            PatternIndexProperties.Gallery.Initialize();
+            addImage.AddClickListener();
+            deleteButton.AddClickListener();
+        };
+    }());
+
+    $(document).ready(function() {
+        PatternIndexProperties.SetupPage();
+    });
+</script>

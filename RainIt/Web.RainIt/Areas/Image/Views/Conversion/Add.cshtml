@@ -1,0 +1,9 @@
+﻿@using Kendo.Mvc.UI
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<form method="post" action='@Url.Action("Edit", "Conversion", new{area = "Image",})'>
+    @Html.Kendo().Upload().Name("files");
+    @Html.Kendo().Button().Content("Add").Name("AddImage")
+</form>
