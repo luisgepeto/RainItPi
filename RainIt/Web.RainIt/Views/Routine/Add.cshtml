@@ -6,28 +6,54 @@
 @model RainIt.Domain.DTO.RoutineList
 <style>
     #routineBuilder {
-         position: relative;
+        position: relative;
         width: 880px;
         height: 500px;
     }
-    #routineBuilder .image-holder {
-        height: 200px;
-        width: 200px;
-        position: absolute;
-    }
 
+        #routineBuilder .image-holder {
+            height: 200px;
+            width: 200px;
+            position: absolute;
+        }
+
+    #gallery .delete-button {
+        display: none;
+    }
 </style>
 <div class="container" style="margin-top: 200px">
     <div id="routineBuilder">
         <img id="addImage2" src="/Content/addimageicon.png" alt="Add an image" class="image-holder">
     </div>
-    <input type="button" value="Add" name="Add" id="addRoutine"/>
+    <input type="button" value="Add" name="Add" id="addRoutine" />
 </div>
 @Html.Action("Index", "Pattern")
 <script type="text/javascript">
     (function () {
         this.RoutineAddProperties = this.RoutineAddProperties || {};
         var passedImages = '@Html.Raw(Model != null ? JsonConvert.SerializeObject(Model.RoutinePatterns) : null)';
+
+        var deleteButton = (function () {
+            var properties = {};
+            function removeListeners() {
+                $('.delete-button').off();
+                //Bye!
+            }
+            function addClickListener() {
+                $('.delete-button').click(function (e) {
+                    $(e.currentTarget).parent().detach();
+                    $('#routineBuilder').shapeshift({
+                        enableDrag: true,
+                        enableCrossDrop: true
+                    });
+                });
+            }
+            properties.Initialize = function () {
+                removeListeners();
+                addClickListener();
+            }
+            return properties;
+        }());
 
         var routineBuilder = (function () {
             var properties = {};
@@ -40,10 +66,15 @@
                 return imageHolder;
             }
             function initializeUserImages() {
-                $.each(passedImages, function(index, imageData) {
+                $.each(passedImages, function (index, imageData) {
                     var imageAdder = $('#addImage');
                     var image = createImage(imageData);
                     image.insertBefore(imageAdder);
+                });
+            }
+            function addDropEventListener() {
+                $('#routineBuilder').on('ss-drop-complete', function () {
+                    deleteButton.Initialize();
                 });
             }
             properties.Initialize = function () {
@@ -54,11 +85,12 @@
                     enableDrag: true,
                     enableCrossDrop: true
                 });
+                addDropEventListener();
             }
             return properties;
         }());
 
-        var galleryExtender = (function() {
+        var galleryExtender = (function () {
             var properties = {};
             var oldParameters = PatternIndexProperties.Gallery.Parameters;
             var newParameters = {
@@ -74,12 +106,14 @@
             return properties;
         }());
 
-        var addRoutine = (function() {
+
+
+        var addRoutine = (function () {
             var properties = {};
 
             function getPatternIdList() {
                 var patternIdArrayList = [];
-                $('#routineBuilder').children().each(function() {
+                $('#routineBuilder').children().each(function () {
                     var currentElement = $(this);
                     if (currentElement.attr("id").match("^image-holder_")) {
                         patternIdArrayList.push(currentElement.attr("id").split("_")[1]);
@@ -89,11 +123,10 @@
             }
 
             function onAjaxSuccess() {
-                
+
             }
 
             function makeAddPatternAjaxCall(patternIdList) {
-                debugger;
                 $.ajax({
                     url: '@Url.Action("Add", "Routine")',
                     data: {
@@ -106,7 +139,7 @@
                 });
             }
 
-            properties.AddClickListener = function() {
+            properties.AddClickListener = function () {
                 $('#addRoutine').click(function () {
                     var patternIdList = getPatternIdList();
                     makeAddPatternAjaxCall(patternIdList);
@@ -115,13 +148,14 @@
             return properties;
         }());
 
-        RoutineAddProperties.SetupPage = function() {
+        RoutineAddProperties.SetupPage = function () {
             routineBuilder.Initialize();
             galleryExtender.Initialize();
             addRoutine.AddClickListener();
+            deleteButton.Initialize();
         }
     }());
-    $(document).ready(function() {
+    $(document).ready(function () {
         RoutineAddProperties.SetupPage();
     });
 </script>

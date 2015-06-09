@@ -2,8 +2,6 @@
 using System.Drawing;
 using ImageProcessing.Domain;
 using ImageProcessing.Business.Interfaces;
-using CsPotrace;
-using System.Collections;
 using System.Drawing.Imaging;
 using System.IO;
 
