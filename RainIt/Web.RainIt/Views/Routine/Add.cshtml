@@ -141,6 +141,7 @@
 
             properties.AddClickListener = function () {
                 $('#addRoutine').click(function () {
+                    alert('by');
                     var patternIdList = getPatternIdList();
                     makeAddPatternAjaxCall(patternIdList);
                 });
