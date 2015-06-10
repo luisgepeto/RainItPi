@@ -59,7 +59,7 @@ namespace RainIt.Business
                 Name = r.Name,
                 RoutinePatterns = r.RoutinePatterns.Select(p => new RoutinePatternList()
                 {
-                    PatternId = p.PatternId
+                    //Pattern = p.PatternId ?? 0
                 }).ToList()
             }).ToList();
         }
@@ -157,7 +157,7 @@ namespace RainIt.Business
                     return false;
                 var routinePattern = new RoutinePattern()
                 {
-                    PatternId = pattern.PatternId,
+                    //Pattern = pattern,
                     RoutineId = routine.RoutineId
                 };
                 routine.RoutinePatterns.Add(routinePattern);

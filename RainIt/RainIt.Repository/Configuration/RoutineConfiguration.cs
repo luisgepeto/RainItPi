@@ -12,11 +12,11 @@ namespace RainIt.Repository.Configuration
             Property(r => r.Name);
             Property(r => r.Description);
             Property(r => r.IsActive);
-            
-            HasMany(r => r.RoutinePatterns)
-                .WithRequired(rp => rp.Routine)
-                .HasForeignKey(rp => rp.RoutineId)
-                .WillCascadeOnDelete(false);
+
+            //HasMany(r => r.RoutinePatterns)
+            //    .WithRequired(rp => rp.Routine)
+            //    .HasForeignKey(rp => rp.RoutineId)
+            //    .WillCascadeOnDelete(true);
         }
     }
 }

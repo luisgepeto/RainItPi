@@ -103,9 +103,9 @@
     <Compile Include="Configuration\RoutinePatternConfiguration.cs" />
     <Compile Include="Configuration\UserConfiguration.cs" />
     <Compile Include="Configuration\UserInfoConfiguration.cs" />
-    <Compile Include="Migrations\201506082017032_initial.cs" />
-    <Compile Include="Migrations\201506082017032_initial.Designer.cs">
-      <DependentUpon>201506082017032_initial.cs</DependentUpon>
+    <Compile Include="Migrations\201506101754131_initial.cs" />
+    <Compile Include="Migrations\201506101754131_initial.Designer.cs">
+      <DependentUpon>201506101754131_initial.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -126,8 +126,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201506082017032_initial.resx">
-      <DependentUpon>201506082017032_initial.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201506101754131_initial.resx">
+      <DependentUpon>201506101754131_initial.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -12,13 +12,13 @@ namespace RainIt.Repository.Configuration
             HasKey(u => u.UserId);
             Property(u => u.Username).IsRequired().HasMaxLength(20);
             Property(u => u.Email).IsRequired().HasMaxLength(50);
-            HasMany(u => u.Roles)
-                .WithMany(r => r.Users)
+            HasMany(u => u.Roles)                
+                .WithMany(r => r.Users)                
                 .Map(ru =>
                 {
-                    ru.MapLeftKey("RoleId");
-                    ru.MapRightKey("UserId");
-                    ru.ToTable("RoleUser");
+                    ru.MapLeftKey("UserId");
+                    ru.MapRightKey("RoleId");
+                    ru.ToTable("UserRole");
                 });
             HasRequired(u => u.Password)
                 .WithRequiredPrincipal(p => p.User)
@@ -29,12 +29,16 @@ namespace RainIt.Repository.Configuration
             HasMany(u => u.Addresses)
                 .WithRequired(a => a.User)
                 .HasForeignKey(a => a.UserId)
-                .WillCascadeOnDelete(false);
+                .WillCascadeOnDelete(true);
             HasMany(u => u.Patterns)
                 .WithRequired(p => p.User)
                 .HasForeignKey(p => p.UserId)
                 .WillCascadeOnDelete(true);
             HasMany(u => u.Routines)
+                .WithRequired(r => r.User)
+                .HasForeignKey(r => r.UserId)
+                .WillCascadeOnDelete(true);
+            HasMany(u => u.RoutinePatterns)
                 .WithRequired(r => r.User)
                 .HasForeignKey(r => r.UserId)
                 .WillCascadeOnDelete(true);

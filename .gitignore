@@ -48,3 +48,7 @@
 /RainIt/Web.RainIt/obj
 /RainIt/Web.Services/bin
 /RainIt/Web.Services/obj
+
+*.suo
+*.mdf
+*.ldf

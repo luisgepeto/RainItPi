@@ -9,6 +9,16 @@ namespace RainIt.Repository.Configuration
         {
             ToTable(schema + ".RoutinePattern");
             HasKey(rp => rp.RoutinePatternId);
+
+            HasOptional(rp => rp.Pattern)
+                .WithMany(r => r.RoutinePatterns)
+                .HasForeignKey(r => r.PatternId)
+                .WillCascadeOnDelete(false);
+
+            HasOptional(rp => rp.Routine)
+                .WithMany(r => r.RoutinePatterns)
+                .HasForeignKey(r => r.RoutineId)
+                .WillCascadeOnDelete(false);
         }
     }
 }
