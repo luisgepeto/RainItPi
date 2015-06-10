@@ -39,6 +39,17 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Autofac, Version=3.5.0.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Autofac.3.5.2\lib\net40\Autofac.dll</HintPath>
+    </Reference>
+    <Reference Include="Autofac.Integration.Mvc, Version=3.3.0.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Autofac.Mvc5.3.3.3\lib\net45\Autofac.Integration.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="Autofac.Integration.WebApi">
+      <HintPath>..\packages\Autofac.WebApi.3.1.0\lib\net40\Autofac.Integration.WebApi.dll</HintPath>
+    </Reference>
     <Reference Include="Elmah">
       <HintPath>..\packages\elmah.corelibrary.1.2\lib\Elmah.dll</HintPath>
     </Reference>
@@ -168,6 +179,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="App_Start\AutofacBootStrapper.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\IdentityConfig.cs" />
@@ -202,10 +214,8 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\SampleDirection.cs" />
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
-    <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\UserController.cs" />
-    <Compile Include="Controllers\ValuesController.cs" />
+    <Compile Include="Controllers\RoutineController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -287,9 +297,21 @@
     <None Include="Project_Readme.html" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Common.DependencyInjection\Common.DependencyInjection.csproj">
+      <Project>{CE175FAC-313D-40FE-B3E7-312BC57F9989}</Project>
+      <Name>Common.DependencyInjection</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ImageProcessing\ImageProcessing.Business.Interfaces\ImageProcessing.Business.Interfaces.csproj">
+      <Project>{A003A59D-A489-454C-B2EA-86F4317E083A}</Project>
+      <Name>ImageProcessing.Business.Interfaces</Name>
+    </ProjectReference>
     <ProjectReference Include="..\RainIt.Domain\RainIt.Domain.csproj">
       <Project>{C2C093AB-A86B-4D53-9678-7902E0E01FFE}</Project>
       <Name>RainIt.Domain</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\RainIt.Interfaces\RainIt.Interfaces.csproj">
+      <Project>{7C822317-2893-497F-B230-6EF053B313F3}</Project>
+      <Name>RainIt.Interfaces</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>

@@ -62,25 +62,12 @@ namespace RainIt.Business
             return ToRoutineDTOList(userRoutines).Single();
         }
 
-        private List<RoutineDTO> ToRoutineDTOList(IQueryable<Routine> routineQueryable)
+        public RoutineDTO GetActiveUserRoutine()
         {
-            return routineQueryable.Select(r => new RoutineDTO()
-            {
-                RoutineId = r.RoutineId,
-                IsActive = r.IsActive,
-                Name = r.Name,
-                RoutinePatternDTOs = r.RoutinePatterns.Select(rp => new RoutinePatternDTO()
-                {
-                    PatternDTO = new PatternDTO()
-                    {
-                        PatternId = rp.PatternId ?? 0,
-                        Name = rp.Pattern.Name,
-                        Path = rp.Pattern.Path
-                    }
-                }).ToList()
-            }).ToList();
+            var activeRoutine = RainItContext.RoutineSet.Where(r => r.IsActive);
+            return ToRoutineDTOList(activeRoutine).SingleOrDefault();
         }
-
+       
         #endregion
 
         #region UPDATE Methods
@@ -197,6 +184,24 @@ namespace RainIt.Business
                 routine.RoutinePatterns.Add(newRoutinePattern);
             }
             return true;
+        }
+         private List<RoutineDTO> ToRoutineDTOList(IQueryable<Routine> routineQueryable)
+        {
+            return routineQueryable.Select(r => new RoutineDTO()
+            {
+                RoutineId = r.RoutineId,
+                IsActive = r.IsActive,
+                Name = r.Name,
+                RoutinePatternDTOs = r.RoutinePatterns.Select(rp => new RoutinePatternDTO()
+                {
+                    PatternDTO = new PatternDTO()
+                    {
+                        PatternId = rp.PatternId ?? 0,
+                        Name = rp.Pattern.Name,
+                        Path = rp.Pattern.Path
+                    }
+                }).ToList()
+            }).ToList();
         }
         #endregion
     }
