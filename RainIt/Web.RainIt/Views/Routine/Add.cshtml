@@ -31,13 +31,12 @@
 <script type="text/javascript">
     (function () {
         this.RoutineAddProperties = this.RoutineAddProperties || {};
-        var passedImages = '@Html.Raw(Model != null ? JsonConvert.SerializeObject(Model.RoutinePatterns) : null)';
+        var passedImages = '@Html.Raw(Model != null ? JsonConvert.SerializeObject(Model.RoutinePatternDTOs) : null)';
 
         var deleteButton = (function () {
             var properties = {};
             function removeListeners() {
                 $('.delete-button').off();
-                //Bye!
             }
             function addClickListener() {
                 $('.delete-button').click(function (e) {
@@ -58,16 +57,16 @@
         var routineBuilder = (function () {
             var properties = {};
             function createImage(image) {
-                var imageToPlace = $('<img>').attr("id", "image" + image.PatternId).attr("src", image.Path);
-                var imageHolder = $('<div>').attr("class", "image-holder").attr("id", "image-holder_" + image.PatternId);
-                var deleteButton = $('<div>').attr("class", "delete-button").attr("id", "delete_" + image.PatternId);
+                var imageToPlace = $('<img>').attr("id", "image" + image.PatternDTO.PatternId).attr("src", image.PatternDTO.Path);
+                var imageHolder = $('<div>').attr("class", "image-holder").attr("id", "image-holder_" + image.PatternDTO.PatternId);
+                var deleteButton = $('<div>').attr("class", "delete-button").attr("id", "delete_" + image.PatternDTO.PatternId);
                 deleteButton.appendTo(imageHolder);
                 imageToPlace.appendTo(imageHolder);
                 return imageHolder;
             }
-            function initializeUserImages() {
-                $.each(passedImages, function (index, imageData) {
-                    var imageAdder = $('#addImage');
+            function initializeUserImages(passedImagesArray) {
+                $.each(passedImagesArray, function (index, imageData) {
+                    var imageAdder = $('#addImage2');
                     var image = createImage(imageData);
                     image.insertBefore(imageAdder);
                 });
@@ -79,7 +78,7 @@
             }
             properties.Initialize = function () {
                 if (passedImages != '') {
-                    initializeUserImages();
+                    initializeUserImages(JSON.parse(passedImages));
                 }
                 $('#routineBuilder').shapeshift({
                     enableDrag: true,
@@ -122,8 +121,8 @@
                 return patternIdArrayList;
             }
 
-            function onAjaxSuccess() {
-
+            function onAjaxSuccess(data) {
+                window.location.href = data;
             }
 
             function makeAddPatternAjaxCall(patternIdList) {

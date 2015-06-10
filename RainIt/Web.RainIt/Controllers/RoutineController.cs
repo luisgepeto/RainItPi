@@ -31,8 +31,9 @@ namespace Web.RainIt.Controllers
         {
             return View();
         }
+
         [HttpPost]
-        public ActionResult Add(int routineId, List<int> patternIdList)
+        public JsonResult Add(int routineId, List<int> patternIdList)
         {
             StatusMessage canAdd = null;
             var routineList = new RoutineDTO()
@@ -56,7 +57,7 @@ namespace Web.RainIt.Controllers
             {
                 canAdd = RoutineManager.UpdateUserRoutine(routineList);
             }
-            return View();
+            return Json(Url.Action("Index", "Routine"));
         }
     }
 }
