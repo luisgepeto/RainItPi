@@ -72,9 +72,9 @@ namespace RainIt.Business
         #endregion
 
         #region READ METHODS
-        public List<PatternList> GetUserPatterns()
+        public List<PatternDTO> GetUserPatterns()
         {
-            return RainItContext.UserPatternSet.Select(p => new PatternList()
+            return RainItContext.UserPatternSet.Select(p => new PatternDTO()
             {
                 Name = p.Name,
                 PatternId = p.PatternId,

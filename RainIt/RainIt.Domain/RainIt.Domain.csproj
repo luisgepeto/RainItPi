@@ -88,10 +88,10 @@
   <ItemGroup>
     <Compile Include="DTO\Address.cs" />
     <Compile Include="DTO\Login.cs" />
-    <Compile Include="DTO\PatternList.cs" />
+    <Compile Include="DTO\PatternDTO.cs" />
     <Compile Include="DTO\Registration.cs" />
-    <Compile Include="DTO\RoutineList.cs" />
-    <Compile Include="DTO\RoutinePatternList.cs" />
+    <Compile Include="DTO\RoutineDTO.cs" />
+    <Compile Include="DTO\RoutinePatternDTO.cs" />
     <Compile Include="DTO\StatusMessage.cs" />
     <Compile Include="DTO\User.cs" />
     <Compile Include="DTO\UserInfo.cs" />

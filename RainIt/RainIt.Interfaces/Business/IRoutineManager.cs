@@ -9,10 +9,10 @@ namespace RainIt.Interfaces.Business
 {
     public interface IRoutineManager
     {
-        StatusMessage AddUserRoutine(RoutineList routineList);
-        List<RoutineList> GetUserRoutines();
-        RoutineList GetUserRoutine(int routineId);
-        StatusMessage UpdateUserRoutine(RoutineList routineList);
+        StatusMessage AddUserRoutine(RoutineDTO routineDTO);
+        List<RoutineDTO> GetUserRoutines();
+        RoutineDTO GetUserRoutine(int routineId);
+        StatusMessage UpdateUserRoutine(RoutineDTO routineDTO);
         StatusMessage DeleteUserRoutine(int routineId);
     }
 }

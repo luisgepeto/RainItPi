@@ -35,12 +35,15 @@ namespace Web.RainIt.Controllers
         public ActionResult Add(int routineId, List<int> patternIdList)
         {
             StatusMessage canAdd = null;
-            var routineList = new RoutineList()
+            var routineList = new RoutineDTO()
             {
                 RoutineId = routineId,
-                RoutinePatterns = patternIdList.Select(p => new RoutinePatternList()
+                RoutinePatternDTOs = patternIdList.Select(p => new RoutinePatternDTO()
                 {
-                    PatternId = p
+                    PatternDTO = new PatternDTO()
+                    {
+                        PatternId = p
+                    }
                 }).ToList(),
                 Description = "some description",
                 Name = "some name"

@@ -22,24 +22,24 @@ namespace RainIt.Business
 
         #region CREATE Methods
 
-        public StatusMessage AddUserRoutine(RoutineList routineList)
+        public StatusMessage AddUserRoutine(RoutineDTO routineDTO)
         {
-            if (!IsPatternCountValid(routineList.RoutinePatterns))
+            if (!IsPatternCountValid(routineDTO.RoutinePatternDTOs))
                 return StatusMessage.WriteError("The number of patterns exceeds the maximum for a routine");
-            var routineToAdd = GetRoutineToAdd(routineList);
-            if (!TryUpdateRoutinePatterns(routineToAdd, routineList.RoutinePatterns))
+            var routineToAdd = GetRoutineToAdd(routineDTO);
+            if (!TryUpdateRoutinePatterns(routineToAdd, routineDTO.RoutinePatternDTOs))
                 return StatusMessage.WriteError("The selected pattern does not exist for the current user");
             RainItContext.RoutineSet.Add(routineToAdd);
             RainItContext.SaveChanges();
             return StatusMessage.WriteMessage("The routine was created successfully");
         }
 
-        private Routine GetRoutineToAdd(RoutineList routineList)
+        private Routine GetRoutineToAdd(RoutineDTO routineDTO)
         {
             var routineToAdd = new Routine()
             {
-                Description = routineList.Description,
-                Name = routineList.Name,
+                Description = routineDTO.Description,
+                Name = routineDTO.Name,
                 UserId = RainItContext.UserSet.Single(u => u.Username == RainItContext.CurrentUser.Username).UserId,
                 RoutinePatterns =  new List<RoutinePattern>()
             };
@@ -50,51 +50,62 @@ namespace RainIt.Business
 
         #region READ Methods
 
-        public List<RoutineList> GetUserRoutines()
+        public List<RoutineDTO> GetUserRoutines()
         {
-            return RainItContext.UserRoutineSet.Select(r => new RoutineList()
+            var allUserRoutines = RainItContext.UserRoutineSet;
+            return ToRoutineDTOList(allUserRoutines);
+        }
+
+        public RoutineDTO GetUserRoutine(int routineId)
+        {
+            var userRoutines = RainItContext.UserRoutineSet.Where(r => r.RoutineId == routineId);
+            return ToRoutineDTOList(userRoutines).Single();
+        }
+
+        private List<RoutineDTO> ToRoutineDTOList(IQueryable<Routine> routineQueryable)
+        {
+            return routineQueryable.Select(r => new RoutineDTO()
             {
                 RoutineId = r.RoutineId,
                 IsActive = r.IsActive,
                 Name = r.Name,
-                RoutinePatterns = r.RoutinePatterns.Select(p => new RoutinePatternList()
+                RoutinePatternDTOs = r.RoutinePatterns.Select(rp => new RoutinePatternDTO()
                 {
-                    //Pattern = p.PatternId ?? 0
+                    PatternDTO = new PatternDTO()
+                    {
+                        PatternId = rp.PatternId ?? 0,
+                        Name = rp.Pattern.Name,
+                        Path = rp.Pattern.Path
+                    }
                 }).ToList()
             }).ToList();
-        }
-
-        public RoutineList GetUserRoutine(int routineId)
-        {
-            throw new NotImplementedException();
         }
 
         #endregion
 
         #region UPDATE Methods
-        public StatusMessage UpdateUserRoutine(RoutineList routineList)
+        public StatusMessage UpdateUserRoutine(RoutineDTO routineDTO)
         {
-            if (!IsPatternCountValid(routineList.RoutinePatterns))
+            if (!IsPatternCountValid(routineDTO.RoutinePatternDTOs))
                 return StatusMessage.WriteError("The number of patterns exceeds the maximum for a routine");
-            var routineToUpdate = GetRoutineToUpdate(routineList);
+            var routineToUpdate = GetRoutineToUpdate(routineDTO);
             if (!TryDeleteRoutinePatterns(routineToUpdate))
                 return StatusMessage.WriteError("The patterns for the selected routine could not be deleted");
-
-            if (!TryUpdateRoutinePatterns(routineToUpdate, routineList.RoutinePatterns))
+            if (!TryUpdateRoutinePatterns(routineToUpdate, routineDTO.RoutinePatternDTOs))
                 return StatusMessage.WriteError("The selected pattern does not exist for the current user");
             RainItContext.SaveChanges();
             return StatusMessage.WriteMessage("The routine was updated successfully");
         }
 
-        private Routine GetRoutineToUpdate(RoutineList routineList)
+        private Routine GetRoutineToUpdate(RoutineDTO routineDTO)
         {
-            var routine = RainItContext.UserRoutineSet.SingleOrDefault(r => r.RoutineId == routineList.RoutineId);
+            var routine = RainItContext.UserRoutineSet.SingleOrDefault(r => r.RoutineId == routineDTO.RoutineId);
             if (routine == null) return null;
 
-            routine.Description = routineList.Description;
-            routine.Name = routineList.Name;
+            routine.Description = routineDTO.Description;
+            routine.Name = routineDTO.Name;
             routine.RoutinePatterns = new List<RoutinePattern>();
-            routine.IsActive = routineList.IsActive;
+            routine.IsActive = routineDTO.IsActive;
             return routine;
         }
 
@@ -139,7 +150,7 @@ namespace RainIt.Business
 
         #region Helper Methods
 
-        public bool IsPatternCountValid(List<RoutinePatternList> patternList)
+        public bool IsPatternCountValid(List<RoutinePatternDTO> patternList)
         {
             return patternList.Count <= int.Parse(ConfigurationManager.AppSettings["MaxPatternCountPerRoutine"]);
         }
@@ -149,18 +160,19 @@ namespace RainIt.Business
             return RainItContext.PatternSet.Any(p => p.PatternId == patternId);
         }
 
-        private bool TryUpdateRoutinePatterns(Routine routine, List<RoutinePatternList> patternList)
+        private bool TryUpdateRoutinePatterns(Routine routine, List<RoutinePatternDTO> routinePatternDTOList)
         {
-            foreach (var pattern in patternList)
+            foreach (var routinePatternDTO in routinePatternDTOList)
             {
-                if (!DoesPatternExistsForUser(pattern.PatternId))
+                if (!DoesPatternExistsForUser(routinePatternDTO.PatternDTO.PatternId))
                     return false;
-                var routinePattern = new RoutinePattern()
+                var newRoutinePattern = new RoutinePattern()
                 {
-                    //Pattern = pattern,
-                    RoutineId = routine.RoutineId
+                    PatternId = routinePatternDTO.PatternDTO.PatternId,
+                    RoutineId = routine.RoutineId,
+                    UserId = RainItContext.UserSet.Single(u => u.Username == RainItContext.CurrentUser.Username).UserId,
                 };
-                routine.RoutinePatterns.Add(routinePattern);
+                routine.RoutinePatterns.Add(newRoutinePattern);
             }
             return true;
         }

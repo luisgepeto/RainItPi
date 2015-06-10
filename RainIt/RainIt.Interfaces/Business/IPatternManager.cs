@@ -11,7 +11,7 @@ namespace RainIt.Interfaces.Business
     public interface IPatternManager
     {
         StatusMessage AddUserPattern(ImageDetails pattern, string fileName, bool canUpdate = false);
-        List<PatternList> GetUserPatterns();
+        List<PatternDTO> GetUserPatterns();
         StatusMessage UpdateUserPattern(ImageDetails pattern, string fileName);
         StatusMessage DeleteUserPattern(int patternId);
         

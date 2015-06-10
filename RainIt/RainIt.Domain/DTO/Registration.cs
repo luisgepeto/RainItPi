@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using RainIt.Domain.Repository;
-
-namespace RainIt.Domain.DTO
+﻿namespace RainIt.Domain.DTO
 {
     public class Registration
     {
