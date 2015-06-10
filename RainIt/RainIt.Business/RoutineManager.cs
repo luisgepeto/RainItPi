@@ -128,6 +128,28 @@ namespace RainIt.Business
             }
         }
 
+        public StatusMessage SetActive(int routineId)
+        {
+            var allOtherActiveRoutines = RainItContext.UserRoutineSet.Where(r => r.RoutineId != routineId).ToList();
+            if (!SetInactive(allOtherActiveRoutines))
+                return StatusMessage.WriteError("Other user routines could not be set to inactive");
+            var selectedRoutine = RainItContext.UserRoutineSet.SingleOrDefault(r => r.RoutineId == routineId);
+            if(selectedRoutine == null)
+                return StatusMessage.WriteError("The selected user routine does not exist");
+            selectedRoutine.IsActive = true;
+            RainItContext.SaveChanges();
+            return StatusMessage.WriteError("Successfully set user routine as active");
+        }
+
+        private bool SetInactive(List<Routine> routineList)
+        {
+            routineList.ForEach(r =>
+            {
+                r.IsActive = false;
+            });
+            RainItContext.SaveChanges();
+            return true;
+        }
         #endregion
 
         #region DELETE Methods

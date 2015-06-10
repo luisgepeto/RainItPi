@@ -59,5 +59,12 @@ namespace Web.RainIt.Controllers
             }
             return Json(Url.Action("Index", "Routine"));
         }
+
+        [HttpPost]
+        public JsonResult SetActive(int routineId)
+        {
+            RoutineManager.SetActive(routineId);
+            return Json(true);
+        }
     }
 }

@@ -12,6 +12,7 @@
     <div class="row col-md-12">
         @foreach (var routine in Model)
         {
+            <input type="checkbox" id="@("active_" + routine.RoutineId)" class="is-active-checkbox" checked="@routine.IsActive" />
             <div id="@("routine-holder" + routine.RoutineId)" class="routine-holder">
                 <ul>
                     @foreach (var routinePattern in routine.RoutinePatternDTOs)
@@ -34,6 +35,44 @@
 <script type="text/javascript">
     (function() {
         this.RoutineIndexProperties = this.RoutineIndexProperties || {};
+
+        var checkBox = (function () {
+            var properties = {};
+            function uncheckAllExcept(checkbox) {
+                $('.is-active-checkbox').each(function (index) {
+                    var currentCheckbox = $(this);
+                    if (currentCheckbox.attr("id") != checkbox.attr("id")) {
+                        currentCheckbox.prop('checked', false);
+                    }
+                });
+            }
+            
+            function makeActiveAjaxCall(routineId) {
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("SetActive", "Routine")',
+                    data: { routineId: routineId }
+                });
+            }
+
+
+            function addClickListener() {
+                $('.is-active-checkbox').click(function (e) {
+                    var currentCheckbox = $(this);
+                    if (!currentCheckbox.is(":checked")) {
+                        e.preventDefault();
+                    } else {
+                        uncheckAllExcept(currentCheckbox);
+                        makeActiveAjaxCall(currentCheckbox.attr("id").split("_")[1]);
+                    }
+                });
+            }
+            properties.Initialize = function () {
+                addClickListener();
+            }
+            return properties;
+        }());
+
         var scroller = (function() {
             var properties = {};
             properties.Initialize = function() {
@@ -43,8 +82,9 @@
             }
             return properties;
         }());
-        RoutineIndexProperties.SetupPage = function() {
+        RoutineIndexProperties.SetupPage = function () {
             scroller.Initialize();
+            checkBox.Initialize();
         }
     }());
     $(document).ready(function() {
