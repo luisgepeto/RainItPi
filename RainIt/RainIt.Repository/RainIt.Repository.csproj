@@ -111,6 +111,10 @@
     <Compile Include="Migrations\201506101754131_initial.Designer.cs">
       <DependentUpon>201506101754131_initial.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201506111628087_devices.cs" />
+    <Compile Include="Migrations\201506111628087_devices.Designer.cs">
+      <DependentUpon>201506111628087_devices.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RainItContext.cs" />
@@ -132,6 +136,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201506101754131_initial.resx">
       <DependentUpon>201506101754131_initial.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201506111628087_devices.resx">
+      <DependentUpon>201506111628087_devices.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
