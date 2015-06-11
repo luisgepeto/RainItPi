@@ -41,6 +41,9 @@ namespace RainIt.Repository
         public DbSet<Routine> RoutineSet { get; set; }
 
         public DbSet<RoutinePattern> RoutinePatternSet { get; set; }
+        public DbSet<Device> DeviceSet { get; set; }
+        public DbSet<DeviceInfo> DeviceInfoSet { get; set; }
+        public DbSet<DeviceCredential> DeviceCredentialSet { get; set; }
 
         public IQueryable<Pattern> UserPatternSet
         {
@@ -49,6 +52,10 @@ namespace RainIt.Repository
         public IQueryable<Routine> UserRoutineSet
         {
             get { return RoutineSet.Where(p => p.UserId == CurrentUser.UserId); }
+        }
+        public IQueryable<Device> UserDeviceSet
+        {
+            get { return DeviceSet.Where(p => p.UserId == CurrentUser.UserId); }
         }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)

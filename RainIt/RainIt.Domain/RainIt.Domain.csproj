@@ -98,6 +98,9 @@
     <Compile Include="DTO\UserInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repository\Address.cs" />
+    <Compile Include="Repository\Device.cs" />
+    <Compile Include="Repository\DeviceCredential.cs" />
+    <Compile Include="Repository\DeviceInfo.cs" />
     <Compile Include="Repository\Password.cs" />
     <Compile Include="Repository\Pattern.cs" />
     <Compile Include="Repository\Role.cs" />
