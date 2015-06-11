@@ -97,6 +97,9 @@
   <ItemGroup>
     <Compile Include="AzureCloudContext.cs" />
     <Compile Include="Configuration\AddressConfiguration.cs" />
+    <Compile Include="Configuration\DeviceConfiguration.cs" />
+    <Compile Include="Configuration\DeviceCredentialConfiguration.cs" />
+    <Compile Include="Configuration\DeviceInfoConfiguration.cs" />
     <Compile Include="Configuration\PasswordConfiguration.cs" />
     <Compile Include="Configuration\PatternConfiguration.cs" />
     <Compile Include="Configuration\RoleConfiguration.cs" />

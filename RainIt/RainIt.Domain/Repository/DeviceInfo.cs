@@ -8,6 +8,6 @@ namespace RainIt.Domain.Repository
         public Guid Identifier { get; set; }
         public string Serial { get; set; }
         public virtual Device Device { get; set; }
-        public DateTime RegisteredUTCDate { get; set; }
+        public DateTime? RegisteredUTCDate { get; set; }
     }
 }
