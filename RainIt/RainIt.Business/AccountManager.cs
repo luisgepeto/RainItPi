@@ -7,6 +7,7 @@ using RainIt.Domain.DTO;
 using RainIt.Domain.Repository;
 using RainIt.Interfaces.Business;
 using RainIt.Interfaces.Repository;
+using User = RainIt.Domain.DTO.User;
 
 
 namespace RainIt.Business
@@ -14,11 +15,17 @@ namespace RainIt.Business
     public class AccountManager : IAccountManager
     {
         public IRainItContext RainItContext { get; set; }
+        
+
         public AccountManager(IRainItContext rainItContext)
         {
             RainItContext = rainItContext;
         }
-        
+
+        public User GetCurrentUsername()
+        {
+            return RainItContext.CurrentUser;
+        }
         public StatusMessage Register(Registration registration)
         {
             if (!IsUsernameAvailable(registration.User.Username))
