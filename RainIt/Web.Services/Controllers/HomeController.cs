@@ -8,11 +8,11 @@ namespace Web.Services.Controllers
 {
     public class HomeController : Controller
     {
-        public ActionResult Index()
+        public RedirectToRouteResult Index()
         {
             ViewBag.Title = "Home Page";
 
-            return View();
+            return RedirectToAction("Index", "Help");
         }
     }
 }
