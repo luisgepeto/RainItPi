@@ -81,6 +81,16 @@ namespace RainIt.Business
                 Path = p.Path
             }).ToList();
         }
+
+        public List<PatternDTO> GetAllPatterns()
+        {
+            return RainItContext.PatternSet.Select(p => new PatternDTO()
+            {
+                Name = p.Name,
+                PatternId = p.PatternId,
+                Path = p.Path
+            }).ToList();
+        }
         #endregion
 
         #region UPDATE METHODS

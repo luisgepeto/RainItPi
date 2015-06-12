@@ -53,3 +53,14 @@
 *.mdf
 *.ldf
 *.user
+
+/RainIt/Web.Security.Business/bin
+/RainIt/Web.Security.Business/obj
+/RainIt/Web.Security.Domain/bin
+/RainIt/Web.Security.Domain/obj
+/RainIt/Web.Security.Interfaces/bin
+/RainIt/Web.Security.Interfaces/obj
+/RainIt/Web.Security.Repository/bin
+/RainIt/Web.Security.Repository/obj
+
+

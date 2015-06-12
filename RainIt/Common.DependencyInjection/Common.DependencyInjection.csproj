@@ -100,6 +100,14 @@
       <Project>{003E9AB0-1B04-45EA-B12F-4B7247A813EA}</Project>
       <Name>RainIt.Repository</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Web.Security.Business\Web.Security.Business.csproj">
+      <Project>{62C0C4FB-E988-419E-B081-E5F873B71649}</Project>
+      <Name>Web.Security.Business</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Web.Security.Interfaces\Web.Security.Interfaces.csproj">
+      <Project>{355DAEBC-7EF0-481F-90FD-DC77ADCEAE03}</Project>
+      <Name>Web.Security.Interfaces</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">

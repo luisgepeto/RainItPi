@@ -12,8 +12,8 @@ namespace RainIt.Interfaces.Business
     {
         StatusMessage AddUserPattern(ImageDetails pattern, string fileName, bool canUpdate = false);
         List<PatternDTO> GetUserPatterns();
+        List<PatternDTO> GetAllPatterns();
         StatusMessage UpdateUserPattern(ImageDetails pattern, string fileName);
         StatusMessage DeleteUserPattern(int patternId);
-        
     }
 }

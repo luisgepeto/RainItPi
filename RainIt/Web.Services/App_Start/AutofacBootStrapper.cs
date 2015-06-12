@@ -7,18 +7,17 @@ using Autofac;
 using Autofac.Integration.WebApi;
 using Common.DependencyInjection;
 
-
 namespace Web.Services.App_Start
 {
     public class AutofacBootStrapper
     {
-        public static IContainer Run()
+        public static void Run()
         {
             IContainer container = null;
             ContainerBuilder builder = RegisterDependencies();
             container = builder.Build();
             GlobalConfiguration.Configuration.DependencyResolver = new AutofacWebApiDependencyResolver(container);
-            return container;
+
         }
 
         private static ContainerBuilder RegisterDependencies()
