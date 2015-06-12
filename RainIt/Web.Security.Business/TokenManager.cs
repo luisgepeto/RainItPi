@@ -77,23 +77,20 @@ namespace Web.Security.Business
             };
         }
 
-        public ClaimsPrincipal ValidateJwtToken(string jwtToken)
+        public ClaimsPrincipal ValidateToken(string encodedTokenString)
         {
-            var tokenHandler = new JwtSecurityTokenHandler();
-
-            // Parse JWT from the Base64UrlEncoded wire form (<Base64UrlEncoded header>.<Base64UrlEncoded body>.<signature>)
-            //string parsedJwt = tokenHandler.ReadToken(jwtToken);
-
-            TokenValidationParameters validationParams =
-                new TokenValidationParameters()
-                {
-                    ValidIssuer = SecurityConstants.TokenIssuer,
-                    ValidateIssuer = true,
-                    //SigningToken = new BinarySecretSecurityToken(SecurityConstants.KeyForHmacSha256),
-                };
-
-            SecurityToken validatedToken;
-            return tokenHandler.ValidateToken(jwtToken, validationParams, out validatedToken);
+            ClaimsPrincipal principal = null;
+            //var token = new JwtSecurityToken(encodedTokenString);
+            SecurityToken token;
+            var tokenValidationParameters = new TokenValidationParameters()
+            {
+                ValidIssuer = TokenIssuer,
+                //ValidAudiences = GetAllowedAudiences(applicationId),
+                IssuerSigningToken = new BinarySecretSecurityToken(Encoding.UTF8.GetBytes(SecretKey))
+            };
+            principal = new JwtSecurityTokenHandler().ValidateToken(encodedTokenString, tokenValidationParameters, out token);
+            
+            return principal;
         }
     }
 }

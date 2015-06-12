@@ -22,6 +22,7 @@ namespace Web.Services.Controllers
             TokenManager = tokenManager;
         }
 
+        [AllowAnonymous]
         [HttpPost]
         public IHttpActionResult Login(Login login)
         {

@@ -6,6 +6,6 @@ namespace Web.Security.Interfaces
     public interface ITokenManager
     {
         string CreateJwtToken(string userName);
-        ClaimsPrincipal ValidateJwtToken(string jwtToken);
+        ClaimsPrincipal ValidateToken(string encodedTokenString);
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
 using System.Web.Http.Cors;
+using Web.Infrastructure.Handlers;
 
 namespace Web.Services
 {
@@ -13,7 +14,8 @@ namespace Web.Services
             // Web API configuration and services
             var cors = new EnableCorsAttribute("*", "*", "*");
             config.EnableCors(cors);
-
+            config.MessageHandlers.Add(new AuthenticationHandler());
+            
             // Web API routes
             config.MapHttpAttributeRoutes();
 

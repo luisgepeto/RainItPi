@@ -20,5 +20,11 @@ namespace Web.Services.Controllers
         {
             return Ok(PatternManager.GetAllPatterns());
         }
+
+        [AllowAnonymous]
+        public IHttpActionResult GetAll()
+        {
+            return Ok(PatternManager.GetAllPatterns());
+        }
     }
 }
