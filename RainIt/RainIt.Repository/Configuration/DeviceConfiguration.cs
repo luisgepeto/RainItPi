@@ -9,9 +9,9 @@ namespace RainIt.Repository.Configuration
         {
             ToTable(schema + ".Device");
             HasKey(d => d.DeviceId);
-            HasRequired(d => d.DeviceCredential)
-                .WithRequiredPrincipal(p => p.Device)
-                .WillCascadeOnDelete(true);
+            //HasRequired(d => d.DeviceCredential)
+            //    .WithRequiredPrincipal(p => p.Device)
+            //    .WillCascadeOnDelete(true);
             HasRequired(d => d.DeviceInfo)
                 .WithRequiredPrincipal(p => p.Device)
                 .WillCascadeOnDelete(true);

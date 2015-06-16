@@ -31,6 +31,7 @@ namespace RainIt.Business.Tests
         public DbSet<Password> PasswordSet{ get; set; }
         public DbSet<Pattern> PatternSet{ get; set; }
         public DbSet<Routine> RoutineSet{ get; set; }
+        public DbSet<Device> DeviceSet{ get; set; }
 
         public DbSet<RoutinePattern> RoutinePatternSet{ get; set; }
 
@@ -43,6 +44,12 @@ namespace RainIt.Business.Tests
         {
             get { return RoutineSet.Where(p => p.UserId == CurrentUser.UserId); }
         }
+
+        public IQueryable<Device> UserDeviceSet
+        {
+            get { return DeviceSet.Where(p => p.UserId == CurrentUser.UserId); }
+        }
+
         public int SaveChangesCount { get; private set; }
 
         public int SaveChanges()
