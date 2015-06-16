@@ -47,11 +47,6 @@ namespace Common.DependencyInjection
                 .As<IImageManager>()
                 .PropertiesAutowired()
                 .InstancePerLifetimeScope();
-
-            builder.RegisterType<DeviceManager>()
-                .As<IDeviceManager>()
-                .PropertiesAutowired()
-                .InstancePerLifetimeScope();
         }
     }
 }

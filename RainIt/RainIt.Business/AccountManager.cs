@@ -15,6 +15,7 @@ namespace RainIt.Business
     public class AccountManager : IAccountManager
     {
         public IRainItContext RainItContext { get; set; }
+        
 
         public AccountManager(IRainItContext rainItContext)
         {

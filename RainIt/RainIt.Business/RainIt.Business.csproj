@@ -96,7 +96,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AccountManager.cs" />
-    <Compile Include="DeviceManager.cs" />
     <Compile Include="LookUpManager.cs" />
     <Compile Include="PatternManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

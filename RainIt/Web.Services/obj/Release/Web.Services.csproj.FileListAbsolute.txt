@@ -2,13 +2,20 @@ C:\Users\luisb\Documents\Personal\RainIt\rainit\RainIt\Web.Services\bin\Web.Serv
 C:\Users\luisb\Documents\Personal\RainIt\rainit\RainIt\Web.Services\bin\Web.Services.dll
 C:\Users\luisb\Documents\Personal\RainIt\rainit\RainIt\Web.Services\bin\Web.Services.pdb
 C:\Users\luisb\Documents\Personal\RainIt\rainit\RainIt\Web.Services\bin\Antlr3.Runtime.dll
+C:\Users\luisb\Documents\Personal\RainIt\rainit\RainIt\Web.Services\bin\Autofac.dll
 C:\Users\luisb\Documents\Personal\RainIt\rainit\RainIt\Web.Services\bin\Autofac.Integration.WebApi.dll
 C:\Users\luisb\Documents\Personal\RainIt\rainit\RainIt\Web.Services\bin\Microsoft.Web.Infrastructure.dll
+C:\Users\luisb\Documents\Personal\RainIt\rainit\RainIt\Web.Services\bin\Newtonsoft.Json.dll
 C:\Users\luisb\Documents\Personal\RainIt\rainit\RainIt\Web.Services\bin\System.Net.Http.Formatting.dll
+C:\Users\luisb\Documents\Personal\RainIt\rainit\RainIt\Web.Services\bin\System.Web.Helpers.dll
 C:\Users\luisb\Documents\Personal\RainIt\rainit\RainIt\Web.Services\bin\System.Web.Http.dll
 C:\Users\luisb\Documents\Personal\RainIt\rainit\RainIt\Web.Services\bin\System.Web.Http.WebHost.dll
 C:\Users\luisb\Documents\Personal\RainIt\rainit\RainIt\Web.Services\bin\System.Web.Mvc.dll
 C:\Users\luisb\Documents\Personal\RainIt\rainit\RainIt\Web.Services\bin\System.Web.Optimization.dll
+C:\Users\luisb\Documents\Personal\RainIt\rainit\RainIt\Web.Services\bin\System.Web.Razor.dll
+C:\Users\luisb\Documents\Personal\RainIt\rainit\RainIt\Web.Services\bin\System.Web.WebPages.Deployment.dll
+C:\Users\luisb\Documents\Personal\RainIt\rainit\RainIt\Web.Services\bin\System.Web.WebPages.dll
+C:\Users\luisb\Documents\Personal\RainIt\rainit\RainIt\Web.Services\bin\System.Web.WebPages.Razor.dll
 C:\Users\luisb\Documents\Personal\RainIt\rainit\RainIt\Web.Services\bin\WebGrease.dll
 C:\Users\luisb\Documents\Personal\RainIt\rainit\RainIt\Web.Services\bin\Autofac.xml
 C:\Users\luisb\Documents\Personal\RainIt\rainit\RainIt\Web.Services\bin\Autofac.Integration.WebApi.xml
@@ -33,6 +40,7 @@ C:\Users\luisb\Documents\Personal\RainIt\rainit\RainIt\Web.Services\bin\RainIt.I
 C:\Users\luisb\Documents\Personal\RainIt\rainit\RainIt\Web.Services\bin\RainIt.Business.dll
 C:\Users\luisb\Documents\Personal\RainIt\rainit\RainIt\Web.Services\bin\ImageProcessing.Business.dll
 C:\Users\luisb\Documents\Personal\RainIt\rainit\RainIt\Web.Services\bin\ImageProcessing.Business.Interfaces.dll
+C:\Users\luisb\Documents\Personal\RainIt\rainit\RainIt\Web.Services\bin\EntityFramework.dll
 C:\Users\luisb\Documents\Personal\RainIt\rainit\RainIt\Web.Services\bin\RainIt.Domain.dll
 C:\Users\luisb\Documents\Personal\RainIt\rainit\RainIt\Web.Services\bin\Microsoft.WindowsAzure.Storage.dll
 C:\Users\luisb\Documents\Personal\RainIt\rainit\RainIt\Web.Services\bin\ImageProcessing.Domain.dll
@@ -92,6 +100,7 @@ C:\Users\luisb\Documents\Personal\RainIt\rainit\RainIt\Web.Services\bin\ko\Syste
 C:\Users\luisb\Documents\Personal\RainIt\rainit\RainIt\Web.Services\bin\ru\System.Spatial.resources.dll
 C:\Users\luisb\Documents\Personal\RainIt\rainit\RainIt\Web.Services\bin\zh-Hans\System.Spatial.resources.dll
 C:\Users\luisb\Documents\Personal\RainIt\rainit\RainIt\Web.Services\bin\zh-Hant\System.Spatial.resources.dll
+C:\Users\luisb\Documents\Personal\RainIt\rainit\RainIt\Web.Services\bin\EntityFramework.SqlServer.dll
 C:\Users\luisb\Documents\Personal\RainIt\rainit\RainIt\Web.Services\bin\EntityFramework.SqlServer.xml
 C:\Users\luisb\Documents\Personal\RainIt\rainit\RainIt\Web.Services\bin\Web.Security.Domain.dll
 C:\Users\luisb\Documents\Personal\RainIt\rainit\RainIt\Web.Services\bin\Web.Security.Interfaces.dll

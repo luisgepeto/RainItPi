@@ -88,7 +88,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DTO\Address.cs" />
-    <Compile Include="DTO\DeviceDTO.cs" />
     <Compile Include="DTO\Login.cs" />
     <Compile Include="DTO\PatternDTO.cs" />
     <Compile Include="DTO\Registration.cs" />

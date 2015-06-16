@@ -9,6 +9,5 @@ namespace RainIt.Domain.Repository
         public string Serial { get; set; }
         public virtual Device Device { get; set; }
         public DateTime? RegisteredUTCDate { get; set; }
-
     }
 }

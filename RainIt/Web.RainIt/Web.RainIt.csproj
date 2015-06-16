@@ -68,10 +68,6 @@
       <HintPath>..\..\References\Kendo.Mvc.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Newtonsoft.Json.6.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -139,6 +135,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.6.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
     <Compile Include="App_Start\AutofacBootStrapper.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
@@ -146,7 +147,6 @@
     <Compile Include="Areas\Image\Controllers\ConversionController.cs" />
     <Compile Include="Areas\Image\ImageAreaRegistration.cs" />
     <Compile Include="Controllers\AccountController.cs" />
-    <Compile Include="Controllers\DeviceController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\PatternController.cs" />
     <Compile Include="Controllers\RoutineController.cs" />
@@ -219,7 +219,6 @@
     <Content Include="Scripts\jquery-ui.unobtrusive-2.2.0.js" />
     <Content Include="Scripts\jquery-ui.unobtrusive-2.2.0.min.js" />
     <Content Include="Scripts\jquery.shapeshift.js" />
-    <Content Include="Scripts\jquery.touch-punch.min.js" />
     <Content Include="Scripts\jquery.unobtrusive-ajax.js" />
     <Content Include="Scripts\jquery.unobtrusive-ajax.min.js" />
     <Content Include="Scripts\jquery.validate.js" />
@@ -255,8 +254,6 @@
     <Content Include="Views\Home\_Features.cshtml" />
     <Content Include="Views\Home\_Messages.cshtml" />
     <Content Include="Views\Routine\Index.cshtml" />
-    <Content Include="Views\Device\Index.cshtml" />
-    <Content Include="Views\Device\Add.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
