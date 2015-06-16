@@ -15,9 +15,11 @@ namespace RainIt.Interfaces.Repository
         DbSet<Password> PasswordSet { get; set; }
         DbSet<Pattern> PatternSet { get; set; }
         DbSet<Routine> RoutineSet { get; set; }
+        DbSet<Device> DeviceSet { get; set; }
         DbSet<RoutinePattern> RoutinePatternSet { get; set; }
         IQueryable<Pattern> UserPatternSet { get; }
         IQueryable<Routine> UserRoutineSet { get; }
+        IQueryable<Device> UserDeviceSet { get; }
 
         int SaveChanges();
     }
