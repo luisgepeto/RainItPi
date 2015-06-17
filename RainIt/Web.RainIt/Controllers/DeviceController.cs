@@ -41,11 +41,10 @@ namespace Web.RainIt.Controllers
             return RedirectToAction("Add");
         }
 
-        [HttpGet]
-        public JsonResult GetUserDevices()
+        public PartialViewResult Multiselect()
         {
             var allDevices = DeviceManager.GetUserDevices();
-            return Json(new {allDevices}, JsonRequestBehavior.AllowGet);
+            return PartialView("_Multiselect",allDevices);
         }
     }
 }

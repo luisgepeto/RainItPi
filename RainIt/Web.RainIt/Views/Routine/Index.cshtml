@@ -12,12 +12,6 @@
     <div class="row col-md-12">
         @foreach (var routine in Model)
         {
-            <select id="@("active_" + routine.RoutineId)">
-                @{
-                    var allDevices = Url.Action("GetUserDevices", "Device");
-                    foreach(allD)
-                }
-            </select>
             <div id="@("routine-holder" + routine.RoutineId)" class="routine-holder">
                 <ul>
                     @foreach (var routinePattern in routine.RoutinePatternDTOs)

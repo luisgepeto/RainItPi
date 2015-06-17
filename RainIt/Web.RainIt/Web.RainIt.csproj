@@ -257,6 +257,7 @@
     <Content Include="Views\Routine\Index.cshtml" />
     <Content Include="Views\Device\Index.cshtml" />
     <Content Include="Views\Device\Add.cshtml" />
+    <Content Include="Views\Device\_Multiselect.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

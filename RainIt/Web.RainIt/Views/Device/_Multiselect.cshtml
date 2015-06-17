@@ -1,0 +1,28 @@
+﻿@model List<RainIt.Domain.DTO.DeviceDTO>
+<select id="device-multiselect" multiple="multiple">
+    @foreach (var device in Model)
+    {
+        <option value="@device.DeviceId">@device.Identifier</option>
+    }
+</select>
+<script type="text/javascript">
+    (function() {
+        this.DeviceMultiselectProperties = this.DeviceMultiselectProperties || {};
+        var multiselect = (function() {
+            var properties = {};
+            properties.Initialize = function() {
+                $('#device-multiselect').multiselect();
+            }
+            properties.SelectDevices = function(deviceIds) {
+                $('#')
+            }
+            return properties;
+        }());
+        DeviceMultiselectProperties.SetupPage = function () {
+            multiselect.Initialize();
+        }
+    }());
+    $(document).ready(function() {
+        DeviceMultiselectProperties.SetupPage();
+    });
+</script>
