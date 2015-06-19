@@ -66,3 +66,5 @@
 
 /RainIt/Web.Infrastructure/bin
 /RainIt/Web.Infrastructure/obj
+*.config
+*.config
