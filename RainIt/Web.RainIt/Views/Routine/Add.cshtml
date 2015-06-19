@@ -26,8 +26,16 @@
     <div id="routineBuilder">
         <img id="addImage2" src="/Content/addimageicon.png" alt="Add an image" class="image-holder">
     </div>
-    <input type="button" value="Add" name="Add" id="addRoutine"/>
+    @if (Model.RoutineId == 0)
+    {
+        <input type="button" value="Add" name="Add" id="addRoutine" />
+    }
+    else
+    {
+        <input type="button" value="Update" name="Update" id="addRoutine" />
+    }
 </div>
+
 @Html.Action("Multiselect", "Device")
 @Html.Action("Index", "Pattern")
 <script type="text/javascript">
@@ -123,16 +131,28 @@
                 return patternIdArrayList;
             }
 
+            function getDeviceGuidList() {
+                var deviceGuidList = [];
+                $('#routineBuilder').children().each(function () {
+                    var currentElement = $(this);
+                    if (currentElement.attr("id").match("^image-holder_")) {
+                        patternIdArrayList.push(currentElement.attr("id").split("_")[1]);
+                    }
+                });
+                return patternIdArrayList;
+            }
+
             function onAjaxSuccess(data) {
                 window.location.href = data;
             }
 
-            function makeAddPatternAjaxCall(patternIdList) {
+            function makeAddPatternAjaxCall(patternIdList, deviceGuidList) {
                 $.ajax({
                     url: '@Url.Action("Add", "Routine")',
                     data: {
                         routineId: '@Html.Raw(Model != null ? Model.RoutineId : 0)',
-                        patternIdList: patternIdList
+                        patternIdList: patternIdList,
+                        deviceGuidList: deviceGuidList
                     },
                     type: "POST",
                     contentType: "application/x-www-form-urlencoded",
@@ -143,7 +163,8 @@
             properties.AddClickListener = function () {
                 $('#addRoutine').click(function () {
                     var patternIdList = getPatternIdList();
-                    makeAddPatternAjaxCall(patternIdList);
+                    var deviceGuidList = getDeviceGuidList();
+                    makeAddPatternAjaxCall(patternIdList, deviceGuidList);
                 });
             }
             return properties;

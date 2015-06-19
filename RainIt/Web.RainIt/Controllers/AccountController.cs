@@ -36,6 +36,11 @@ namespace Web.RainIt.Controllers
             {
                 canRegister = AccountManager.Register(registrationModel.Registration);
             }
+            else 
+            {
+                canRegister.IsError = true;
+                canRegister.Message = "An error occurred while validating your information";
+            }
             TempData["StatusMessage"] = canRegister;
             if (!canRegister.IsError)
             {
