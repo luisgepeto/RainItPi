@@ -14,10 +14,21 @@
                 $('#device-multiselect').multiselect();
             }
             properties.SelectDevices = function(deviceIds) {
-                $('#')
+               // $('#')
+            }
+            properties.GetSelectedDevices = function() {
+                alert("getting selected devices");
             }
             return properties;
         }());
+
+        DeviceMultiselectProperties.SelectDevices = function (deviceIds) {
+            multiselect.SelectDevices(deviceIds);
+        }
+        DeviceMultiselectProperties.GetSelectedDevices = function () {
+            multiselect.GetSelectedDevices();
+        }
+
         DeviceMultiselectProperties.SetupPage = function () {
             multiselect.Initialize();
         }

@@ -131,17 +131,6 @@
                 return patternIdArrayList;
             }
 
-            function getDeviceGuidList() {
-                var deviceGuidList = [];
-                $('#routineBuilder').children().each(function () {
-                    var currentElement = $(this);
-                    if (currentElement.attr("id").match("^image-holder_")) {
-                        patternIdArrayList.push(currentElement.attr("id").split("_")[1]);
-                    }
-                });
-                return patternIdArrayList;
-            }
-
             function onAjaxSuccess(data) {
                 window.location.href = data;
             }
@@ -163,7 +152,7 @@
             properties.AddClickListener = function () {
                 $('#addRoutine').click(function () {
                     var patternIdList = getPatternIdList();
-                    var deviceGuidList = getDeviceGuidList();
+                    var deviceGuidList = DeviceMultiselectProperties.GetSelectedDevices();
                     makeAddPatternAjaxCall(patternIdList, deviceGuidList);
                 });
             }
