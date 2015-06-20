@@ -17,6 +17,7 @@ namespace Web.Security.Business
     {
         private const string SecretKey = "ZSA23YHBS3LS9ZXS30AFE";
         private const string TokenIssuer = "RainItTokenService";
+        private const string Audience = "RainItWebServiceApplication";
 
         public IRainItContext RainItContext { get; set; }
 
@@ -25,15 +26,15 @@ namespace Web.Security.Business
             RainItContext = rainItContext;
         }
 
-        public string CreateJwtToken(string userName)
+        public string CreateJwtToken(string serial)
         {
-            var profile = RainItContext.UserSet.SingleOrDefault(u => u.Username == userName);
-            if (profile == null) return String.Empty;
+            var device = RainItContext.DeviceSet.SingleOrDefault(d => d.DeviceInfo.Serial == serial);
+            if (device == null) return String.Empty;
 
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, userName),
-                new Claim(ClaimTypes.Role, profile.Roles.FirstOrDefault().Name),
+                new Claim(ClaimTypes.Name, device.DeviceInfo.Serial),
+                new Claim(ClaimTypes.Hash, device.DeviceInfo.Identifier.ToString())
             };
            
             return CreateSecurityToken(claims);
@@ -52,7 +53,7 @@ namespace Web.Security.Business
             {
                 Subject = claimsIdentity,
                 TokenIssuerName = TokenIssuer,
-                //AppliesToAddress = "http://" + audience,
+                AppliesToAddress = "http://" + Audience,
                 Lifetime = new Lifetime(DateTime.UtcNow, DateTime.UtcNow.AddDays(7)),
                 SigningCredentials = signingCredentials
             };
@@ -60,32 +61,16 @@ namespace Web.Security.Business
             var token = jwtHandler.CreateToken(tokenDescriptor);
             return jwtHandler.WriteToken(token);
         }
-
-        private static SecurityTokenDescriptor MakeSecurityTokenDescriptor(InMemorySymmetricSecurityKey sSKey, List<Claim> claimList)
-        {
-            var now = DateTime.UtcNow;
-            Claim[] claims = claimList.ToArray();
-            return new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(claims),
-                TokenIssuerName = SecurityConstants.TokenIssuer,
-                AppliesToAddress = SecurityConstants.TokenAudience,
-                Lifetime = new Lifetime(now, now.AddMinutes(SecurityConstants.TokenLifetimeMinutes)),
-                SigningCredentials = new SigningCredentials(sSKey,
-                    "http://www.w3.org/2001/04/xmldsig-more#hmac-sha256",
-                    "http://www.w3.org/2001/04/xmlenc#sha256"),
-            };
-        }
-
+        
         public ClaimsPrincipal ValidateToken(string encodedTokenString)
         {
             ClaimsPrincipal principal = null;
-            //var token = new JwtSecurityToken(encodedTokenString);
+
             SecurityToken token;
             var tokenValidationParameters = new TokenValidationParameters()
             {
                 ValidIssuer = TokenIssuer,
-                //ValidAudiences = GetAllowedAudiences(applicationId),
+                ValidAudience = "http://"+Audience,
                 IssuerSigningToken = new BinarySecretSecurityToken(Encoding.UTF8.GetBytes(SecretKey))
             };
             principal = new JwtSecurityTokenHandler().ValidateToken(encodedTokenString, tokenValidationParameters, out token);

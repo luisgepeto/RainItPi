@@ -13,28 +13,28 @@ namespace Web.Services.Controllers
 {
     public class AccountController : ApiController
     {
-        public IAccountManager AccountManager { get; set; }
-        public ITokenManager TokenManager { get; set; } 
+        public IDeviceManager DeviceManager { get; set; }
+        public ITokenManager TokenManager { get; set; }
 
-        public AccountController(IAccountManager accountManager, ITokenManager tokenManager)
+        public AccountController(IDeviceManager deviceManager, ITokenManager tokenManager)
         {
-            AccountManager = accountManager;
+            DeviceManager = deviceManager;
             TokenManager = tokenManager;
         }
 
         [AllowAnonymous]
         [HttpPost]
-        public IHttpActionResult Login(Login login)
+        public IHttpActionResult Login(string serial)
         {
             var authResult = new AuthenticationResult();
             if (ModelState.IsValid)
             {
-                var canAuthenticate = AccountManager.Authenticate(login);
-                if (!canAuthenticate.IsError)
+                var canAuthenticate = DeviceManager.ValidateDevice(serial);
+                if (canAuthenticate)
                 {
                     authResult.LoginStatus = LoginStatus.ValidUser;
                     authResult.TokenExpirationUtcTime = DateTime.UtcNow.AddDays(7);
-                    authResult.SecurityToken = TokenManager.CreateJwtToken(login.Username);
+                    authResult.SecurityToken = TokenManager.CreateJwtToken(serial);
                 }
             }
             return Ok(authResult);

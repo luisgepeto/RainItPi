@@ -23,17 +23,14 @@ namespace Web.Infrastructure.Handlers
             
             if (principal == null)
             {
-                // Create the 401 response
                 var response = new HttpResponseMessage(HttpStatusCode.Unauthorized);
                 response.Headers.Add(BearerAuthorizationResponseHeader, BearerAuthorizationResponseHeaderValue);
                
-                // Create a task that does not contain a delegate for the inner handlers
                 var taskCompletionSource = new TaskCompletionSource<HttpResponseMessage>();
                 taskCompletionSource.SetResult(response);   
                 return taskCompletionSource.Task;
             }
 
-            // Continue on happy path for validated request
             Thread.CurrentPrincipal = principal;
             if (HttpContext.Current != null)
             {
@@ -46,18 +43,15 @@ namespace Web.Infrastructure.Handlers
         protected virtual ClaimsPrincipal AuthenticateRequest(HttpRequestMessage request)
         {
             string authorizationHeader = null;
-            AuthenticationHeaderValue authorization = request.Headers.Authorization;
+            var authorization = request.Headers.Authorization;
             if (authorization != null)
             {
                 authorizationHeader = authorization.Parameter;
             }
-            if (String.IsNullOrWhiteSpace(authorizationHeader))
-            {
-                return null;
-            }
 
+            if (String.IsNullOrWhiteSpace(authorizationHeader)) return null;
+            
             var jwtEncodedString = authorizationHeader;
-            var rainItContext = (IRainItContext)request.GetDependencyScope().GetService(typeof(IRainItContext));
             var tokenService = (ITokenManager)request.GetDependencyScope().GetService(typeof(ITokenManager));
 
             return tokenService.ValidateToken(jwtEncodedString);

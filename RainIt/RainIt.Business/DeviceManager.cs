@@ -61,5 +61,16 @@ namespace RainIt.Business
                 RoutineId = d.RoutineId
             }).ToList();
         }
+
+        public Guid GetDeviceGuid(string serial)
+        {
+            return RainItContext.DeviceSet.Single(d => d.DeviceInfo.Serial == serial).DeviceInfo.Identifier;
+        }
+
+        public bool ValidateDevice(string serial)
+        {
+            var device = RainItContext.DeviceSet.SingleOrDefault(d => d.DeviceInfo.Serial == serial);
+            return device != null;
+        }
     }
 }
