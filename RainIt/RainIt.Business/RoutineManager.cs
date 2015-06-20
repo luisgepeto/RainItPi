@@ -29,6 +29,8 @@ namespace RainIt.Business
             var routineToAdd = GetRoutineToAdd(routineDTO);
             if (!TryUpdateRoutinePatterns(routineToAdd, routineDTO.RoutinePatternDTOs))
                 return StatusMessage.WriteError("The selected pattern does not exist for the current user");
+            if (!TryUpdateDevices(routineToAdd, routineDTO.DeviceDTOs))
+                return StatusMessage.WriteError("The selected devices do not exist for the current user");
             RainItContext.RoutineSet.Add(routineToAdd);
             RainItContext.SaveChanges();
             return StatusMessage.WriteMessage("The routine was created successfully");
@@ -41,7 +43,8 @@ namespace RainIt.Business
                 Description = routineDTO.Description,
                 Name = routineDTO.Name,
                 UserId = RainItContext.UserSet.Single(u => u.Username == RainItContext.CurrentUser.Username).UserId,
-                RoutinePatterns =  new List<RoutinePattern>()
+                RoutinePatterns =  new List<RoutinePattern>(),
+                Devices = new List<Device>()
             };
             return routineToAdd;
         }
@@ -62,12 +65,6 @@ namespace RainIt.Business
             return ToRoutineDTOList(userRoutines).Single();
         }
 
-        public RoutineDTO GetActiveUserRoutine()
-        {
-            var activeRoutine = RainItContext.RoutineSet.Where(r => r.IsActive);
-            return ToRoutineDTOList(activeRoutine).SingleOrDefault();
-        }
-       
         #endregion
 
         #region UPDATE Methods
@@ -80,6 +77,8 @@ namespace RainIt.Business
                 return StatusMessage.WriteError("The patterns for the selected routine could not be deleted");
             if (!TryUpdateRoutinePatterns(routineToUpdate, routineDTO.RoutinePatternDTOs))
                 return StatusMessage.WriteError("The selected pattern does not exist for the current user");
+            if (!TryUpdateDevices(routineToUpdate, routineDTO.DeviceDTOs))
+                return StatusMessage.WriteError("The selected devices do not exist for the current user");
             RainItContext.SaveChanges();
             return StatusMessage.WriteMessage("The routine was updated successfully");
         }
@@ -92,7 +91,7 @@ namespace RainIt.Business
             routine.Description = routineDTO.Description;
             routine.Name = routineDTO.Name;
             routine.RoutinePatterns = new List<RoutinePattern>();
-            routine.IsActive = routineDTO.IsActive;
+            
             return routine;
         }
 
@@ -115,28 +114,6 @@ namespace RainIt.Business
             }
         }
 
-        public StatusMessage SetActive(int routineId)
-        {
-            var allOtherActiveRoutines = RainItContext.UserRoutineSet.Where(r => r.RoutineId != routineId).ToList();
-            if (!SetInactive(allOtherActiveRoutines))
-                return StatusMessage.WriteError("Other user routines could not be set to inactive");
-            var selectedRoutine = RainItContext.UserRoutineSet.SingleOrDefault(r => r.RoutineId == routineId);
-            if(selectedRoutine == null)
-                return StatusMessage.WriteError("The selected user routine does not exist");
-            selectedRoutine.IsActive = true;
-            RainItContext.SaveChanges();
-            return StatusMessage.WriteError("Successfully set user routine as active");
-        }
-
-        private bool SetInactive(List<Routine> routineList)
-        {
-            routineList.ForEach(r =>
-            {
-                r.IsActive = false;
-            });
-            RainItContext.SaveChanges();
-            return true;
-        }
         #endregion
 
         #region DELETE Methods
@@ -185,12 +162,27 @@ namespace RainIt.Business
             }
             return true;
         }
+        private bool TryUpdateDevices(Routine routine, List<DeviceDTO> deviceDTOList)
+        {
+            foreach (var device in deviceDTOList)
+            {
+                Device deviceOut;
+                if (!TryGetDeviceForUser(device.Identifier, out deviceOut))
+                    return false;
+                routine.Devices.Add(deviceOut);
+            }
+            return true;
+        }
+        private bool TryGetDeviceForUser(Guid identifier, out Device deviceOut)
+        {
+            deviceOut = RainItContext.UserDeviceSet.SingleOrDefault(d => d.DeviceInfo.Identifier == identifier);
+            return deviceOut != null;
+        }
          private List<RoutineDTO> ToRoutineDTOList(IQueryable<Routine> routineQueryable)
         {
             return routineQueryable.Select(r => new RoutineDTO()
             {
                 RoutineId = r.RoutineId,
-                IsActive = r.IsActive,
                 Name = r.Name,
                 RoutinePatternDTOs = r.RoutinePatterns.Select(rp => new RoutinePatternDTO()
                 {

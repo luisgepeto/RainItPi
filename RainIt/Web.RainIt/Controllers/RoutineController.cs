@@ -33,7 +33,7 @@ namespace Web.RainIt.Controllers
         }
 
         [HttpPost]
-        public JsonResult Add(int routineId, List<int> patternIdList)
+        public JsonResult Add(int routineId, List<int> patternIdList, List<Guid> devideGuidList)
         {
             StatusMessage canAdd = null;
             var routineList = new RoutineDTO()
@@ -47,7 +47,11 @@ namespace Web.RainIt.Controllers
                     }
                 }).ToList(),
                 Description = "some description",
-                Name = "some name"
+                Name = "some name",
+                DeviceDTOs = devideGuidList.Select(d => new DeviceDTO()
+                {
+                    Identifier = d
+                }).ToList()
             };
             if (routineId == 0)
             {
@@ -60,11 +64,5 @@ namespace Web.RainIt.Controllers
             return Json(Url.Action("Index", "Routine"));
         }
 
-        [HttpPost]
-        public JsonResult SetActive(int routineId)
-        {
-            RoutineManager.SetActive(routineId);
-            return Json(true);
-        }
     }
 }

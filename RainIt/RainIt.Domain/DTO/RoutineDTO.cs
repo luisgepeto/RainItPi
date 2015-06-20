@@ -7,7 +7,7 @@ namespace RainIt.Domain.DTO
         public int RoutineId { get; set; }
         public string Description { get; set; }
         public string Name { get; set; }
-        public bool IsActive { get; set; }
         public List<RoutinePatternDTO> RoutinePatternDTOs { get; set; }
+        public List<DeviceDTO> DeviceDTOs { get; set; } 
     }
 }

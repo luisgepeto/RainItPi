@@ -11,7 +11,7 @@ namespace RainIt.Repository.Configuration
             HasKey(r => r.RoutineId);
             Property(r => r.Name);
             Property(r => r.Description);
-            Property(r => r.IsActive);
+           
 
             //HasMany(r => r.RoutinePatterns)
             //    .WithRequired(rp => rp.Routine)
