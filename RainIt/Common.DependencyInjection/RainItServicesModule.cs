@@ -43,6 +43,10 @@ namespace Common.DependencyInjection
                .As<IDeviceManager>()
                .PropertiesAutowired()
                .InstancePerLifetimeScope();
+            builder.RegisterType<RoutineManager>()
+               .As<IRoutineManager>()
+               .PropertiesAutowired()
+               .InstancePerLifetimeScope();
         }
     }
 }

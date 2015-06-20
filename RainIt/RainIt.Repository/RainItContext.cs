@@ -3,11 +3,17 @@ using System.Data.Entity;
 using System.Data.Entity.ModelConfiguration.Conventions;
 using System.Diagnostics;
 using System.Linq;
+using System.Security.Claims;
 using System.Security.Policy;
+using System.Threading;
 using System.Web;
+using RainIt.Domain.DTO;
 using RainIt.Domain.Repository;
 using RainIt.Interfaces.Repository;
 using RainIt.Repository.Configuration;
+using Address = RainIt.Domain.Repository.Address;
+using User = RainIt.Domain.Repository.User;
+using UserInfo = RainIt.Domain.Repository.UserInfo;
 
 namespace RainIt.Repository
 {
@@ -28,6 +34,31 @@ namespace RainIt.Repository
                 {
                     UserId = userId,
                     Username = username
+                };
+            }
+        }
+
+        public DeviceDTO CurrentDevice
+        {
+            get
+            {
+                var serial = HttpContext.Current.User.Identity.Name;
+                var identifier = Guid.Empty;
+
+                var hashClaim = ((ClaimsPrincipal)HttpContext.Current.User).Claims.FirstOrDefault(c => c.Type == ClaimTypes.Hash);
+                if (hashClaim != null)
+                {
+                    var claimsIdentifier = hashClaim.Value;
+                    Guid.TryParse(claimsIdentifier, out identifier);
+                }
+
+                var deviceId = DeviceSet.Single(d => d.DeviceInfo.Serial == serial && d.DeviceInfo.Identifier == identifier).DeviceId;
+                
+                return new DeviceDTO()
+                {
+                    DeviceId = deviceId,
+                    Identifier = identifier,
+                    Serial = serial
                 };
             }
         }
@@ -56,6 +87,15 @@ namespace RainIt.Repository
         public IQueryable<Device> UserDeviceSet
         {
             get { return DeviceSet.Where(p => p.UserId == CurrentUser.UserId); }
+        }
+
+        public IQueryable<Routine> DeviceRoutineSet
+        {
+            get
+            {
+                return RoutineSet.Where(r => r.Devices.Select(d => d.DeviceId).Contains(CurrentDevice.DeviceId));
+                //return DeviceSet.Where(d => d.DeviceId == CurrentDevice.DeviceId).Select(d => d.Routine);
+            }
         }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)

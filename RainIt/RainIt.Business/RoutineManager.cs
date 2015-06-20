@@ -65,6 +65,26 @@ namespace RainIt.Business
             return ToRoutineDTOList(userRoutines).Single();
         }
 
+        public RoutineDTO GetActiveRoutine()
+        {
+            var current = RainItContext.DeviceRoutineSet.FirstOrDefault();
+            if (current != null)
+                return new RoutineDTO()
+                {
+                    RoutineId = current.RoutineId,
+                    RoutinePatternDTOs = current.RoutinePatterns.Select(rp => new RoutinePatternDTO()
+                    {
+                        RoutinePatternId = rp.RoutinePatternId,
+                        PatternDTO = new PatternDTO()
+                        {
+                            PatternId = rp.PatternId ?? 0,
+                            Path = rp.Pattern.Path
+                        },
+                    }).ToList()
+                };
+            return null;
+        }
+
         #endregion
 
         #region UPDATE Methods

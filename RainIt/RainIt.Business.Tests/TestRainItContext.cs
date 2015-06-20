@@ -5,8 +5,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Common.Repository;
+using RainIt.Domain.DTO;
 using RainIt.Domain.Repository;
 using RainIt.Interfaces.Repository;
+using Address = RainIt.Domain.Repository.Address;
+using User = RainIt.Domain.Repository.User;
+using UserInfo = RainIt.Domain.Repository.UserInfo;
 
 namespace RainIt.Business.Tests
 {
@@ -20,6 +24,18 @@ namespace RainIt.Business.Tests
                 {
                     UserId = 1,
                     Username = "UnitTestUser"
+                };
+            }
+        }
+
+        public DeviceDTO CurrentDevice
+        {
+            get
+            {
+                return new DeviceDTO()
+                {
+                    Identifier = Guid.NewGuid(),
+                    Serial = "123"
                 };
             }
         }

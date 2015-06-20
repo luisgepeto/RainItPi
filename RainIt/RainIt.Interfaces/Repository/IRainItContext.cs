@@ -8,6 +8,8 @@ namespace RainIt.Interfaces.Repository
     public interface IRainItContext
     {
         Domain.DTO.User CurrentUser { get; }
+        Domain.DTO.DeviceDTO CurrentDevice { get; }
+
         DbSet<User> UserSet { get; set; }
         DbSet<UserInfo> UserInfoSet { get; set; }
         DbSet<Address> AddressSet { get; set; }
@@ -20,6 +22,7 @@ namespace RainIt.Interfaces.Repository
         IQueryable<Pattern> UserPatternSet { get; }
         IQueryable<Routine> UserRoutineSet { get; }
         IQueryable<Device> UserDeviceSet { get; }
+        IQueryable<Routine> DeviceRoutineSet { get; } 
 
         int SaveChanges();
     }
