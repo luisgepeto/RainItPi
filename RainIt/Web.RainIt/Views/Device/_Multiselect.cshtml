@@ -2,7 +2,7 @@
 <select id="device-multiselect" multiple="multiple">
     @foreach (var device in Model)
     {
-        <option value="@device.DeviceId">@device.Identifier</option>
+        <option value="@device.Identifier">@device.Identifier</option>
     }
 </select>
 <script type="text/javascript">
@@ -13,20 +13,30 @@
             properties.Initialize = function() {
                 $('#device-multiselect').multiselect();
             }
-            properties.SelectDevices = function(deviceIds) {
-               // $('#')
+            properties.SelectDevices = function (deviceIds) {
+                $.each(deviceIds, function() {
+                    var deviceId = this;
+                    $('#device-multiselect option[value="' + deviceId + '"').attr("selected", 1);
+                });
+                $('#device-multiselect').multiselect("refresh");
+
             }
-            properties.GetSelectedDevices = function() {
-                alert("getting selected devices");
+            properties.GetSelectedDevices = function () {
+                var selectedDevices = [];
+                $('#device-multiselect option:selected').each(function () {
+                    var selectedOption = this;
+                    selectedDevices.push(selectedOption.text);
+                });
+                return selectedDevices;
             }
             return properties;
         }());
 
         DeviceMultiselectProperties.SelectDevices = function (deviceIds) {
-            multiselect.SelectDevices(deviceIds);
+            return multiselect.SelectDevices(deviceIds);
         }
         DeviceMultiselectProperties.GetSelectedDevices = function () {
-            multiselect.GetSelectedDevices();
+            return multiselect.GetSelectedDevices();
         }
 
         DeviceMultiselectProperties.SetupPage = function () {

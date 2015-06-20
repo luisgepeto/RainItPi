@@ -26,7 +26,7 @@
     <div id="routineBuilder">
         <img id="addImage2" src="/Content/addimageicon.png" alt="Add an image" class="image-holder">
     </div>
-    @if (Model.RoutineId == 0)
+    @if (Model== null || Model.RoutineId == 0)
     {
         <input type="button" value="Add" name="Add" id="addRoutine" />
     }
@@ -116,6 +116,27 @@
         }());
 
 
+        var multiselectExtender = (function () {
+            var properties = {};
+            var devices = '@Html.Raw(Model != null ? JsonConvert.SerializeObject(Model.DeviceDTOs) : null)';
+            function getAssignedDeviceGuids(allDevices) {
+                var selectedDeviceGuids = [];
+                $.each(allDevices, function (index, deviceData) {
+                    selectedDeviceGuids.push(deviceData.Identifier);
+                });
+                return selectedDeviceGuids;
+            }
+            properties.Initialize = function () {
+                if (devices != "") {
+                    var selectedDeviceGuids = getAssignedDeviceGuids(JSON.parse(devices));
+                    DeviceMultiselectProperties.SelectDevices(selectedDeviceGuids);
+                }
+            }
+            properties.GetSelectedDevices = function () {
+                return DeviceMultiselectProperties.GetSelectedDevices();
+            }
+            return properties;
+        }());
 
         var addRoutine = (function () {
             var properties = {};
@@ -152,18 +173,20 @@
             properties.AddClickListener = function () {
                 $('#addRoutine').click(function () {
                     var patternIdList = getPatternIdList();
-                    var deviceGuidList = DeviceMultiselectProperties.GetSelectedDevices();
+                    var deviceGuidList = multiselectExtender.GetSelectedDevices();
                     makeAddPatternAjaxCall(patternIdList, deviceGuidList);
                 });
             }
             return properties;
         }());
 
+
         RoutineAddProperties.SetupPage = function () {
             routineBuilder.Initialize();
             galleryExtender.Initialize();
             addRoutine.AddClickListener();
             deleteButton.Initialize();
+            multiselectExtender.Initialize();
         }
     }());
     $(document).ready(function () {

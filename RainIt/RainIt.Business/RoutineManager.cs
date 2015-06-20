@@ -164,6 +164,7 @@ namespace RainIt.Business
         }
         private bool TryUpdateDevices(Routine routine, List<DeviceDTO> deviceDTOList)
         {
+            routine.Devices = new List<Device>();
             foreach (var device in deviceDTOList)
             {
                 Device deviceOut;
@@ -192,6 +193,10 @@ namespace RainIt.Business
                         Name = rp.Pattern.Name,
                         Path = rp.Pattern.Path
                     }
+                }).ToList(),
+                DeviceDTOs = r.Devices.Select(d => new DeviceDTO()
+                {
+                    Identifier = d.DeviceInfo.Identifier
                 }).ToList()
             }).ToList();
         }

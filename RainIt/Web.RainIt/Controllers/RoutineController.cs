@@ -33,26 +33,27 @@ namespace Web.RainIt.Controllers
         }
 
         [HttpPost]
-        public JsonResult Add(int routineId, List<int> patternIdList, List<Guid> devideGuidList)
+        public JsonResult Add(int routineId, List<int> patternIdList, List<Guid> deviceGuidList)
         {
             StatusMessage canAdd = null;
+
             var routineList = new RoutineDTO()
             {
                 RoutineId = routineId,
                 RoutinePatternDTOs = patternIdList.Select(p => new RoutinePatternDTO()
                 {
-                    PatternDTO = new PatternDTO()
-                    {
-                        PatternId = p
-                    }
+                    PatternDTO = new PatternDTO(){ PatternId = p }
                 }).ToList(),
                 Description = "some description",
                 Name = "some name",
-                DeviceDTOs = devideGuidList.Select(d => new DeviceDTO()
-                {
-                    Identifier = d
-                }).ToList()
+                DeviceDTOs = deviceGuidList == null
+                    ? new List<DeviceDTO>()
+                    : deviceGuidList.Select(d => new DeviceDTO()
+                    {
+                        Identifier = d
+                    }).ToList()
             };
+
             if (routineId == 0)
             {
                 canAdd = RoutineManager.AddUserRoutine(routineList);
