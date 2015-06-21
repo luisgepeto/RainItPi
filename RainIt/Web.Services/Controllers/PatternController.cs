@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Web.Http;
 using ImageProcessing.Business.Interfaces;
 using RainIt.Interfaces.Business;
+using Web.Infrastructure.Attributes;
 
 namespace Web.Services.Controllers
 {
@@ -20,7 +21,8 @@ namespace Web.Services.Controllers
             ImageManager = imageManager;
         }
 
-        [HttpPost]
+        [HttpGet]
+        [WebApiOutputCache(120, 60, false)]
         public IHttpActionResult Transform(int patternId)
         {
             var patternUrl = PatternManager.GetPatternUrl(patternId);
