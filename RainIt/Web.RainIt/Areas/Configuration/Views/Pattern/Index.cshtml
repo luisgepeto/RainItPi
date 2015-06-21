@@ -85,7 +85,7 @@
             }
             function makeAddAjaxCall() {
                 $.ajax({
-                    url: '@Url.Action("Add", "Pattern")',
+                    url: '@Url.Action("Add", "Pattern", new {area = "Configuration"}, null)',
                     success: onAjaxSuccess,
                     error: onAjaxError,
                     dataType: 'html'
@@ -107,7 +107,7 @@
             }
             function makeDeleteAjaxCall(patternToDelete) {
                 $.post(
-                    "@Url.Action("Delete", "Pattern")",
+                    "@Url.Action("Delete", "Pattern", new { area = "Configuration" }, null)",
                     { patternId: patternToDelete },
                     onAjaxSuccess
                 );

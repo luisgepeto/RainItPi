@@ -17,7 +17,7 @@
                     @foreach (var routinePattern in routine.RoutinePatternDTOs)
                     {
                         <li>
-                            <a href="@Url.Action("Edit", "Routine", new {routineId = routine.RoutineId})">
+                            <a href="@Url.Action("Edit", "Routine", new {area = "Configuration", routineId = routine.RoutineId}, null)">
                                 <img src="@(routinePattern.PatternDTO.Path)"/>
                             </a>
                         </li>
@@ -26,7 +26,7 @@
             </div>
         }
     </div>
-    @using (Html.BeginForm("Add", "Routine", FormMethod.Get))
+    @using (Html.BeginForm("Add", "Routine", new {area="Configuration"}, FormMethod.Get))
     {
         <button name="addRoutine" value="addRoutine" id="addRoutineButton">Add Routine</button>
     }

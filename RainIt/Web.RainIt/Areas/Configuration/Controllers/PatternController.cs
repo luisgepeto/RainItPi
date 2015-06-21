@@ -1,24 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.IO;
-using System.Linq;
-using System.Web;
-using System.Web.Helpers;
-using System.Web.Http;
+﻿using System.Web.Http;
 using System.Web.Mvc;
 using ImageProcessing.Business.Interfaces;
 using ImageProcessing.Domain;
-using RainIt.Business;
 using RainIt.Domain.DTO;
-using RainIt.Interfaces;
 using RainIt.Interfaces.Business;
-using RainIt.Interfaces.Repository;
-using Web.RainIt.Models;
 using Web.RainIt.Models.Pattern;
 
-namespace Web.RainIt.Controllers
+namespace Web.RainIt.Areas.Configuration.Controllers
 {
     public class PatternController : Controller
     {
@@ -63,10 +51,10 @@ namespace Web.RainIt.Controllers
             if (canAdd.IsError)
             {
                 TempData["PatternUploadModel"] = patternUploadModel;
-                return RedirectToAction("Add");
+                return RedirectToAction("Add", "Pattern", new{area = "Configuration"});
             }
-                
-            return RedirectToAction("Index");
+
+            return RedirectToAction("Index", new { area = "Configuration" });
         }
 
         [System.Web.Mvc.HttpPost]
@@ -102,7 +90,7 @@ namespace Web.RainIt.Controllers
         {
             StatusMessage canAdd = PatternManager.DeleteUserPattern(patternId);
             TempData["StatusMessage"] = canAdd;
-            return Json(Url.Action("Index"));
+            return Json(Url.Action("Index", "Pattern" , new{area = "Configuration"}));
         }
     }
 }

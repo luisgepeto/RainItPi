@@ -1,9 +1,8 @@
-﻿using System.Linq;
-using System.Web.Mvc;
+﻿using System.Web.Mvc;
 using RainIt.Domain.DTO;
 using RainIt.Interfaces.Business;
 
-namespace Web.RainIt.Controllers
+namespace Web.RainIt.Areas.Configuration.Controllers
 {
     public class DeviceController : Controller
     {
@@ -34,11 +33,11 @@ namespace Web.RainIt.Controllers
                 var canAdd = DeviceManager.AddUserDevice(device);
                 if (!canAdd.IsError)
                 {
-                    return RedirectToAction("Index");
+                    return RedirectToAction("Index", "Device", new{area = "Configuration"});
                 }
             }
             TempData["DeviceRegistrationModel"] = device;
-            return RedirectToAction("Add");
+            return RedirectToAction("Add", "Device", new { area = "Configuration" });
         }
 
         public PartialViewResult Multiselect()

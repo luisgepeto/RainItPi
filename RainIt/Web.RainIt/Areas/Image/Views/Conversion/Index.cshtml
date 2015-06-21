@@ -1,9 +1,0 @@
-﻿@using Kendo.Mvc.UI
-@{
-    Layout = "~/Views/Shared/_Layout.cshtml";
-}
-
-@using (Html.BeginForm("Add", "Conversion", new {area = "Image"}))
-{
-    @Html.Kendo().Button().Content("Add").Name("AddImage")
-}

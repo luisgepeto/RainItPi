@@ -1,22 +1,22 @@
 ﻿using System.Web.Mvc;
 
-namespace Web.RainIt.Areas.Image
+namespace Web.RainIt.Areas.Configuration
 {
-    public class ImageAreaRegistration : AreaRegistration 
+    public class ConfigurationAreaRegistration : AreaRegistration 
     {
         public override string AreaName 
         {
             get 
             {
-                return "Image";
+                return "Configuration";
             }
         }
 
         public override void RegisterArea(AreaRegistrationContext context) 
         {
             context.MapRoute(
-                "Image_default",
-                "Image/{controller}/{action}/{id}",
+                "Configuration_default",
+                "Configuration/{controller}/{action}/{id}",
                 new { action = "Index", id = UrlParameter.Optional }
             );
         }

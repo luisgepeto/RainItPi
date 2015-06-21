@@ -4,7 +4,7 @@
     ViewBag.Title = "Add Device";
 }
 <div class="container" style="margin-top: 50px;">
-    @using (Html.BeginForm("Add", "Device", FormMethod.Post))
+    @using (Html.BeginForm("Add", "Device", new { area = "Configuration" }, FormMethod.Post))
     {
         <table>
             <tbody>

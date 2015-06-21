@@ -1,4 +1,5 @@
-﻿@using RainIt.Domain.DTO
+﻿@using JQueryUIHelpers
+@using RainIt.Domain.DTO
 
 @using Web.RainIt.Models
 @{
@@ -49,7 +50,7 @@
         <h4>B/W Settings</h4>
         @Html.JQueryUI().Slider("Threshold", 50).ContainerCssClass("form-control last-form-field")
         @Html.CheckBox("IsInverted") Invert
-        @using (Html.BeginForm("Add", "Pattern", FormMethod.Post))
+        @using (Html.BeginForm("Add", "Pattern", new{area ="Configuration"}, FormMethod.Post))
         {
             @Html.Hidden("fileName", "")
             @Html.Hidden("base64Image", "")
@@ -84,7 +85,7 @@
                 }
 
                 properties.GetGrayScale = function () {
-                    var url = '@Url.Action("GetGrayScaleFor", "Pattern")' + "?colorRelativeWeight.RWeight=-1&colorRelativeWeight.GWeight=-2&colorRelativeWeight.BWeight=-3";
+                    var url = '@Url.Action("GetGrayScaleFor", "Pattern", new { area = "Configuration" }, null)' + "?colorRelativeWeight.RWeight=-1&colorRelativeWeight.GWeight=-2&colorRelativeWeight.BWeight=-3";
                     url = url.replace("-1", $('#RWeight').val());
                     url = url.replace("-2", $('#GWeight').val());
                     url = url.replace("-3", $('#BWeight').val());
@@ -95,7 +96,7 @@
                 }
 
                 properties.GetBlackWhite = function () {
-                    var url = '@Url.Action("GetBlackWhiteFor", "Pattern")' + "?isInverted=-1&thresholdPercentage=-2";
+                    var url = '@Url.Action("GetBlackWhiteFor", "Pattern", new { area = "Configuration" }, null)' + "?isInverted=-1&thresholdPercentage=-2";
                     url = url.replace("-1", $('#IsInverted').is(":checked"));
                     url = url.replace("-2", ($('#Threshold').val() == "" ? 0 : $('#Threshold').val()));
                     var imageData = $('#grayscaleImagePreview').attr('src');
@@ -145,7 +146,7 @@
                         reader.onload = function (e) {
                             $('#imagePreview').attr('src', e.target.result);
                         }
-                        reader.readAsDataURL(input.files[0]);
+                       reader.readAsDataURL(input.files[0]);
                     }
                 }
                 properties.AddChangeListener = function () {

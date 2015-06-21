@@ -30,7 +30,7 @@
     }
     </tbody>
 </table>
-@using (Html.BeginForm("Add", "Device", FormMethod.Get))
+@using (Html.BeginForm("Add", "Device", new { area = "Configuration" }, FormMethod.Get))
 {
     <button type="submit" id="addDevice" name="addDeviceButton">Add Device</button>
 }

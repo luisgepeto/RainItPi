@@ -79,16 +79,16 @@ namespace Web.RainIt.Controllers
             }
             TempData["StatusMessage"] = canAuthenticate;
             if(!canAuthenticate.IsError)
-                return Redirect(Url.Action("Index", "Home"));
+                return Redirect(Url.Action("Index", "Home", new {area = ""}));
             
             TempData["LoginModel"] = new Login(){ Username = login.Username};
-                return Redirect(Url.Action("Login", "Account"));
+            return Redirect(Url.Action("Login", "Account", new { area = "" }));
         }
     
         public ActionResult LogOff()
         {
             FormsAuthentication.SignOut();
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "Home", new { area = "" });
         }
 
         public JsonResult IsUsernameAvailable(string username)

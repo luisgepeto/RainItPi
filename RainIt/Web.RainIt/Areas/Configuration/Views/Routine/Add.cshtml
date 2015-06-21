@@ -36,8 +36,8 @@
     }
 </div>
 
-@Html.Action("Multiselect", "Device")
-@Html.Action("Index", "Pattern")
+@Html.Action("Multiselect", "Device", new { area = "Configuration" })
+@Html.Action("Index", "Pattern", new {area ="Configuration"})
 <script type="text/javascript">
     (function () {
         this.RoutineAddProperties = this.RoutineAddProperties || {};
@@ -158,7 +158,7 @@
 
             function makeAddPatternAjaxCall(patternIdList, deviceGuidList) {
                 $.ajax({
-                    url: '@Url.Action("Add", "Routine")',
+                    url: '@Url.Action("Add", "Routine", new {area = "Configuration"})',
                     data: {
                         routineId: '@Html.Raw(Model != null ? Model.RoutineId : 0)',
                         patternIdList: patternIdList,

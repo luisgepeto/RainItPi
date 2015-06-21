@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using RainIt.Domain.DTO;
 using RainIt.Interfaces.Business;
 
-namespace Web.RainIt.Controllers
+namespace Web.RainIt.Areas.Configuration.Controllers
 {
     public class RoutineController : Controller
     {
@@ -24,7 +23,7 @@ namespace Web.RainIt.Controllers
         public ActionResult Edit(int routineId)
         {
             var routine = RoutineManager.GetUserRoutine(routineId);
-            return View("Add", routine);
+            return View("Add",routine);
         }
         
         public ActionResult Add()
@@ -62,7 +61,7 @@ namespace Web.RainIt.Controllers
             {
                 canAdd = RoutineManager.UpdateUserRoutine(routineList);
             }
-            return Json(Url.Action("Index", "Routine"));
+            return Json(Url.Action("Index", "Routine", new {area = "Configuration"}));
         }
 
     }
