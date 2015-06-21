@@ -4,11 +4,24 @@ using ImageProcessing.Domain;
 using ImageProcessing.Business.Interfaces;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Net;
 
 namespace ImageProcessing.Business
 {
 	public class ImageManager : IImageManager
 	{
+        public Image LoadFromUrl(string url)
+        {
+            Image imageFromUrl = null;
+            HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(url);
+            HttpWebResponse httpWebReponse = (HttpWebResponse)httpWebRequest.GetResponse();
+            Stream stream = httpWebReponse.GetResponseStream();
+            if (stream != null)
+            {
+                imageFromUrl = Image.FromStream(stream);
+            }
+            return imageFromUrl;
+        }
 
 		public Image Resize(Image image, ResizeParameters resizeParameters){
 			Type parametersType = resizeParameters.GetType ();
@@ -33,7 +46,7 @@ namespace ImageProcessing.Business
 			return (Image)new Bitmap (image, newSize);
 		}
 
-		public bool[,] GetUpsideDownBooleanMatrix(Image image){
+	    public bool[,] GetUpsideDownBooleanMatrix(Image image){
 			var bitMapInputImage = new Bitmap (image);
 			var booleanMatrix = GetUpsideDownBooleanMatrix (bitMapInputImage);
 			return booleanMatrix;

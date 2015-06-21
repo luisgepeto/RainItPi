@@ -8,6 +8,7 @@ namespace ImageProcessing.Business.Interfaces
 {
 	public interface IImageManager
 	{
+	    Image LoadFromUrl(string url);
 		bool[,] GetUpsideDownBooleanMatrix (Image image);
 		Image GetBlackWhite (Image image, bool isInverted = false, double thresholdPercentage = 50, ColorRelativeWeight colorRelativeWeight = null);
 		Image GetGrayScale(Image image, ColorRelativeWeight colorRelativeWeight = null, BlackWhiteConversionParameters blackWhiteParameters = null);

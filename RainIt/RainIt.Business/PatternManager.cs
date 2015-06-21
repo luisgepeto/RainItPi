@@ -91,6 +91,13 @@ namespace RainIt.Business
                 Path = p.Path
             }).ToList();
         }
+
+        public string GetPatternUrl(int patternId)
+        {
+            var pattern =
+                RainItContext.PatternSet.Single(p => p.PatternId == patternId);
+            return pattern.Path;
+        }
         #endregion
 
         #region UPDATE METHODS

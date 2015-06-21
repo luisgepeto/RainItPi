@@ -217,6 +217,10 @@
     <Content Include="Areas\Configuration\Views\web.config" />
     <Content Include="Areas\Administration\Views\Device\Index.cshtml" />
     <Content Include="Areas\Administration\Views\Device\Add.cshtml" />
+    <Content Include="Areas\Configuration\Views\Shared\_Layout.cshtml" />
+    <Content Include="Areas\Administration\Views\Shared\_Layout.cshtml" />
+    <Content Include="Areas\Configuration\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\Administration\Views\_ViewStart.cshtml" />
     <None Include="Properties\PublishProfiles\DevRainIt.pubxml" />
     <None Include="Scripts\jquery-2.1.4.intellisense.js" />
     <Content Include="Scripts\jquery-2.1.4.js" />
@@ -273,9 +277,7 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Areas\Administration\Models\" />
-    <Folder Include="Areas\Administration\Views\Shared\" />
     <Folder Include="Areas\Configuration\Models\" />
-    <Folder Include="Areas\Configuration\Views\Shared\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

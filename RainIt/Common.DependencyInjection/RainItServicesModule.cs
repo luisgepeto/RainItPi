@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Autofac;
+using ImageProcessing.Business;
+using ImageProcessing.Business.Interfaces;
 using RainIt.Business;
 using RainIt.Interfaces.Business;
 using RainIt.Interfaces.Repository;
@@ -45,6 +47,10 @@ namespace Common.DependencyInjection
                .InstancePerLifetimeScope();
             builder.RegisterType<RoutineManager>()
                .As<IRoutineManager>()
+               .PropertiesAutowired()
+               .InstancePerLifetimeScope();
+            builder.RegisterType<ImageManager>()
+               .As<IImageManager>()
                .PropertiesAutowired()
                .InstancePerLifetimeScope();
         }
