@@ -18,16 +18,48 @@ namespace RainIt.Business
 
         public StatusMessage AddUserDevice(DeviceDTO device)
         {
-            if (!IsSerialAvailable(device.Serial)) return StatusMessage.WriteError("The selected serial is already in use");
-            return AddDevice(device);
+            Device outDevice;
+            if (!TryGetDevice(device.Identifier, out outDevice)) return StatusMessage.WriteError("The selected device does not exist");
+            return AssignToUser(outDevice);
         }
 
+        private bool TryGetDevice(Guid identifier, out Device outDevice)
+        {
+            outDevice = RainItContext.DeviceSet.SingleOrDefault(d => d.DeviceInfo.Identifier == identifier);
+            return outDevice != null;
+        }
+        private StatusMessage AssignToUser(Device device)
+        {
+            try
+            {
+                var user = RainItContext.UserSet.Single(u => u.Username == RainItContext.CurrentUser.Username);
+                device.User = user;
+                RainItContext.SaveChanges();
+                return StatusMessage.WriteMessage("The device was successfully assigned to the current user");
+            }
+            catch (Exception ex)
+            {
+                return StatusMessage.WriteMessage("An unexpected error occurred while trying to save the device");
+            }
+        }
+
+        public StatusMessage AddDevice(DeviceDTO device)
+        {
+            if (!IsSerialFormatValid(device.Serial)) return StatusMessage.WriteError("The selected serial is not in the correct format");
+            return AddDeviceToDatabase(device);
+        }
+
+        private bool IsSerialFormatValid(string test)
+        {
+            // For C-style hex notation (0xFF) you can use @"\A\b(0[xX])?[0-9a-fA-F]+\b\Z"
+            return System.Text.RegularExpressions.Regex.IsMatch(test, @"^[0-9a-fA-F]{16}$");
+        }
         private bool IsSerialAvailable(string serial)
         {
             return !RainItContext.DeviceSet.Any(d => d.DeviceInfo.Serial == serial);
         }
 
-        private StatusMessage AddDevice(DeviceDTO device)
+        private StatusMessage AddDeviceToDatabase(DeviceDTO device)
         {
             try
             {
@@ -38,10 +70,8 @@ namespace RainIt.Business
                     RegisteredUTCDate = DateTime.UtcNow,
                     Serial = device.Serial
                 };
-                var user = RainItContext.UserSet.Single(u => u.Username == RainItContext.CurrentUser.Username);
                 deviceToAdd.DeviceInfo = deviceInfoForDevice;
-                deviceToAdd.User = user;
-
+                
                 RainItContext.DeviceSet.Add(deviceToAdd);
                 RainItContext.SaveChanges();
                 return StatusMessage.WriteMessage("The device was successfully saved");
@@ -54,7 +84,19 @@ namespace RainIt.Business
 
         public List<DeviceDTO> GetUserDevices()
         {
-            return RainItContext.UserDeviceSet.Select(d => new DeviceDTO()
+            var allUserDevices = RainItContext.UserDeviceSet;
+            return ToDeviceDTOList(allUserDevices);
+        }
+
+        public List<DeviceDTO> GetAllDevices()
+        {
+            var allDevices =  RainItContext.DeviceSet;
+            return ToDeviceDTOList(allDevices);
+        }
+
+        private List<DeviceDTO> ToDeviceDTOList(IQueryable<Device> deviceQueryable)
+        {
+            return deviceQueryable.Select(d => new DeviceDTO()
             {
                 DeviceId = d.DeviceId,
                 Identifier = d.DeviceInfo.Identifier,
@@ -63,8 +105,7 @@ namespace RainIt.Business
                     RoutineId = r.RoutineId
                 }).ToList()
             }).ToList();
-        }
-
+        } 
         public Guid GetDeviceGuid(string serial)
         {
             return RainItContext.DeviceSet.Single(d => d.DeviceInfo.Serial == serial).DeviceInfo.Identifier;

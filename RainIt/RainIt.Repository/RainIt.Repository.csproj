@@ -129,6 +129,10 @@
     <Compile Include="Migrations\201506210248339_MultipleRoutinesPerDeviceMigration.Designer.cs">
       <DependentUpon>201506210248339_MultipleRoutinesPerDeviceMigration.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201506210536243_OptionalDeviceForUserMigration.cs" />
+    <Compile Include="Migrations\201506210536243_OptionalDeviceForUserMigration.Designer.cs">
+      <DependentUpon>201506210536243_OptionalDeviceForUserMigration.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RainItContext.cs" />
@@ -162,6 +166,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201506210248339_MultipleRoutinesPerDeviceMigration.resx">
       <DependentUpon>201506210248339_MultipleRoutinesPerDeviceMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201506210536243_OptionalDeviceForUserMigration.resx">
+      <DependentUpon>201506210536243_OptionalDeviceForUserMigration.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
