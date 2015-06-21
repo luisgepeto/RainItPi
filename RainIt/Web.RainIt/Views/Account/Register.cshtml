@@ -34,24 +34,30 @@
 <div class="container">
     @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @id = "registerForm", @onsubmit = "RegisterProperties.Form.Validate()" }))
     {
-       <div col="col-md-12" class="form-signin">
-        <h4>Credentials</h4>        
-                @Html.LabelFor(m => m.Registration.User.Email, new { @class = "sr-only" })
-                @Html.TextBoxFor(m => m.Registration.User.Email, new { @placeholder = "Email address", @class = "form-control intermediate-form-field" })
-                @Html.ValidationMessageFor(model => model.Registration.User.Email)
+        <div col="col-md-12" class="form-signin">
+            <h4>Credentials</h4>
+            @Html.LabelFor(m => m.Registration.User.Email, new {@class = "sr-only"})
+            @Html.TextBoxFor(m => m.Registration.User.Email, new {@placeholder = "Email address", @class = "form-control intermediate-form-field"})
+            @Html.ValidationMessageFor(model => model.Registration.User.Email)
 
-                @Html.LabelFor(m => m.Registration.User.Username, new { @class = "sr-only" })
-                @Html.TextBoxFor(m => m.Registration.User.Username, new { @placeholder = "Username", @class = "form-control intermediate-form-field" })
-                @Html.ValidationMessageFor(model => model.Registration.User.Username)
+            @Html.LabelFor(m => m.Registration.User.Username, new {@class = "sr-only"})
+            @Html.TextBoxFor(m => m.Registration.User.Username, new {@placeholder = "Username", @class = "form-control intermediate-form-field"})
+            @Html.ValidationMessageFor(model => model.Registration.User.Username)
 
-                @Html.LabelFor(m => m.Registration.User.Password, new { @class = "sr-only" })
-                @Html.TextBoxFor(m => m.Registration.User.Password, new { @placeholder = "Password", @class = "form-control intermediate-form-field", @type = "password" })
-                @Html.ValidationMessageFor(model => model.Registration.User.Password)
+            @Html.LabelFor(m => m.Registration.User.Password, new {@class = "sr-only"})
+            @Html.TextBoxFor(m => m.Registration.User.Password, new {@placeholder = "Password", @class = "form-control intermediate-form-field", @type = "password"})
+            @Html.ValidationMessageFor(model => model.Registration.User.Password)
 
-                @Html.LabelFor(m => m.Registration.User.PasswordConfirmation, new { @class = "sr-only" })
-                @Html.TextBoxFor(m => m.Registration.User.PasswordConfirmation, new { @placeholder = "Confirm your password", @class = "form-control last-form-field", @type = "password" })
-                @Html.ValidationMessageFor(model => model.Registration.User.PasswordConfirmation)
-            </div>
+            @Html.LabelFor(m => m.Registration.User.PasswordConfirmation, new {@class = "sr-only"})
+            @Html.TextBoxFor(m => m.Registration.User.PasswordConfirmation, new {@placeholder = "Confirm your password", @class = "form-control last-form-field", @type = "password"})
+            @Html.ValidationMessageFor(model => model.Registration.User.PasswordConfirmation)
+        </div>
+        <div col="col-md-12" class="form-signin">
+            <h4>Device Information</h4>
+            @Html.LabelFor(m => m.Registration.DeviceInfo.Identifier, new { @class = "sr-only" })
+            @Html.TextBoxFor(m => m.Registration.DeviceInfo.Identifier, new { @placeholder = "Device identifier", @class = "form-control intermediate-form-field" })
+            @Html.ValidationMessageFor(model => model.Registration.DeviceInfo.Identifier)
+        </div>
     <div col="col-md-12" class="form-signin">
         <h4>Personal Information</h4>
         @Html.LabelFor(m => m.Registration.UserInfo.FirstName, new { @class = "sr-only" })

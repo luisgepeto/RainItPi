@@ -12,5 +12,6 @@ namespace RainIt.Interfaces.Business
         List<DeviceDTO> GetAllDevices();
         Guid GetDeviceGuid(string serial);
         bool ValidateDevice(string serial);
+        bool IsDeviceAvailable(Guid identifier);
     }
 }

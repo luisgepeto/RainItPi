@@ -16,10 +16,12 @@ namespace Web.RainIt.Controllers
     public class AccountController : Controller
     {
         public IAccountManager AccountManager;
+        public IDeviceManager DeviceManager;
 
-        public AccountController(IAccountManager accountManager)
+        public AccountController(IAccountManager accountManager, IDeviceManager deviceManager)
         {
             AccountManager = accountManager;
+            DeviceManager = deviceManager;
         }
         
         public ActionResult Register()
@@ -34,11 +36,12 @@ namespace Web.RainIt.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated) return RedirectToAction("Index", "Home");
             var canRegister = new StatusMessage();
-            if (ModelState.IsValid)
+            if (ModelState.IsValid &&
+                DeviceManager.IsDeviceAvailable(registrationModel.Registration.DeviceInfo.Identifier ?? Guid.Empty))
             {
                 canRegister = AccountManager.Register(registrationModel.Registration);
             }
-            else 
+            else
             {
                 canRegister.IsError = true;
                 canRegister.Message = "An error occurred while validating your information";
@@ -117,6 +120,18 @@ namespace Web.RainIt.Controllers
             }
 
             string errorMessage = String.Format("The selected email is already in use.");
+            return Json(errorMessage, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult IsDeviceAvailable(Guid? identifier)
+        {
+            if (identifier.HasValue && identifier.Value != Guid.Empty)
+            {
+                if (DeviceManager.IsDeviceAvailable(identifier.Value))
+                    return Json(true, JsonRequestBehavior.AllowGet);
+            }
+
+            string errorMessage = String.Format("The selected device is not valid or may be already in use.");
             return Json(errorMessage, JsonRequestBehavior.AllowGet);
         }
     }

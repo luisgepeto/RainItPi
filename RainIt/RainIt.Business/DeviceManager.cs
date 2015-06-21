@@ -20,6 +20,7 @@ namespace RainIt.Business
         {
             Device outDevice;
             if (!TryGetDevice(device.Identifier, out outDevice)) return StatusMessage.WriteError("The selected device does not exist");
+            if (!IsDeviceAvailable(device.Identifier)) return StatusMessage.WriteError("The selected device is already in use");
             return AssignToUser(outDevice);
         }
 
@@ -28,6 +29,7 @@ namespace RainIt.Business
             outDevice = RainItContext.DeviceSet.SingleOrDefault(d => d.DeviceInfo.Identifier == identifier);
             return outDevice != null;
         }
+
         private StatusMessage AssignToUser(Device device)
         {
             try
@@ -115,6 +117,12 @@ namespace RainIt.Business
         {
             var device = RainItContext.DeviceSet.SingleOrDefault(d => d.DeviceInfo.Serial == serial);
             return device != null;
+        }
+        public bool IsDeviceAvailable(Guid identifier)
+        {
+            var doesDeviceExist = RainItContext.DeviceSet.Any(d => d.DeviceInfo.Identifier == identifier);
+            var isDeviceNotAssignedToUSer = !RainItContext.DeviceSet.Any(d => d.DeviceInfo.Identifier == identifier && d.UserId.HasValue);
+            return doesDeviceExist && isDeviceNotAssignedToUSer;
         }
     }
 }

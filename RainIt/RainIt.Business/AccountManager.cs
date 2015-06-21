@@ -28,17 +28,11 @@ namespace RainIt.Business
         public StatusMessage Register(Registration registration)
         {
             if (!IsUsernameAvailable(registration.User.Username))
-            {
                 return StatusMessage.WriteError("The selected username is already in use.");
-            }
             if (!IsEmailAvailable(registration.User.Email))
-            {
                 return StatusMessage.WriteError("The selected email address is already in use.");
-            } 
             if(!DoPasswordsMatch(registration.User.Password, registration.User.PasswordConfirmation))
-            {
                 return StatusMessage.WriteError("The selected email address is already in use.");
-            }
 
             return SaveToDatabase(registration);
         }
@@ -69,11 +63,13 @@ namespace RainIt.Business
                 var passwordToAdd = CreatePasswordFrom(registration.User);
                 var userInfoToAdd = registration.UserInfo.ConvertTo(new Domain.Repository.UserInfo());
                 var addressToAdd = registration.Address.ConvertTo(new Domain.Repository.Address());
+                var deviceToLink = RainItContext.DeviceSet.Single(d => d.DeviceInfo.Identifier == registration.DeviceInfo.Identifier);
 
                 userToAdd.UserInfo = userInfoToAdd;
                 userToAdd.Password = passwordToAdd;
                 userToAdd.Addresses = new List<Domain.Repository.Address>() {addressToAdd};
                 userToAdd.Roles = RainItContext.RoleSet.Where(r => r.Name == "customer").ToList();
+                userToAdd.Devices = new List<Device> {deviceToLink};
 
                 RainItContext.UserSet.Add(userToAdd);
 
