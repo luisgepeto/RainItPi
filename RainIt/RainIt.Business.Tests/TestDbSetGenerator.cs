@@ -41,7 +41,7 @@ namespace RainIt.Business.Tests
                     Patterns = GetTestPatternDbSet().Where(p => p.UserId ==1).ToList(),
                     Routines = GetTestRoutineDbSet().Where(r => r.UserId == 1).ToList(),
                     Password = GetTestPasswordDbSet().SingleOrDefault(p=> p.UserId ==1),
-                    Roles = GetTestRoleDbSet().ToList()
+                    Role = GetTestRoleDbSet().FirstOrDefault()
                 },
                 new User()
                 {
@@ -52,7 +52,7 @@ namespace RainIt.Business.Tests
                     Patterns = GetTestPatternDbSet().Where(p => p.UserId ==2).ToList(),
                     Routines = GetTestRoutineDbSet().Where(r => r.UserId == 2).ToList(),
                     Password = GetTestPasswordDbSet().SingleOrDefault(p=> p.UserId ==2),
-                    Roles = GetTestRoleDbSet().Where(r => r.Name=="admin").ToList()
+                    Role = GetTestRoleDbSet().FirstOrDefault(r => r.Name=="admin")
                 }
             };
         }

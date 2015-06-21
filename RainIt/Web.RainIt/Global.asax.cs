@@ -9,6 +9,7 @@ using System.Web.Optimization;
 using System.Web.Routing;
 using System.Web.Security;
 using RainIt.Business;
+using RainIt.Interfaces.Repository;
 using RainIt.Repository;
 using RainIt.Repository.Migrations;
 using Web.RainIt.App_Start;
@@ -25,6 +26,11 @@ namespace Web.RainIt
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
             AutofacBootStrapper.Run();
+            using(var rainItContext = new RainItContext())
+            {
+                // Configuration.SeedMethod(rainItContext);
+                //rainItContext.SaveChanges();
+            }
 
             if (bool.Parse(ConfigurationManager.AppSettings["MigrateDatabaseToLatestVersion"]))
             {
@@ -44,11 +50,11 @@ namespace Web.RainIt
                     string username =
                         FormsAuthentication.Decrypt(Request.Cookies[FormsAuthentication.FormsCookieName].Value).Name;
 
-                    List<string> roles;
+                    List<string> roles = new List<string>();
                     using (RainItContext entities = new RainItContext())
                     {
                         var accountManager = new AccountManager(entities);
-                        roles = accountManager.GetRolesFor(username);
+                        roles.Add(accountManager.GetRoleFor(username));
                     }
 
                     HttpContext.Current.User =

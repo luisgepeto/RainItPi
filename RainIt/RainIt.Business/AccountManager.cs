@@ -71,7 +71,7 @@ namespace RainIt.Business
                 userToAdd.UserInfo = userInfoToAdd;
                 userToAdd.Password = passwordToAdd;
                 userToAdd.Addresses = new List<Domain.Repository.Address>() {addressToAdd};
-                userToAdd.Roles = RainItContext.RoleSet.Where(r => r.Name == "customer").ToList();
+                userToAdd.RoleId = RainItContext.RoleSet.Single(r => r.Name == "customer").RoleId;
                 userToAdd.Devices = new List<Device> {deviceToLink};
 
                 RainItContext.UserSet.Add(userToAdd);
@@ -120,12 +120,12 @@ namespace RainIt.Business
             }
         }
 
-        public List<string> GetRolesFor(string username)
+        public string GetRoleFor(string username)
         {
-            var rolesForUser =
-                RainItContext.UserSet.Single(u => u.Username == username).Roles.Select(r => r.Name).ToList();
-                    
-            return rolesForUser;
+            var roleForUser =
+                RainItContext.UserSet.Single(u => u.Username == username).Role.Name;
+
+            return roleForUser;
         } 
     }
 }

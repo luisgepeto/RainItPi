@@ -140,6 +140,10 @@
     <Compile Include="Migrations\201506210719160_ActivationDateForDeviceMigration.Designer.cs">
       <DependentUpon>201506210719160_ActivationDateForDeviceMigration.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201506212129134_OnlyOneRolePerUserMigration.cs" />
+    <Compile Include="Migrations\201506212129134_OnlyOneRolePerUserMigration.Designer.cs">
+      <DependentUpon>201506212129134_OnlyOneRolePerUserMigration.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RainItContext.cs" />
@@ -187,6 +191,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201506210719160_ActivationDateForDeviceMigration.resx">
       <DependentUpon>201506210719160_ActivationDateForDeviceMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201506212129134_OnlyOneRolePerUserMigration.resx">
+      <DependentUpon>201506212129134_OnlyOneRolePerUserMigration.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

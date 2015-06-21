@@ -230,12 +230,10 @@ namespace RainIt.Business.Tests
 
             //Act
             const string username = "UnitTestUser";
-            var roles = manager.GetRolesFor(username);
+            var roles = manager.GetRoleFor(username);
 
             //Assert
             Assert.IsNotNull(roles, "roles should not be null");
-            Assert.AreEqual(2, roles.Count, "this user should have two roles");
-            Assert.AreEqual("admin", roles.LastOrDefault(), "this customer should have the admin role");
             Assert.AreEqual("customer", roles.FirstOrDefault(), "this customer should have the customer role");
         }
 
@@ -247,12 +245,11 @@ namespace RainIt.Business.Tests
 
             //Act
             const string username = "OtherUser";
-            var roles = manager.GetRolesFor(username);
+            var roles = manager.GetRoleFor(username);
 
             //Assert
             Assert.IsNotNull(roles, "roles should not be null");
-            Assert.AreEqual(1, roles.Count, "this user should have one role");
-            Assert.AreEqual("admin", roles.FirstOrDefault(), "this customer should have the admin role");
+            Assert.AreEqual("admin", roles, "this customer should have the admin role");
         }
 
         [TestMethod]
@@ -263,17 +260,17 @@ namespace RainIt.Business.Tests
 
             //Act
             const string username = "SampleUser";
-            List<string> roles = null;
+            string role = "";
             var canGetRoles = false;
             try
             {
-                roles = manager.GetRolesFor(username);
+                role = manager.GetRoleFor(username);
                 canGetRoles = true;
             }
             catch (Exception ex)
             {
                 Assert.IsNotNull(ex, " an exception should have been generated");
-                Assert.IsNull(roles, "roles should be null");
+                Assert.IsNull(role, "roles should be null");
             }
             Assert.IsFalse(canGetRoles, "roles should not have been retrieved");
         }

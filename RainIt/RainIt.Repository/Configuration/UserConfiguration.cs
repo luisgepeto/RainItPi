@@ -12,14 +12,10 @@ namespace RainIt.Repository.Configuration
             HasKey(u => u.UserId);
             Property(u => u.Username).IsRequired().HasMaxLength(20);
             Property(u => u.Email).IsRequired().HasMaxLength(50);
-            HasMany(u => u.Roles)                
+            HasRequired(u => u.Role)                
                 .WithMany(r => r.Users)                
-                .Map(ru =>
-                {
-                    ru.MapLeftKey("UserId");
-                    ru.MapRightKey("RoleId");
-                    ru.ToTable("UserRole");
-                });
+                .HasForeignKey(r => r.RoleId)
+                .WillCascadeOnDelete(false);
             HasRequired(u => u.Password)
                 .WithRequiredPrincipal(p => p.User)
                 .WillCascadeOnDelete(true);

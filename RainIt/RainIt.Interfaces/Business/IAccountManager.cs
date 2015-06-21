@@ -11,7 +11,7 @@ namespace RainIt.Interfaces.Business
         StatusMessage Register(Registration registration);
         bool IsUsernameAvailable(string username);
         bool IsEmailAvailable(string email);
-        List<string> GetRolesFor(string username);
+        string GetRoleFor(string username);
         User GetCurrentUsername();
         StatusMessage Authenticate(Login login);
         

@@ -20,32 +20,36 @@ namespace RainIt.Repository.Migrations
             AutomaticMigrationDataLossAllowed = false;
         }
 
-        protected override void Seed(RainItContext context)
+        public static void SeedMethod(RainItContext context)
         {
+            var administratorRole = context.RoleSet.SingleOrDefault(r => r.Name == "administrator");
             context.RoleSet.AddOrUpdate(r => r.RoleId, new Role
             {
-                RoleId = 1,
+                RoleId =  administratorRole != null ? administratorRole.RoleId : 1,
                 Description = "Administrator Role",
                 Name = "administrator"
             });
+            var customerRole = context.RoleSet.SingleOrDefault(r => r.Name == "customer");
             context.RoleSet.AddOrUpdate(r => r.RoleId, new Role
             {
-                RoleId = 2,
+                RoleId = customerRole != null ? customerRole.RoleId : 2,
                 Description = "Customer Role",
                 Name = "customer"
             });
 
+            var role = context.RoleSet.SingleOrDefault(r => r.Name == "administrator");
+            var user = context.UserSet.SingleOrDefault(r => r.Username == "luisgepeto");
             context.UserSet.AddOrUpdate(u => u.UserId, new User()
             {
-                UserId = 1,
+                UserId = user != null ? user.UserId : 1,
                 Username = "luisgepeto",
                 Email = "luisgepeto@gmail.com",
-                Roles = context.RoleSet.Where(rs => rs.Name=="administrator").ToList()
+                RoleId = role != null ? role.RoleId : 1
             });
 
             context.UserInfoSet.AddOrUpdate(ui => ui.UserId, new UserInfo()
             {
-                UserId = 1,
+                UserId = user != null ? user.UserId : 1,
                 FirstName = "Luis",
                 LastName = "Becerril",
                 Gender = "Male",
@@ -59,10 +63,14 @@ namespace RainIt.Repository.Migrations
 
             context.PasswordSet.AddOrUpdate(p => p.UserId, new Password()
             {
-                UserId = 1,
-                Salt = currentSalt,
+                UserId = user != null ? user.UserId : 1,
+               Salt = currentSalt,
                 Hash = currentHash
             });
+        }
+        protected override void Seed(RainItContext context)
+        {
+            SeedMethod(context);
         }
     }
 }
