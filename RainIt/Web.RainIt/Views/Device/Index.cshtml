@@ -12,7 +12,7 @@
             Identifier
         </th>
         <th>
-            Active Routine
+            Active Routines
         </th>
     </tr>
     </thead>
@@ -24,7 +24,7 @@
                 @device.Identifier
             </td>
             <td>
-                @device.RoutineId
+                @device.RoutineDTOs.Aggregate("", (current, routine) => current + (routine.RoutineId + " ")).Trim()
             </td>
         </tr>
     }

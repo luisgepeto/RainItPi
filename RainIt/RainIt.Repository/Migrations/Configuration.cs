@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using RainIt.Domain.Repository;
 
 namespace RainIt.Repository.Migrations

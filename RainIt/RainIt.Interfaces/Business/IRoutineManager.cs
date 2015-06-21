@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using RainIt.Domain.DTO;
 
 namespace RainIt.Interfaces.Business
@@ -12,7 +8,7 @@ namespace RainIt.Interfaces.Business
         StatusMessage AddUserRoutine(RoutineDTO routineDTO);
         List<RoutineDTO> GetUserRoutines();
         RoutineDTO GetUserRoutine(int routineId);
-        RoutineDTO GetActiveRoutine();
+        List<RoutineDTO> GetActiveRoutines();
         StatusMessage UpdateUserRoutine(RoutineDTO routineDTO);
         StatusMessage DeleteUserRoutine(int routineId);
         

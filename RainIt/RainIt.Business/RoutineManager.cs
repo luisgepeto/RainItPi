@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using RainIt.Domain.DTO;
 using RainIt.Domain.Repository;
 using RainIt.Interfaces.Business;
@@ -65,24 +63,21 @@ namespace RainIt.Business
             return ToRoutineDTOList(userRoutines).Single();
         }
 
-        public RoutineDTO GetActiveRoutine()
+        public List<RoutineDTO> GetActiveRoutines()
         {
-            var current = RainItContext.DeviceRoutineSet.FirstOrDefault();
-            if (current != null)
-                return new RoutineDTO()
+            return RainItContext.DeviceRoutineSet.Select(r => new RoutineDTO()
                 {
-                    RoutineId = current.RoutineId,
-                    RoutinePatternDTOs = current.RoutinePatterns.Select(rp => new RoutinePatternDTO()
+                    RoutineId = r.RoutineId,
+                    RoutinePatternDTOs = r.RoutinePatterns.Select(rp => new RoutinePatternDTO()
                     {
                         RoutinePatternId = rp.RoutinePatternId,
                         PatternDTO = new PatternDTO()
                         {
                             PatternId = rp.PatternId ?? 0,
                             Path = rp.Pattern.Path
-                        },
+                        }
                     }).ToList()
-                };
-            return null;
+                }).ToList();
         }
 
         #endregion
