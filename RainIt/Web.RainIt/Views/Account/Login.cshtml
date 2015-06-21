@@ -41,14 +41,17 @@ body {
             @Html.ValidationSummary(true)            
             <button class="btn btn-lg btn-primary btn-block" type="submit" name="signIn" value="signIn">Sign In</button>                        
         </div>
-    }    
-@using (Html.BeginForm("Register", "Account", new {area =""}, FormMethod.Get))
-{
-    <div id="registerForm" class="form-signin">
-        <span class="form-signin-text">or</span>
-        <button class="btn btn-lg btn-primary btn-block alternate-button" type="submit" name="register" value="register" id="register">Register</button>                        
-        </div>
-}
+    }
+    @if (!HttpContext.Current.User.Identity.IsAuthenticated)
+    {
+        using (Html.BeginForm("Register", "Account", new { area = "" }, FormMethod.Get))
+        {
+            <div id="registerForm" class="form-signin">
+                <span class="form-signin-text">or</span>
+                <button class="btn btn-lg btn-primary btn-block alternate-button" type="submit" name="register" value="register" id="register">Register</button>
+            </div>
+        }
+    }
     </div>
 
 @section Scripts{

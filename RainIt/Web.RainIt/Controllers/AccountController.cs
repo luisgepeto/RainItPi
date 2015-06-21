@@ -24,6 +24,7 @@ namespace Web.RainIt.Controllers
         
         public ActionResult Register()
         {
+            if (HttpContext.User.Identity.IsAuthenticated) return RedirectToAction("Index", "Home");
             var registrationModel = TempData["RegistrationModel"] as RegistrationModel ?? new RegistrationModel();
             return View(registrationModel);
         }
@@ -31,6 +32,7 @@ namespace Web.RainIt.Controllers
         [System.Web.Mvc.HttpPost]
         public RedirectToRouteResult Register(RegistrationModel registrationModel)
         {
+            if (HttpContext.User.Identity.IsAuthenticated) return RedirectToAction("Index", "Home");
             var canRegister = new StatusMessage();
             if (ModelState.IsValid)
             {
@@ -57,6 +59,7 @@ namespace Web.RainIt.Controllers
 
         public ActionResult Login()
         {
+            if (HttpContext.User.Identity.IsAuthenticated) return RedirectToAction("Index", "Home");
             var loginModel = TempData["LoginModel"] as Login ?? new Login();
             return View(loginModel);
         }
@@ -64,6 +67,7 @@ namespace Web.RainIt.Controllers
         [System.Web.Mvc.HttpPost]
         public RedirectResult Login(Login login, string returnUrl)
         {
+            if (HttpContext.User.Identity.IsAuthenticated) return Redirect(Url.Action("Index", "Home"));
             var canAuthenticate = new StatusMessage();
             if (ModelState.IsValid)
             {
@@ -85,6 +89,7 @@ namespace Web.RainIt.Controllers
             return Redirect(Url.Action("Login", "Account", new { area = "" }));
         }
     
+        [System.Web.Http.Authorize]
         public ActionResult LogOff()
         {
             FormsAuthentication.SignOut();
