@@ -11,7 +11,7 @@ namespace RainIt.Repository.Configuration
             HasKey(d => d.DeviceId);
             Property(d => d.Identifier).IsRequired();
             Property(d => d.Serial).IsRequired();
-            Property(d => d.RegisteredUTCDate).IsOptional();
+            Property(d => d.ActivatedUTCDate).IsOptional();
         }
     }
 }

@@ -36,6 +36,7 @@ namespace RainIt.Business
             {
                 var user = RainItContext.UserSet.Single(u => u.Username == RainItContext.CurrentUser.Username);
                 device.User = user;
+                device.DeviceInfo.ActivatedUTCDate = DateTime.UtcNow;
                 RainItContext.SaveChanges();
                 return StatusMessage.WriteMessage("The device was successfully assigned to the current user");
             }
@@ -69,7 +70,6 @@ namespace RainIt.Business
                 var deviceInfoForDevice = new DeviceInfo()
                 {
                     Identifier = Guid.NewGuid(),
-                    RegisteredUTCDate = DateTime.UtcNow,
                     Serial = device.Serial
                 };
                 deviceToAdd.DeviceInfo = deviceInfoForDevice;
@@ -120,9 +120,11 @@ namespace RainIt.Business
         }
         public bool IsDeviceAvailable(Guid identifier)
         {
-            var doesDeviceExist = RainItContext.DeviceSet.Any(d => d.DeviceInfo.Identifier == identifier);
-            var isDeviceNotAssignedToUSer = !RainItContext.DeviceSet.Any(d => d.DeviceInfo.Identifier == identifier && d.UserId.HasValue);
-            return doesDeviceExist && isDeviceNotAssignedToUSer;
+            var device = RainItContext.DeviceSet.SingleOrDefault(d => d.DeviceInfo.Identifier == identifier);
+            if (device == null) return false;
+            if (device.UserId.HasValue) return false;
+            if (device.DeviceInfo.IsAlreadyActive) return false;
+            return true;
         }
     }
 }

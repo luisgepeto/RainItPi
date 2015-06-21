@@ -133,6 +133,10 @@
     <Compile Include="Migrations\201506210536243_OptionalDeviceForUserMigration.Designer.cs">
       <DependentUpon>201506210536243_OptionalDeviceForUserMigration.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201506210719160_ActivationDateForDeviceMigration.cs" />
+    <Compile Include="Migrations\201506210719160_ActivationDateForDeviceMigration.Designer.cs">
+      <DependentUpon>201506210719160_ActivationDateForDeviceMigration.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RainItContext.cs" />
@@ -169,6 +173,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201506210536243_OptionalDeviceForUserMigration.resx">
       <DependentUpon>201506210536243_OptionalDeviceForUserMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201506210719160_ActivationDateForDeviceMigration.resx">
+      <DependentUpon>201506210719160_ActivationDateForDeviceMigration.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
