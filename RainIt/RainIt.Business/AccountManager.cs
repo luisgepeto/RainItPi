@@ -7,6 +7,7 @@ using RainIt.Domain.DTO;
 using RainIt.Domain.Repository;
 using RainIt.Interfaces.Business;
 using RainIt.Interfaces.Repository;
+using Web.Security.Interfaces;
 using User = RainIt.Domain.DTO.User;
 
 
@@ -15,6 +16,7 @@ namespace RainIt.Business
     public class AccountManager : IAccountManager
     {
         public IRainItContext RainItContext { get; set; }
+        public ICryptoServiceManager CryptoServiceManager { get; set; } 
 
         public AccountManager(IRainItContext rainItContext)
         {
@@ -85,9 +87,9 @@ namespace RainIt.Business
 
         private Password CreatePasswordFrom(RainIt.Domain.DTO.User userToAdd)
         {
-            var currentSalt = CreateRandomSalt();
+            var currentSalt = CryptoServiceManager.CreateRandomSalt();
             var concatenatedPass = currentSalt + userToAdd.Password;
-            var currentHash = GetHashFrom(concatenatedPass);
+            var currentHash = CryptoServiceManager.GetHashFrom(concatenatedPass);
 
             var password = new Password()
             {
@@ -96,25 +98,6 @@ namespace RainIt.Business
             };
             return password;
         }
-
-        private string CreateRandomSalt()
-        {
-            var rng = new RNGCryptoServiceProvider();
-            byte[] buff = new byte[16];
-            rng.GetBytes(buff);
-            var currentSalt = Convert.ToBase64String(buff);
-            return currentSalt;
-        }
-
-        private string GetHashFrom(string concatenatedPass)
-        {
-            HashAlgorithm hashAlg = new SHA256CryptoServiceProvider(); 
-            byte[] bytValue = System.Text.Encoding.UTF8.GetBytes(concatenatedPass);
-            byte[] bytHash = hashAlg.ComputeHash(bytValue);
-            string base64 = Convert.ToBase64String(bytHash);
-            return base64;
-        }
-        
 
         public StatusMessage Authenticate(Login login)
         {
@@ -125,7 +108,7 @@ namespace RainIt.Business
                 if(user == null) return StatusMessage.WriteError("Your username and password combination is incorrect. Please review your credentials.");
                 
                 var concatenatedPass = user.Password.Salt + login.Password;
-                var generatedHash = GetHashFrom(concatenatedPass);
+                var generatedHash = CryptoServiceManager.GetHashFrom(concatenatedPass);
                 var arePasswordsEqual = generatedHash.Equals(user.Password.Hash);
                 
                 return arePasswordsEqual? StatusMessage.WriteMessage("You were successfully logged in") :

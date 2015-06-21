@@ -2,7 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
+using System.Web;
 using RainIt.Domain.Repository;
+using Web.Security.Interfaces;
+using System.Web.Http;
+using Web.Security.Business;
 
 namespace RainIt.Repository.Migrations
 {
@@ -48,16 +52,10 @@ namespace RainIt.Repository.Migrations
                 BirthDate = new DateTime(1991, 7, 26)
             });
 
-            var rng = new RNGCryptoServiceProvider();
-            byte[] buff = new byte[16];
-            rng.GetBytes(buff);
-            var currentSalt = Convert.ToBase64String(buff);
+            var cryptoServiceManager = (ICryptoServiceManager) new CryptoServiceManager();
+            var currentSalt = cryptoServiceManager.CreateRandomSalt();
             var concatenatedPass = currentSalt + "makiburtub";
-            HashAlgorithm hashAlg = new SHA256CryptoServiceProvider();
-            byte[] bytValue = System.Text.Encoding.UTF8.GetBytes(concatenatedPass);
-            byte[] bytHash = hashAlg.ComputeHash(bytValue);
-            string currentHash = Convert.ToBase64String(bytHash);
-            
+            string currentHash = cryptoServiceManager.GetHashFrom(concatenatedPass);
 
             context.PasswordSet.AddOrUpdate(p => p.UserId, new Password()
             {

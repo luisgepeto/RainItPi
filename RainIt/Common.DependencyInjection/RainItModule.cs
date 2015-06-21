@@ -6,6 +6,8 @@ using RainIt.Interfaces;
 using RainIt.Interfaces.Business;
 using RainIt.Interfaces.Repository;
 using RainIt.Repository;
+using Web.Security.Business;
+using Web.Security.Interfaces;
 
 namespace Common.DependencyInjection
 {
@@ -50,6 +52,11 @@ namespace Common.DependencyInjection
 
             builder.RegisterType<DeviceManager>()
                 .As<IDeviceManager>()
+                .PropertiesAutowired()
+                .InstancePerLifetimeScope();
+
+            builder.RegisterType<CryptoServiceManager>()
+                .As<ICryptoServiceManager>()
                 .PropertiesAutowired()
                 .InstancePerLifetimeScope();
         }
