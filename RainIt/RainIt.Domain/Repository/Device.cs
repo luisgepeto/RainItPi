@@ -1,6 +1,7 @@
 ﻿
 
 using System;
+using System.Collections.Generic;
 
 namespace RainIt.Domain.Repository
 {
@@ -11,7 +12,6 @@ namespace RainIt.Domain.Repository
         //public virtual DeviceCredential DeviceCredential { get; set; }
         public int UserId { get; set; }
         public virtual User User { get; set; }
-        public int? RoutineId { get; set; }
-        public virtual Routine Routine { get; set; }
+        public virtual ICollection<Routine> Routines { get; set; }
     }
 }

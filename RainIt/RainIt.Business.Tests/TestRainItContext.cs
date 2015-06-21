@@ -66,6 +66,16 @@ namespace RainIt.Business.Tests
             get { return DeviceSet.Where(p => p.UserId == CurrentUser.UserId); }
         }
 
+        public IQueryable<Routine> DeviceRoutineSet
+        {
+            get
+            {
+                return
+                    RoutineSet.Where(r => r.Devices.Select(d => d.DeviceInfo.DeviceId).Contains(CurrentDevice.DeviceId));
+            }
+            
+        }
+
         public int SaveChangesCount { get; private set; }
 
         public int SaveChanges()

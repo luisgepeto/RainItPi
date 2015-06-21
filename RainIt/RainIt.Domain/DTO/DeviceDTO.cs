@@ -1,5 +1,6 @@
 ﻿
 using System;
+using System.Collections.Generic;
 
 namespace RainIt.Domain.DTO
 {
@@ -8,6 +9,6 @@ namespace RainIt.Domain.DTO
         public int DeviceId { get; set; }
         public Guid Identifier { get; set; }
         public string Serial { get; set; }
-        public int? RoutineId { get; set; }
+        public List<RoutineDTO> RoutineDTOs { get; set; }
     }
 }

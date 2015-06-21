@@ -15,10 +15,14 @@ namespace RainIt.Repository.Configuration
             HasRequired(d => d.DeviceInfo)
                 .WithRequiredPrincipal(p => p.Device)
                 .WillCascadeOnDelete(true);
-            HasOptional(d => d.Routine)
+            HasMany(d => d.Routines)
                 .WithMany(r => r.Devices)
-                .HasForeignKey(d => d.RoutineId)
-                .WillCascadeOnDelete(false);
+                .Map(cs =>
+                {
+                    cs.MapLeftKey("DeviceId");
+                    cs.MapRightKey("RoutineId");
+                    cs.ToTable("dbo.DeviceRoutine");
+                });
         }
     }
 }

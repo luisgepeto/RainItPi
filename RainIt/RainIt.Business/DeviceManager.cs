@@ -58,7 +58,10 @@ namespace RainIt.Business
             {
                 DeviceId = d.DeviceId,
                 Identifier = d.DeviceInfo.Identifier,
-                RoutineId = d.RoutineId
+                RoutineDTOs = d.Routines.Select(r => new RoutineDTO()
+                {
+                    RoutineId = r.RoutineId
+                }).ToList()
             }).ToList();
         }
 
