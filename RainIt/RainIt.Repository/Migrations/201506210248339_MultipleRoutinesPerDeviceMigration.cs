@@ -12,7 +12,7 @@ namespace RainIt.Repository.Migrations
             DropForeignKey("dbo.UserRole", "RoleId", "dbo.Role");
             DropIndex("dbo.Device", new[] { "RoutineId" });
             CreateTable(
-                "dbo.[dbo.DeviceRoutine]",
+                "dbo.DeviceRoutine",
                 c => new
                     {
                         DeviceId = c.Int(nullable: false),
@@ -34,11 +34,11 @@ namespace RainIt.Repository.Migrations
             AddColumn("dbo.Device", "RoutineId", c => c.Int());
             DropForeignKey("dbo.UserRole", "RoleId", "dbo.Role");
             DropForeignKey("dbo.UserRole", "UserId", "dbo.User");
-            DropForeignKey("dbo.[dbo.DeviceRoutine]", "RoutineId", "dbo.Routine");
-            DropForeignKey("dbo.[dbo.DeviceRoutine]", "DeviceId", "dbo.Device");
-            DropIndex("dbo.[dbo.DeviceRoutine]", new[] { "RoutineId" });
-            DropIndex("dbo.[dbo.DeviceRoutine]", new[] { "DeviceId" });
-            DropTable("dbo.[dbo.DeviceRoutine]");
+            DropForeignKey("dbo.DeviceRoutine", "RoutineId", "dbo.Routine");
+            DropForeignKey("dbo.DeviceRoutine", "DeviceId", "dbo.Device");
+            DropIndex("dbo.DeviceRoutine", new[] { "RoutineId" });
+            DropIndex("dbo.DeviceRoutine", new[] { "DeviceId" });
+            DropTable("dbo.DeviceRoutine");
             CreateIndex("dbo.Device", "RoutineId");
             AddForeignKey("dbo.UserRole", "RoleId", "dbo.Role", "RoleId", cascadeDelete: true);
             AddForeignKey("dbo.UserRole", "UserId", "dbo.User", "UserId", cascadeDelete: true);

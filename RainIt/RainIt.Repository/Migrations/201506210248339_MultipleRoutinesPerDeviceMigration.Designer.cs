@@ -13,7 +13,7 @@ namespace RainIt.Repository.Migrations
         
         string IMigrationMetadata.Id
         {
-            get { return "201506210241113_MultipleRoutinesPerDeviceMigration"; }
+            get { return "201506210248339_MultipleRoutinesPerDeviceMigration"; }
         }
         
         string IMigrationMetadata.Source

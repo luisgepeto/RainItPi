@@ -21,7 +21,7 @@ namespace RainIt.Repository.Configuration
                 {
                     cs.MapLeftKey("DeviceId");
                     cs.MapRightKey("RoutineId");
-                    cs.ToTable("dbo.DeviceRoutine");
+                    cs.ToTable("DeviceRoutine");
                 });
         }
     }

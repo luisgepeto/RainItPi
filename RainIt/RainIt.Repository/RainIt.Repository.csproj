@@ -125,9 +125,9 @@
     <Compile Include="Migrations\201506200108308_removeActive.Designer.cs">
       <DependentUpon>201506200108308_removeActive.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201506210241113_MultipleRoutinesPerDeviceMigration.cs" />
-    <Compile Include="Migrations\201506210241113_MultipleRoutinesPerDeviceMigration.Designer.cs">
-      <DependentUpon>201506210241113_MultipleRoutinesPerDeviceMigration.cs</DependentUpon>
+    <Compile Include="Migrations\201506210248339_MultipleRoutinesPerDeviceMigration.cs" />
+    <Compile Include="Migrations\201506210248339_MultipleRoutinesPerDeviceMigration.Designer.cs">
+      <DependentUpon>201506210248339_MultipleRoutinesPerDeviceMigration.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -160,8 +160,8 @@
     <EmbeddedResource Include="Migrations\201506200108308_removeActive.resx">
       <DependentUpon>201506200108308_removeActive.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201506210241113_MultipleRoutinesPerDeviceMigration.resx">
-      <DependentUpon>201506210241113_MultipleRoutinesPerDeviceMigration.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201506210248339_MultipleRoutinesPerDeviceMigration.resx">
+      <DependentUpon>201506210248339_MultipleRoutinesPerDeviceMigration.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
