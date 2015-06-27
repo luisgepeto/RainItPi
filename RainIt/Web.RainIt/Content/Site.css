@@ -68,8 +68,8 @@ ul.nav.navbar-nav {
 .shapeshift-gallery {
         position: relative;
         width: 100%;
-    }
-    .shapeshift-gallery .img-holder {
-        position: absolute;
-        height: 100px;
-    }
+}
+.shapeshift-gallery .img-holder {
+    position: absolute;
+    height: 100px;
+}

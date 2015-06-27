@@ -29,32 +29,75 @@
         </div>
     }
 }
-<div class="container" style="margin-top: 50px;">
-    <div col="col-md-12 container" class="form-signin">
-        <input type="file" class=" btn btn-lg btn-primary btn-block" id="filePicker" />
-        <div col="col-md-3"><img id="imagePreview" src=""/>
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <div id="rgb-settings" class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">RGB Settings</h3>
+                </div>
+                <div class="panel-body">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-12">
+                                @Html.JQueryUI().Slider("RWeight", 50).ContainerCssClass("form-control intermediate-form-field")
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                @Html.JQueryUI().Slider("GWeight", 50).ContainerCssClass("form-control intermediate-form-field")
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                @Html.JQueryUI().Slider("BWeight", 50).ContainerCssClass("form-control last-form-field")
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="bw-settings" class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">B/W Settings</h3>
+                </div>
+                <div class="panel-body">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-12">
+                                @Html.JQueryUI().Slider("Threshold", 50).ContainerCssClass("form-control last-form-field")
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                @Html.CheckBox("IsInverted") Invert
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <input type="file" class=" btn btn-lg btn-primary btn-block" id="filePicker"/>
+            @using (Html.BeginForm("Add", "Pattern", new { area = "Configuration" }, FormMethod.Post))
+            {
+                @Html.Hidden("fileName", "")
+                @Html.Hidden("base64Image", "")
+                <button class="btn btn-lg btn-primary btn-block alternate-button" type="submit" name="add" id="Add" value="add">Add</button>
+            }
         </div>
-        <div col="col-md-3"><img id="grayscaleImagePreview" src=""/>
+        <div class="col-md-6">
+            <div id="img-preview" class="container">
+                <div class="row">
+                    <div class="col-md-12 col-sm-4">
+                        <img id="imagePreview" src=""/>
+                    </div>
+                    <div class="col-md-12 col-sm-4">
+                        <img id="grayscaleImagePreview" src="" />
+                    </div>
+                    <div class="col-md-12 col-sm-4">
+                        <img id="blackWhitePreview" src="" />
+                    </div>
+                </div>
+            </div>
         </div>
-        <div col="col-md-3"><img id="blackWhitePreview" src=""/>
-        </div>
-    </div>
-    <div col="col-md-12" class="form-signin">
-        <h4>RGB Settings</h4>
-        @Html.JQueryUI().Slider("RWeight", 50).ContainerCssClass("form-control intermediate-form-field")
-        @Html.JQueryUI().Slider("GWeight", 50).ContainerCssClass("form-control intermediate-form-field")
-        @Html.JQueryUI().Slider("BWeight", 50).ContainerCssClass("form-control last-form-field")
-    </div>
-    <div col="col-md-12" class="form-signin">
-        <h4>B/W Settings</h4>
-        @Html.JQueryUI().Slider("Threshold", 50).ContainerCssClass("form-control last-form-field")
-        @Html.CheckBox("IsInverted") Invert
-        @using (Html.BeginForm("Add", "Pattern", new{area ="Configuration"}, FormMethod.Post))
-        {
-            @Html.Hidden("fileName", "")
-            @Html.Hidden("base64Image", "")
-            <button class="btn btn-lg btn-primary btn-block alternate-button" type="submit" name="add" id="Add" value="add">Add</button>
-        }
     </div>
 </div>
 <script type="text/javascript">
