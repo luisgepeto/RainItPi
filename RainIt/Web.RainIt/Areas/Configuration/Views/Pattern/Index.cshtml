@@ -7,11 +7,11 @@
 <style>
 #gallery {
     position: relative;
-    /*width: 880px;*/
+    width: 100%;
 }
-#gallery .image-holder, #gallery .image-adder {
-    width: 200px;
+#gallery .img-holder{
     position: absolute;
+    height: 100px;
 }
 .delete-button
 {
@@ -25,24 +25,36 @@
     margin-left: 180px;
 }
 </style>
-
 <div class="container">
-    <div id="gallery" class="row">
-        <img id="addImage" src="/Content/addimageicon.png" alt="Add an image" class="image-holder col-md-4">
+    <div class="row">
+        <div class="col-md-3"></div>
+        <div class="col-md-6">
+            <div class="container">
+                <div id="gallery" class="row">
+                    <img id="addImage" src="/Content/addimageicon.png" alt="Add an image" class="img-holder col-md-2">
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3"></div>
+
     </div>
 </div>
+
 <script src="~/Scripts/jquery.shapeshift.js"></script>
 <script type="text/javascript">
     (function() {
         this.PatternIndexProperties = this.PatternIndexProperties || {};
-
+        var bootstrapMdColSize = 2;
+        /* Please notice that because of the shapeshifting
+        * the maximum value of columns in this .container is 10
+        */
         var passedImages = @Html.Raw(JsonConvert.SerializeObject(Model));
 
         PatternIndexProperties.Gallery = (function() {
             var properties = {};
             function createImage(image) {
                 var imageToPlace = $('<img>').attr("id", "image" + image.PatternId).attr("src", image.Path).attr("class", "img-responsive");
-                var imageHolder = $('<div>').attr("class", "image-holder col-md-4").attr("id", "image-holder_" + image.PatternId);
+                var imageHolder = $('<div>').attr("class", "img-holder col-md-"+bootstrapMdColSize).attr("id", "img-holder_" + image.PatternId);
                 var deleteButton = $('<div>').attr("class", "delete-button").attr("id", "delete_" + image.PatternId);
                 deleteButton.appendTo(imageHolder);
                 imageToPlace.appendTo(imageHolder);
@@ -59,19 +71,24 @@
             function addBootstrapClearFixes() {
                 var bootstrapSizes = ['xs', 'sm', 'md', 'lg'];
                 $.each(bootstrapSizes, function(index, currentSize) {
-                    debugger;
                     var columnClassRegex = new RegExp("col-" + currentSize + "-([1-9]|1[0-2])");
                     var cumulativeColumnWidth = 0;
-                    $('#gallery .image-holder').each(function() {
+                    $('#gallery .img-holder').each(function() {
                         var currentColumnClass = columnClassRegex.exec($(this).attr('class'));
                         if (currentColumnClass != null) {
                             var currentColumnWidth = currentColumnClass[0].split('-')[2];
                             cumulativeColumnWidth += Number(currentColumnWidth);
-                            if (cumulativeColumnWidth > 12) {
-                                var clearFixBlock = $('div').attr('class', 'clearfix visible-' + currentSize + '-block');
-                                clearFixBlock.insertBefore($(this));
-                                cumulativeColumnWidth = Number(currentColumnWidth);
-                            }    
+                            if (cumulativeColumnWidth >= 10) {
+                                var clearFixBlock = $('<div>').attr('class', 'clearfix visible-' + currentSize + '-block');
+                                if (cumulativeColumnWidth > 10) {
+                                    clearFixBlock.insertBefore($(this));
+                                    cumulativeColumnWidth = Number(currentColumnWidth);
+                                }
+                                if (cumulativeColumnWidth == 10) {
+                                    clearFixBlock.insertAfter($(this));
+                                    cumulativeColumnWidth = 0;
+                                }
+                            }
                         }
                     });
                 });
@@ -81,7 +98,8 @@
             properties.Parameters = {
                 enableDrag: true,
                 cutoffEnd: passedImages.length - 1,
-                enableCrossDrop: false
+                enableCrossDrop: false,
+                selector : '.img-holder'
             };
             properties.Initialize = function() {
                 initializeUserImages();

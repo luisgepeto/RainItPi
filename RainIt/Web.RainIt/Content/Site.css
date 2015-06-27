@@ -58,3 +58,7 @@ ul.nav.navbar-nav {
 
 /* Sets the visibility of strange datepicker to none*/
 #ui-datepicker-div {display: none;}
+/* Alters bootstrap img-responsive to set max height of 100%*/
+.img-responsive {
+    max-height: 100%;
+}
