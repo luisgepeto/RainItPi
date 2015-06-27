@@ -10,7 +10,6 @@
     width: 880px;
 }
 #gallery .image-holder, #gallery .image-adder {
-    height: 200px;
     width: 200px;
     position: absolute;
 }
@@ -27,9 +26,9 @@
 }
 </style>
 
-<div class="container" style="margin-top: 50px;">
-    <div id="gallery">
-        <img id="addImage" src="/Content/addimageicon.png" alt="Add an image" class="image-holder">
+<div class="container">
+    <div id="gallery" class="row">
+        <img id="addImage" src="/Content/addimageicon.png" alt="Add an image" class="image-holder col-md-4">
     </div>
 </div>
 <script src="~/Scripts/jquery.shapeshift.js"></script>
@@ -42,8 +41,8 @@
         PatternIndexProperties.Gallery = (function() {
             var properties = {};
             function createImage(image) {
-                var imageToPlace = $('<img>').attr("id", "image" + image.PatternId).attr("src", image.Path);
-                var imageHolder = $('<div>').attr("class", "image-holder").attr("id", "image-holder_" + image.PatternId);
+                var imageToPlace = $('<img>').attr("id", "image" + image.PatternId).attr("src", image.Path).attr("class", "img-responsive");
+                var imageHolder = $('<div>').attr("class", "image-holder col-md-4").attr("id", "image-holder_" + image.PatternId);
                 var deleteButton = $('<div>').attr("class", "delete-button").attr("id", "delete_" + image.PatternId);
                 deleteButton.appendTo(imageHolder);
                 imageToPlace.appendTo(imageHolder);
@@ -57,13 +56,36 @@
                 });
             }
 
+            function addBootstrapClearFixes() {
+                var bootstrapSizes = ['xs', 'sm', 'md', 'lg'];
+                $.each(bootstrapSizes, function(index, currentSize) {
+                    debugger;
+                    var columnClassRegex = new RegExp("col-" + currentSize + "-([1-9]|1[0-2])");
+                    var cumulativeColumnWidth = 0;
+                    $('#gallery .image-holder').each(function() {
+                        var currentColumnClass = columnClassRegex.exec($(this).attr('class'));
+                        if (currentColumnClass != null) {
+                            var currentColumnWidth = currentColumnClass[0].split('-')[2];
+                            cumulativeColumnWidth += Number(currentColumnWidth);
+                            if (cumulativeColumnWidth > 12) {
+                                var clearFixBlock = $('div').attr('class', 'clearfix visible-' + currentSize + '-block');
+                                clearFixBlock.insertBefore($(this));
+                                cumulativeColumnWidth = Number(currentColumnWidth);
+                            }    
+                        }
+                    });
+                });
+                
+            }
+
             properties.Parameters = {
-                enableDrag: false,
+                enableDrag: true,
                 cutoffEnd: passedImages.length - 1,
                 enableCrossDrop: false
             };
             properties.Initialize = function() {
                 initializeUserImages();
+                addBootstrapClearFixes();
                 $('#gallery').shapeshift(properties.Parameters);
             }
             properties.Update = function(newParameters) {
