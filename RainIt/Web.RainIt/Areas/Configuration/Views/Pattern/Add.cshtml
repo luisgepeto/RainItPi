@@ -6,20 +6,6 @@
     ViewBag.Title = "Add Pattern";
 }
 
-<link href="~/Content/loginstyle.css" rel="stylesheet"/>
-<style>
-       .form-signin {
-  max-width: 800px;
-}
-    input, select, textarea {
-        max-width: 800px;
-    }
-
-    body {
-        background-color: #000000;
-        background-color: rgba(0, 0, 0, 0.2);
-    }
-</style>
 @{
     var message = TempData["StatusMessage"] as StatusMessage;
     if (message != null)
@@ -40,17 +26,17 @@
                     <div class="container">
                         <div class="row">
                             <div class="col-md-12">
-                                @Html.JQueryUI().Slider("RWeight", 50).ContainerCssClass("form-control intermediate-form-field")
+                                @Html.JQueryUI().Slider("RWeight", 50)
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-12">
-                                @Html.JQueryUI().Slider("GWeight", 50).ContainerCssClass("form-control intermediate-form-field")
+                                @Html.JQueryUI().Slider("GWeight", 50)
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-12">
-                                @Html.JQueryUI().Slider("BWeight", 50).ContainerCssClass("form-control last-form-field")
+                                @Html.JQueryUI().Slider("BWeight", 50)
                             </div>
                         </div>
                     </div>
@@ -64,7 +50,7 @@
                     <div class="container">
                         <div class="row">
                             <div class="col-md-12">
-                                @Html.JQueryUI().Slider("Threshold", 50).ContainerCssClass("form-control last-form-field")
+                                @Html.JQueryUI().Slider("Threshold", 50)
                             </div>
                         </div>
                         <div class="row">
@@ -75,12 +61,12 @@
                     </div>
                 </div>
             </div>
-            <input type="file" class=" btn btn-lg btn-primary btn-block" id="filePicker"/>
+            <input type="file" id="filePicker"/>
             @using (Html.BeginForm("Add", "Pattern", new { area = "Configuration" }, FormMethod.Post))
             {
                 @Html.Hidden("fileName", "")
                 @Html.Hidden("base64Image", "")
-                <button class="btn btn-lg btn-primary btn-block alternate-button" type="submit" name="add" id="Add" value="add">Add</button>
+                <button  type="submit" name="add" id="Add" value="add">Add</button>
             }
         </div>
         <div class="col-md-6">
