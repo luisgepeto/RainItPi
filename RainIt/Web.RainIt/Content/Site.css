@@ -58,7 +58,18 @@ ul.nav.navbar-nav {
 
 /* Sets the visibility of strange datepicker to none*/
 #ui-datepicker-div {display: none;}
+
 /* Alters bootstrap img-responsive to set max height of 100%*/
 .img-responsive {
     max-height: 100%;
 }
+
+/*Includes the themes for the shapeshifting plugin*/ 
+.shapeshift-gallery {
+        position: relative;
+        width: 100%;
+    }
+    .shapeshift-gallery .img-holder {
+        position: absolute;
+        height: 100px;
+    }
