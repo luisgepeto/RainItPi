@@ -25,17 +25,20 @@
                 <div class="panel-body">
                     <div class="container">
                         <div class="row">
-                            <div class="col-md-12">
+                            <div class="col-md-12 form-group">
+                                <label for="rWeight">R Weight</label>
                                 @Html.JQueryUI().Slider("RWeight", 50)
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-12">
+                            <div class="col-md-12 form-group">
+                                <label for="gWeight">G Weight</label>
                                 @Html.JQueryUI().Slider("GWeight", 50)
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-12">
+                            <div class="col-md-12 form-group">
+                                <label for="bWeight">B Weight</label>
                                 @Html.JQueryUI().Slider("BWeight", 50)
                             </div>
                         </div>
@@ -49,37 +52,44 @@
                 <div class="panel-body">
                     <div class="container">
                         <div class="row">
-                            <div class="col-md-12">
+                            <div class="col-md-12 form-group">
+                                <label for="threshold">BW Threshold</label>
                                 @Html.JQueryUI().Slider("Threshold", 50)
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-12">
-                                @Html.CheckBox("IsInverted") Invert
+                            <div class="col-md-12 form-group">
+                                <label for="isInverted">Invert</label>
+                                <br/>
+                                @Html.CheckBox("IsInverted")
+                                
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <input type="file" id="filePicker"/>
+            <br/>
+            <input type="file" id="filePicker" />
             @using (Html.BeginForm("Add", "Pattern", new { area = "Configuration" }, FormMethod.Post))
             {
                 @Html.Hidden("fileName", "")
                 @Html.Hidden("base64Image", "")
-                <button  type="submit" name="add" id="Add" value="add">Add</button>
+                <button type="submit" name="add" id="Add" value="add" class="btn btn-success">Add</button>
+                <button type="reset" name="cancel" id="Cancel" value="cancel" class="btn btn-danger">Cancel</button>
             }
         </div>
         <div class="col-md-6">
             <div id="img-preview" class="container">
                 <div class="row">
-                    <div class="col-md-12 col-sm-4">
+                    <div class="col-md-4">
+                        
                         <img id="imagePreview" src=""/>
                     </div>
-                    <div class="col-md-12 col-sm-4">
-                        <img id="grayscaleImagePreview" src="" />
+                    <div class="col-md-4">
+                        <img id="grayscaleImagePreview" src=""/>
                     </div>
-                    <div class="col-md-12 col-sm-4">
-                        <img id="blackWhitePreview" src="" />
+                    <div class="col-md-4">
+                        <img id="blackWhitePreview" src=""/>
                     </div>
                 </div>
             </div>
@@ -183,6 +193,7 @@
                         $('#fileName').val(fileName);
                         updateImageHolder(this);
                     });
+                    
                 }
                 return properties;
             }());
@@ -203,6 +214,9 @@
                         AddPatternProperties.ImageTransformer.GetBlackWhite();
                     });
                 }
+                properties.RemoveDisplay = function() {
+                    $('.ui-slider').parent().children('span').hide();
+                }
                 return properties;
             }());
 
@@ -211,6 +225,7 @@
                 normalImageHolder.AddLoadListener();
                 grayImageHolder.AddLoadListener();
                 slider.AddChangeListener();
+                slider.RemoveDisplay();
                 isInvertedControl.AddChangeListener();
             }
         }());
