@@ -138,6 +138,7 @@
                 }
 
                 properties.GetGrayScale = function () {
+                    $('#Add').attr('disabled', 'disabled');
                     var url = '@Url.Action("GetGrayScaleFor", "Pattern", new { area = "Configuration" }, null)' + "?colorRelativeWeight.RWeight=-1&colorRelativeWeight.GWeight=-2&colorRelativeWeight.BWeight=-3";
                     url = url.replace("-1", $('#RWeight').val());
                     url = url.replace("-2", $('#GWeight').val());
@@ -149,6 +150,7 @@
                 }
 
                 properties.GetBlackWhite = function () {
+                    $('#Add').attr('disabled', 'disabled');
                     var url = '@Url.Action("GetBlackWhiteFor", "Pattern", new { area = "Configuration" }, null)' + "?isInverted=-1&thresholdPercentage=-2";
                     url = url.replace("-1", $('#IsInverted').is(":checked"));
                     url = url.replace("-2", ($('#Threshold').val() == "" ? 0 : $('#Threshold').val()));
