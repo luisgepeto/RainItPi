@@ -14,6 +14,7 @@ namespace ImageProcessing.Business.Interfaces
 		Image GetGrayScale(Image image, ColorRelativeWeight colorRelativeWeight = null, BlackWhiteConversionParameters blackWhiteParameters = null);
 	    bool TryParseImage(string base64Image, out ImageDetails imageDetails);
 	    string ConvertToBase64(Image image);
+	    Image Resize(Image image, ResizeParameters resizeParameters);
 	}
 }
 

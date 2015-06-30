@@ -73,3 +73,8 @@ ul.nav.navbar-nav {
     position: absolute;
     height: 100px;
 }
+
+/* This is intended to work as additional space on top of the bootstrap .row*/
+.spacer {
+    margin-top: 20px; /* define margin as you see fit */
+}

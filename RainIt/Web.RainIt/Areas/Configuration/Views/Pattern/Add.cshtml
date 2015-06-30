@@ -5,7 +5,13 @@
 @{
     ViewBag.Title = "Add Pattern";
 }
-
+<script src="~/Scripts/fileinput.js"></script>
+<link href="~/Content/fileinput.css" rel="stylesheet"/>
+<style>
+    .form-control {
+        padding: 0px 12px;
+    }
+</style>
 @{
     var message = TempData["StatusMessage"] as StatusMessage;
     if (message != null)
@@ -17,79 +23,88 @@
 }
 <div class="container">
     <div class="row">
-        <div class="col-md-6">
-            <div id="rgb-settings" class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">RGB Settings</h3>
-                </div>
-                <div class="panel-body">
-                    <div class="container">
-                        <div class="row">
-                            <div class="col-md-12 form-group">
-                                <label for="rWeight">R Weight</label>
-                                @Html.JQueryUI().Slider("RWeight", 50)
+        <div class="col-md-4">
+            <div class="row">
+                <div id="rgb-settings" class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">RGB Settings</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-md-12 form-group">
+                                    <label for="rWeight">R Weight</label>
+                                    @Html.JQueryUI().Slider("RWeight", 50)
+                                </div>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12 form-group">
-                                <label for="gWeight">G Weight</label>
-                                @Html.JQueryUI().Slider("GWeight", 50)
+                            <div class="row">
+                                <div class="col-md-12 form-group">
+                                    <label for="gWeight">G Weight</label>
+                                    @Html.JQueryUI().Slider("GWeight", 50)
+                                </div>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12 form-group">
-                                <label for="bWeight">B Weight</label>
-                                @Html.JQueryUI().Slider("BWeight", 50)
+                            <div class="row">
+                                <div class="col-md-12 form-group">
+                                    <label for="bWeight">B Weight</label>
+                                    @Html.JQueryUI().Slider("BWeight", 50)
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div id="bw-settings" class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">B/W Settings</h3>
-                </div>
-                <div class="panel-body">
-                    <div class="container">
-                        <div class="row">
-                            <div class="col-md-12 form-group">
-                                <label for="threshold">BW Threshold</label>
-                                @Html.JQueryUI().Slider("Threshold", 50)
+            <div class="row">
+                <div id="bw-settings" class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">B/W Settings</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-md-12 form-group">
+                                    <label for="threshold">BW Threshold</label>
+                                    @Html.JQueryUI().Slider("Threshold", 50)
+                                </div>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12 form-group">
-                                <label for="isInverted">Invert</label>
-                                <br/>
-                                @Html.CheckBox("IsInverted")
-                                
+                            <div class="row">
+                                <div class="col-md-12 form-group">
+                                    <label for="isInverted">Invert</label>
+                                    <br />
+                                    @Html.CheckBox("IsInverted")
+
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <br/>
-            <input type="file" id="filePicker" />
-            @using (Html.BeginForm("Add", "Pattern", new { area = "Configuration" }, FormMethod.Post))
-            {
-                @Html.Hidden("fileName", "")
-                @Html.Hidden("base64Image", "")
-                <button type="submit" name="add" id="Add" value="add" class="btn btn-success">Add</button>
-                <button type="reset" name="cancel" id="Cancel" value="cancel" class="btn btn-danger">Cancel</button>
-            }
+            <div class="row">
+                <input type="file" id="filePicker"/>
+            </div>
+            <div class="row spacer">
+                <button type="submit" name="add" id="Add" value="add" class="btn btn-success " disabled="disabled">Add</button>@Html.Raw(" ")
+                <button type="submit" name="cancel" id="Cancel" value="cancel" class="btn btn-danger">Cancel</button>
+                @using (Html.BeginForm("Add", "Pattern", new { area = "Configuration" }, FormMethod.Post, new { @style = "display:none;", @id = "addForm" }))
+                {
+                    @Html.Hidden("fileName", "")
+                    @Html.Hidden("base64Image", "")
+                }
+                @using (Html.BeginForm("Index", "Pattern", new { area = "Configuration" }, FormMethod.Get, new { @style = "display:none;", @id = "cancelForm" }))
+                {
+                }
+            </div>
         </div>
         <div class="col-md-6">
             <div id="img-preview" class="container">
                 <div class="row">
-                    <div class="col-md-4">
-                        
-                        <img id="imagePreview" src=""/>
+                    <div class="col-md-4 col-xs-4">
+                        <img id="imagePreview" src="" class="img-responsive"/>
                     </div>
-                    <div class="col-md-4">
-                        <img id="grayscaleImagePreview" src=""/>
+                    <div class="col-md-4 col-xs-4">
+                        <img id="grayscaleImagePreview" src="" class="img-responsive" />
                     </div>
-                    <div class="col-md-4">
-                        <img id="blackWhitePreview" src=""/>
+                    <div class="col-md-4 col-xs-4">
+                        <img id="blackWhitePreview" src="" class="img-responsive" />
                     </div>
                 </div>
             </div>
@@ -156,6 +171,16 @@
                 return properties;
             }());
 
+            var blackImageHolder = (function() {
+                var properties = {};
+                properties.AddLoadListener = function() {
+                    $('#blackWhitePreview').on('load', function () {
+                        $('#Add').removeAttr('disabled');
+                    });
+                }
+                return properties;
+            }());
+
             var grayImageHolder = (function () {
                 var properties = {};
                 properties.AddLoadListener = function () {
@@ -176,6 +201,14 @@
                 return properties;
             }());
 
+            var dimensions = (function() {
+                var properties = {};
+                properties.SetDimensions = function(width, height) {
+                    debugger;
+                }
+                return properties;
+            }());
+
             var filePicker = (function () {
                 var properties = {};
                 function updateImageHolder(input) {
@@ -187,13 +220,42 @@
                        reader.readAsDataURL(input.files[0]);
                     }
                 }
+
+                function getImage(input) {
+                    if (input.files && input.files[0]) {
+                        var img = new Image();
+                        var _URL = window.URL || window.webkitURL;
+                        img.src = _URL.createObjectURL(input.files[0]);
+                        return img;
+                    }
+                    return null;
+                }
+
                 properties.AddChangeListener = function () {
                     $("#filePicker").change(function () {
+                        $('#Add').attr('disabled', 'disabled');
                         var fileName = $(this).val().split('\\').pop();
                         $('#fileName').val(fileName);
                         updateImageHolder(this);
+                        debugger;
+                        var image = getImage(this);
+                        if (image != null) {
+                            image.onload = function () {
+                                debugger;
+                                dimensions.SetDimensions(image.width, image.height);
+                            }
+                        }
                     });
-                    
+                }
+
+                properties.Initialize = function() {
+                    $("#filePicker").fileinput({
+                        showPreview: false,
+                        showRemove: false,
+                        showUpload: false,
+                        allowedFileTypes: ['image'],
+                        allowedFileExtensions: ['jpg', 'gif', 'png']
+                    });
                 }
                 return properties;
             }());
@@ -220,13 +282,31 @@
                 return properties;
             }());
 
+            var button = (function() {
+                var properties = {};
+                properties.AddCancelClickListener = function () {
+                    $('#Cancel').click(function() {
+                        $('#cancelForm').submit();
+                    });
+                }
+                properties.AddSubmitClickListener = function () {
+                    $('#Add').click(function() {
+                        $('#addForm').submit();
+                    });
+                }
+                return properties;
+            }());
             AddPatternProperties.SetupPage = function () {
+                filePicker.Initialize();
                 filePicker.AddChangeListener();
                 normalImageHolder.AddLoadListener();
                 grayImageHolder.AddLoadListener();
+                blackImageHolder.AddLoadListener();
                 slider.AddChangeListener();
                 slider.RemoveDisplay();
                 isInvertedControl.AddChangeListener();
+                button.AddCancelClickListener();
+                button.AddSubmitClickListener();
             }
         }());
 
