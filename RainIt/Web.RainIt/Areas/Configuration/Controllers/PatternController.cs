@@ -31,11 +31,11 @@ namespace Web.RainIt.Areas.Configuration.Controllers
         }
 
         [System.Web.Mvc.HttpPost]
-        public ActionResult Add(PatternUploadModel patternUploadModel)
+        public JsonResult Add(PatternUploadModel patternUploadModel)
         {
             ImageDetails imageDetails;
             StatusMessage canAdd = null;
-            if (ImageManager.TryParseImage(patternUploadModel.Base64Image, out imageDetails))
+            if (ImageManager.TryParseImage(patternUploadModel.Base64Image, out imageDetails, patternUploadModel.AbsoluteResizeParameters))
             {
                 canAdd = PatternManager.AddUserPattern(imageDetails, patternUploadModel.FileName);
             }
@@ -51,10 +51,9 @@ namespace Web.RainIt.Areas.Configuration.Controllers
             if (canAdd.IsError)
             {
                 TempData["PatternUploadModel"] = patternUploadModel;
-                return RedirectToAction("Add", "Pattern", new{area = "Configuration"});
+                return Json(Url.Action("Add", "Pattern", new{area = "Configuration"}));
             }
-
-            return RedirectToAction("Index", new { area = "Configuration" });
+            return Json(Url.Action("Index", new { area = "Configuration" }));
         }
 
         [System.Web.Mvc.HttpPost]

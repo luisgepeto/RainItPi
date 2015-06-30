@@ -78,3 +78,14 @@ ul.nav.navbar-nav {
 .spacer {
     margin-top: 20px; /* define margin as you see fit */
 }
+
+/*Adding color to glyphicons*/
+.glyphicon.red {
+    color: red;
+}
+.glyphicon.green {
+    color: green;
+}
+.glyphicon.blue {
+    color: blue;
+}

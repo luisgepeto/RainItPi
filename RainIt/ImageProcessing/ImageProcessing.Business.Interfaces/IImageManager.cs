@@ -13,6 +13,7 @@ namespace ImageProcessing.Business.Interfaces
 		Image GetBlackWhite (Image image, bool isInverted = false, double thresholdPercentage = 50, ColorRelativeWeight colorRelativeWeight = null);
 		Image GetGrayScale(Image image, ColorRelativeWeight colorRelativeWeight = null, BlackWhiteConversionParameters blackWhiteParameters = null);
 	    bool TryParseImage(string base64Image, out ImageDetails imageDetails);
+        bool TryParseImage(string base64Image, out ImageDetails imageDetails, ResizeParameters resizeParameters);
 	    string ConvertToBase64(Image image);
 	    Image Resize(Image image, ResizeParameters resizeParameters);
 	}

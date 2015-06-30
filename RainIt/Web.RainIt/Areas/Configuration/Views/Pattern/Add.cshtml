@@ -8,9 +8,21 @@
 <script src="~/Scripts/fileinput.js"></script>
 <link href="~/Content/fileinput.css" rel="stylesheet"/>
 <style>
-    .form-control {
-        padding: 0px 12px;
-    }
+    /* This will solve the problem about the file upload displaying incorrectly*/
+     .form-control {
+         padding: 0px 12px;
+     }
+     /* This will bundle the input groups together*/
+     .container  .input-group:not(:first-of-type) .input-group-addon, .container .input-group:not(:first-of-type) .form-control {
+         border-top-left-radius: 0;
+         border-top-right-radius: 0;
+         border-top: none;
+     }
+     .container .input-group:not(:last-of-type) .input-group-addon, .container .input-group:not(:last-of-type) .form-control{
+         border-bottom-left-radius: 0;
+         border-bottom-right-radius: 0;
+         border-bottom: none;
+     }
 </style>
 @{
     var message = TempData["StatusMessage"] as StatusMessage;
@@ -25,70 +37,86 @@
     <div class="row">
         <div class="col-md-4">
             <div class="row">
-                <div id="rgb-settings" class="panel panel-default">
+                <div id="transformation-settings" class="panel panel-default">
                     <div class="panel-heading">
-                        <h3 class="panel-title">RGB Settings</h3>
+                        <h3 class="panel-title">Transformation Settings</h3>
                     </div>
                     <div class="panel-body">
-                        <div class="container">
-                            <div class="row">
-                                <div class="col-md-12 form-group">
-                                    <label for="rWeight">R Weight</label>
+                            <div class="input-group">
+                                <label for="rWeight" class="input-group-addon">
+                                    <span class="glyphicon glyphicon-tint red" aria-hidden="true"></span>
+                                    <span class="sr-only">R Weight:</span>%
+                                </label>
+                                <div class="form-control">
                                     @Html.JQueryUI().Slider("RWeight", 50)
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-md-12 form-group">
-                                    <label for="gWeight">G Weight</label>
+                            <div class="input-group">
+                                <label for="gWeight" class="input-group-addon">
+                                    <span class="glyphicon glyphicon-tint green" aria-hidden="true"></span>
+                                    <span class="sr-only">G Weight:</span>%
+                                </label>
+                                <div class="form-control">
                                     @Html.JQueryUI().Slider("GWeight", 50)
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-md-12 form-group">
-                                    <label for="bWeight">B Weight</label>
+                            <div class="input-group">
+                                <label for="bWeight" class="input-group-addon">
+                                    <span class="glyphicon glyphicon-tint blue" aria-hidden="true"></span>
+                                    <span class="sr-only">B Weight:</span>%
+                                </label>
+                                <div class="form-control">
                                     @Html.JQueryUI().Slider("BWeight", 50)
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div id="bw-settings" class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">B/W Settings</h3>
-                    </div>
-                    <div class="panel-body">
-                        <div class="container">
-                            <div class="row">
-                                <div class="col-md-12 form-group">
-                                    <label for="threshold">BW Threshold</label>
+                            <div class="input-group">
+                                <label for="threshold" class="input-group-addon">
+                                    <span class="glyphicon glyphicon-adjust" aria-hidden="true"></span>
+                                    <span class="sr-only">BW Threshold:</span>%
+                                </label>
+                                <div class="form-control">
                                     @Html.JQueryUI().Slider("Threshold", 50)
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-md-12 form-group">
-                                    <label for="isInverted">Invert</label>
-                                    <br />
-                                    @Html.CheckBox("IsInverted")
-
-                                </div>
+                            <div class="form-group">
+                                <label for="isInverted">Invert</label>
+                                <br/>
+                                @Html.CheckBox("IsInverted")
                             </div>
                         </div>
+                </div>
+                <div id="image-details" class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Image Details</h3>
+                    </div>
+                    <div class="panel-body">
+                        <table class="table">
+                            <tr>
+                                <th>Name:</th>
+                                <td id="fileNameDisplay"></td>
+                            </tr>
+                            <tr>
+                                <th>Width:</th>
+                                @Html.Hidden("originalWidth", "")
+                                <td>@Html.JQueryUI().Spinner("Width") px</td>
+                            </tr>
+                            <tr>
+                                <th>Height:</th>
+                                @Html.Hidden("originalHeight", "")
+                                <td>@Html.JQueryUI().Spinner("Height") px</td>
+                            </tr>
+                            <tr>
+                                <th>Proportional:</th>
+                                <td >@Html.CheckBox("IsProportional")</td>
+                            </tr>
+                        </table>
                     </div>
                 </div>
             </div>
             <div class="row">
                 <input type="file" id="filePicker"/>
-            </div>
-            <div class="row spacer">
-                <button type="submit" name="add" id="Add" value="add" class="btn btn-success " disabled="disabled">Add</button>@Html.Raw(" ")
+                <button type="submit" name="add" id="Add" value="add" class="btn btn-success" disabled="disabled">Add</button>@Html.Raw(" ")
                 <button type="submit" name="cancel" id="Cancel" value="cancel" class="btn btn-danger">Cancel</button>
-                @using (Html.BeginForm("Add", "Pattern", new { area = "Configuration" }, FormMethod.Post, new { @style = "display:none;", @id = "addForm" }))
-                {
-                    @Html.Hidden("fileName", "")
-                    @Html.Hidden("base64Image", "")
-                }
                 @using (Html.BeginForm("Index", "Pattern", new { area = "Configuration" }, FormMethod.Get, new { @style = "display:none;", @id = "cancelForm" }))
                 {
                 }
@@ -203,23 +231,19 @@
                 return properties;
             }());
 
-            var dimensions = (function() {
-                var properties = {};
-                properties.SetDimensions = function(width, height) {
-                    debugger;
-                }
-                return properties;
-            }());
-
             var filePicker = (function () {
                 var properties = {};
                 function updateImageHolder(input) {
                     if (input.files && input.files[0]) {
                         var reader = new FileReader();
-                        reader.onload = function (e) {
+                        reader.onload = function(e) {
                             $('#imagePreview').attr('src', e.target.result);
                         }
-                       reader.readAsDataURL(input.files[0]);
+                        reader.readAsDataURL(input.files[0]);
+                    } else {
+                        $('#imagePreview').attr('src', "");
+                        $('#blackWhitePreview').attr('src', "");
+                        $('#grayscaleImagePreview').attr('src', "");
                     }
                 }
 
@@ -238,14 +262,21 @@
                         $('#Add').attr('disabled', 'disabled');
                         var fileName = $(this).val().split('\\').pop();
                         $('#fileName').val(fileName);
+                        $('#fileNameDisplay').html(fileName);
                         updateImageHolder(this);
-                        debugger;
                         var image = getImage(this);
                         if (image != null) {
                             image.onload = function () {
-                                debugger;
-                                dimensions.SetDimensions(image.width, image.height);
+                                $('#Width').val(image.width);
+                                $('#Height').val(image.height);
+                                $('#originalWidth').val(image.width);
+                                $('#originalHeight').val(image.height);
                             }
+                        } else {
+                            $('#Width').val("");
+                            $('#Height').val("");
+                            $('#originalWidth').val(0);
+                            $('#originalHeight').val(0);
                         }
                     });
                 }
@@ -255,6 +286,7 @@
                         showPreview: false,
                         showRemove: false,
                         showUpload: false,
+                        showCaption: false,
                         allowedFileTypes: ['image'],
                         allowedFileExtensions: ['jpg', 'gif', 'png']
                     });
@@ -291,9 +323,48 @@
                         $('#cancelForm').submit();
                     });
                 }
+
+                function onAjaxSuccess(data) {
+                    window.location.href = data;
+                }
+
+                function getImageData() {
+                    var imageData = $('#blackWhitePreview').attr('src');
+                    var base64Start = imageData.indexOf("base64,");
+                    imageData = imageData.slice(base64Start + 7);
+                    return imageData;
+                }
+
+                function getData() {
+                    var data = {
+                        PatternUploadModel: {
+                            FileName: $('#fileNameDisplay').html(),
+                            Base64Image: getImageData(),
+                            AbsoluteResizeParameters: {
+                                OriginalWidth: $('#originalWidth').val(),
+                                OriginalHeight: $('#originalHeight').val(),
+                                TargetWidth: $('#Width').val(),
+                                TargetHeight: $('#Height').val(),
+                                IsProportional: $('#IsProportional').is(":checked")
+                            }
+                        }
+                    };
+                    return data;
+                }
+
+                function makeSubmitAjaxCall() {
+                    $.ajax({
+                        url: '@Url.Action("Add", "Pattern", new{area ="Configuration"})',
+                        data: getData(),
+                        type: "POST",
+                        contentType: "application/x-www-form-urlencoded",
+                        success: onAjaxSuccess
+                    });
+                }
+
                 properties.AddSubmitClickListener = function () {
-                    $('#Add').click(function() {
-                        $('#addForm').submit();
+                    $('#Add').click(function () {
+                        makeSubmitAjaxCall();
                     });
                 }
                 return properties;

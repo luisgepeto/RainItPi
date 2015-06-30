@@ -11,6 +11,6 @@ namespace Web.RainIt.Models.Pattern
     {
         public string FileName { get; set; }
         public string Base64Image { get; set; }
-        public ResizeParameters ResizeParameters { get; set; }
+        public AbsoluteResizeParameters AbsoluteResizeParameters { get; set; }
     }
 }

@@ -132,11 +132,20 @@ namespace ImageProcessing.Business
 
 	    public bool TryParseImage(string base64Image, out ImageDetails imageDetails)
 	    {
+	        return TryParseImage(base64Image, out imageDetails, null);
+	    }
+
+	    public bool TryParseImage(string base64Image, out ImageDetails imageDetails, ResizeParameters resizeParameters)
+	    {
 	        imageDetails = null;
             var canParse = false;
             try
             {
                 var image = ParseImage(base64Image);
+                if (resizeParameters != null)
+                {
+                    image = (Bitmap) Resize(image, resizeParameters);    
+                }
                 imageDetails = new ImageDetails(image);
                 canParse = true;
             }
@@ -146,7 +155,7 @@ namespace ImageProcessing.Business
             }
             return canParse;
 	    }
-	    
+
 
 	    private Bitmap ParseImage(string base64Image)
 	    {
