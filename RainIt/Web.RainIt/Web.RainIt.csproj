@@ -155,6 +155,7 @@
     <Compile Include="Areas\Administration\AdministrationAreaRegistration.cs" />
     <Compile Include="Areas\Administration\Controllers\DeviceController.cs" />
     <Compile Include="Areas\Configuration\ConfigurationAreaRegistration.cs" />
+    <Compile Include="Areas\Configuration\Models\AbsoluteResizeParametersModel.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Areas\Configuration\Controllers\DeviceController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -285,7 +286,6 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Areas\Administration\Models\" />
-    <Folder Include="Areas\Configuration\Models\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

@@ -41,7 +41,7 @@ namespace ImageProcessing.Domain
 			}
 			set{
 				_targetWidthUnit = value;
-				if (IsProportional)
+                if (IsProportional)
 					_targetHeightUnit = (int)(HeightToWidthDefaultRatio*value);
 			}
 		}
@@ -58,7 +58,7 @@ namespace ImageProcessing.Domain
 			}
 			set{
 				_targetHeightUnit = value;
-				if (IsProportional)
+                if (IsProportional)
 					_targetWidthUnit = (int)(WidthToHeightDefaultRatio*value);
 			}
 		}	

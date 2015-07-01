@@ -4,6 +4,7 @@ using ImageProcessing.Business.Interfaces;
 using ImageProcessing.Domain;
 using RainIt.Domain.DTO;
 using RainIt.Interfaces.Business;
+using Web.RainIt.Areas.Configuration.Models;
 using Web.RainIt.Models.Pattern;
 
 namespace Web.RainIt.Areas.Configuration.Controllers
@@ -28,6 +29,26 @@ namespace Web.RainIt.Areas.Configuration.Controllers
         public ActionResult Add()
         {
             return View();
+        }
+
+        [System.Web.Mvc.HttpPost]
+        public JsonResult GetResizedDimensions(AbsoluteResizeParametersModel absoluteResizeParametersModel)
+        {
+            var absoluteResizeParameters = new AbsoluteResizeParameters()
+            {
+                IsProportional = absoluteResizeParametersModel.IsProportional,
+                OriginalWidth = absoluteResizeParametersModel.OriginalWidth,
+                OriginalHeight = absoluteResizeParametersModel.OriginalHeight
+            };
+            if (absoluteResizeParametersModel.TargetWidth.HasValue)
+            {
+                absoluteResizeParameters.TargetWidth = absoluteResizeParametersModel.TargetWidth.Value;
+            }
+            if (absoluteResizeParametersModel.TargetHeight.HasValue)
+            {
+                absoluteResizeParameters.TargetHeight = absoluteResizeParametersModel.TargetHeight.Value;
+            }
+            return Json(new { absoluteResizeParameters.TargetWidth, absoluteResizeParameters.TargetHeight }, JsonRequestBehavior.AllowGet);
         }
 
         [System.Web.Mvc.HttpPost]

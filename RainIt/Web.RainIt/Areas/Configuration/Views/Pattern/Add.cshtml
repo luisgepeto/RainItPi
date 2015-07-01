@@ -231,6 +231,63 @@
                 return properties;
             }());
 
+            var resizeControls = (function () {
+                var properties = {};
+                function onAjaxSuccess(data) {
+                    $('#Width').val(data.TargetWidth);
+                    $('#Height').val(data.TargetHeight);
+                }
+                function makeAjaxCall(absoluteResizeParametersModel) {
+                    $.ajax({
+                        type: 'POST',
+                        url: '@Url.Action("GetResizedDimensions", "Pattern", new {area = "Configuration"})',
+                        data: JSON.stringify({ AbsoluteResizeParametersModel: absoluteResizeParametersModel }),
+                        success: onAjaxSuccess,
+                        contentType: "application/json",
+                        dataType: "json"
+                    });
+                }
+                function renewParameters(newWidth, newHeight) {
+                    var isProportional = $('#IsProportional').is(':checked');
+                    var newDimensions = {
+                        OriginalWidth: $('#originalWidth').val(),
+                        OriginalHeight: $('#originalHeight').val(),
+                        TargetWidth: !isProportional && newWidth == null ? $('#Width').val() : newWidth,
+                        TargetHeight: !isProportional && newHeight == null ? $('#Height').val() : newHeight,
+                        IsProportional: isProportional
+                    };
+                    makeAjaxCall(newDimensions);
+                }
+                properties.SetParametersTo = function (newWidth, newHeight) {
+                    $('#Width').val(newWidth);
+                    $('#Height').val(newHeight);
+                }
+                function addSpinnerListener() {
+                    $('#Height').parent().on('spinchange', function() {
+                        renewParameters(null, $('#Height').val());
+                    });
+                    $('#Width').parent().on('spinchange', function () {
+                        renewParameters($('#Width').val(), null);
+                    });
+                }
+
+                function addCheckListener() {
+                    $('#IsProportional').change(function () {
+                        renewParameters($('#Width').val(), $('#Height').val());
+                    });
+                }
+
+                properties.Initialize = function (width, height) {
+                    $('#originalWidth').val(width);
+                    $('#originalHeight').val(height);
+                    $('#Width').val(width);
+                    $('#Height').val(height);
+                    addSpinnerListener();
+                    addCheckListener();
+                }
+                return properties;
+            }());
+
             var filePicker = (function () {
                 var properties = {};
                 function updateImageHolder(input) {
@@ -267,16 +324,10 @@
                         var image = getImage(this);
                         if (image != null) {
                             image.onload = function () {
-                                $('#Width').val(image.width);
-                                $('#Height').val(image.height);
-                                $('#originalWidth').val(image.width);
-                                $('#originalHeight').val(image.height);
+                                resizeControls.Initialize(image.width, image.height);
                             }
                         } else {
-                            $('#Width').val("");
-                            $('#Height').val("");
-                            $('#originalWidth').val(0);
-                            $('#originalHeight').val(0);
+                            resizeControls.Initialize(0, 0);
                         }
                     });
                 }
@@ -369,6 +420,8 @@
                 }
                 return properties;
             }());
+           
+
             AddPatternProperties.SetupPage = function () {
                 filePicker.Initialize();
                 filePicker.AddChangeListener();
