@@ -23,6 +23,10 @@
          border-bottom-right-radius: 0;
          border-bottom: none;
      }
+     /* This will disable the spinner buttons that break the layout*/
+     .ui-spinner a.ui-spinner-button {
+         display: none;
+     }
 </style>
 @{
     var message = TempData["StatusMessage"] as StatusMessage;
@@ -42,74 +46,97 @@
                         <h3 class="panel-title">Transformation Settings</h3>
                     </div>
                     <div class="panel-body">
-                            <div class="input-group">
-                                <label for="rWeight" class="input-group-addon">
-                                    <span class="glyphicon glyphicon-tint red" aria-hidden="true"></span>
-                                    <span class="sr-only">R Weight:</span>%
-                                </label>
-                                <div class="form-control">
-                                    @Html.JQueryUI().Slider("RWeight", 50)
-                                </div>
+                        <div class="input-group">
+                            <label for="rWeight" class="input-group-addon">
+                                <span class="glyphicon glyphicon-tint red" aria-hidden="true"></span>
+                                <span class="sr-only">R Weight:</span>
+                            </label>
+                            <div class="form-control">
+                                @Html.JQueryUI().Slider("RWeight", 50)
                             </div>
-                            <div class="input-group">
-                                <label for="gWeight" class="input-group-addon">
-                                    <span class="glyphicon glyphicon-tint green" aria-hidden="true"></span>
-                                    <span class="sr-only">G Weight:</span>%
-                                </label>
-                                <div class="form-control">
-                                    @Html.JQueryUI().Slider("GWeight", 50)
-                                </div>
+                            <span class="input-group-addon">%</span>
+                        </div>
+                        <div class="input-group">
+                            <label for="gWeight" class="input-group-addon">
+                                <span class="glyphicon glyphicon-tint green" aria-hidden="true"></span>
+                                <span class="sr-only">G Weight:</span>
+                            </label>
+                            <div class="form-control">
+                                @Html.JQueryUI().Slider("GWeight", 50)
                             </div>
-                            <div class="input-group">
-                                <label for="bWeight" class="input-group-addon">
-                                    <span class="glyphicon glyphicon-tint blue" aria-hidden="true"></span>
-                                    <span class="sr-only">B Weight:</span>%
-                                </label>
-                                <div class="form-control">
-                                    @Html.JQueryUI().Slider("BWeight", 50)
-                                </div>
+                            <span class="input-group-addon">%</span>
+                        </div>
+                        <div class="input-group">
+                            <label for="bWeight" class="input-group-addon">
+                                <span class="glyphicon glyphicon-tint blue" aria-hidden="true"></span>
+                                <span class="sr-only">B Weight:</span>
+                            </label>
+                            <div class="form-control">
+                                @Html.JQueryUI().Slider("BWeight", 50)
                             </div>
+                            <span class="input-group-addon">%</span>
+                        </div>
                         <div class="input-group">
                             <label for="threshold" class="input-group-addon">
                                 <span class="glyphicon glyphicon-adjust" aria-hidden="true"></span>
-                                <span class="sr-only">BW Threshold:</span>%
+                                <span class="sr-only">BW Threshold:</span>
                             </label>
                             <div class="form-control">
                                 @Html.JQueryUI().Slider("Threshold", 50)
                             </div>
+                            <span class="input-group-addon">%</span>
                         </div>
                         <div class="btn-group" data-toggle="buttons" style="max-height: 20px; width: 100%;">
                             <label class="btn btn-default">
-                                @Html.CheckBox("IsInverted") <img src="../../../../Content/invert.png" style="max-height: 20px;" />
+                                @Html.CheckBox("IsInverted") <img src="../../../../Content/invert.png" style="max-height: 20px;"/>
                             </label>
                         </div>
                     </div>
                 </div>
+                @Html.Hidden("originalWidth", "")
+                @Html.Hidden("originalHeight", "")
+                
                 <div id="image-details" class="panel panel-default">
                     <div class="panel-heading">
                         <h3 class="panel-title">Image Details</h3>
                     </div>
                     <div class="panel-body">
-                        <table class="table">
-                            <tr>
-                                <th>Name:</th>
-                                <td id="fileNameDisplay"></td>
-                            </tr>
-                            <tr>
-                                <th>Width:</th>
-                                @Html.Hidden("originalWidth", "")
-                                <td>@Html.JQueryUI().Spinner("Width") px</td>
-                            </tr>
-                            <tr>
-                                <th>Height:</th>
-                                @Html.Hidden("originalHeight", "")
-                                <td>@Html.JQueryUI().Spinner("Height") px</td>
-                            </tr>
-                            <tr>
-                                <th>Proportional:</th>
-                                <td >@Html.CheckBox("IsProportional")</td>
-                            </tr>
-                        </table>
+                        <div class="input-group">
+                            <label for="threshold" class="input-group-addon">
+                                <span class="glyphicon glyphicon-font" aria-hidden="true"></span>
+                                <span class="sr-only">Name:</span>
+                            </label>
+                            <div class="form-control">
+                                <input type="text" id="fileNameDisplay"/>
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label for="threshold" class="input-group-addon">
+                                <span class="glyphicon glyphicon-resize-horizontal" aria-hidden="true"></span>
+                                <span class="sr-only">New Width:</span>
+                            </label>
+                            <div class="form-control">
+                                @Html.JQueryUI().Spinner("Width")
+                            </div>
+                            <span class="input-group-addon">px</span>
+                        </div>
+                        <div class="input-group">
+                            <label for="threshold" class="input-group-addon">
+                                <span class="glyphicon glyphicon-resize-vertical" aria-hidden="true"></span>
+                                <span class="sr-only">New Height:</span>
+                            </label>
+                            <div class="form-control">
+                                @Html.JQueryUI().Spinner("Height")
+                            </div>
+                            <span class="input-group-addon">px</span>
+                        </div>
+                        <div class="btn-group" data-toggle="buttons" style="max-height: 20px; width: 100%;">
+                            <label class="btn btn-default">
+                                @Html.CheckBox("IsProportional")
+                                <span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
+                                <span class="sr-only">Is Proportional:</span>
+                            </label>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -318,8 +345,7 @@
                     $("#filePicker").change(function () {
                         $('#Add').attr('disabled', 'disabled');
                         var fileName = $(this).val().split('\\').pop();
-                        $('#fileName').val(fileName);
-                        $('#fileNameDisplay').html(fileName);
+                        $('#fileNameDisplay').val(fileName);
                         updateImageHolder(this);
                         var image = getImage(this);
                         if (image != null) {
@@ -389,7 +415,7 @@
                 function getData() {
                     var data = {
                         PatternUploadModel: {
-                            FileName: $('#fileNameDisplay').html(),
+                            FileName: $('#fileNameDisplay').val(),
                             Base64Image: getImageData(),
                             AbsoluteResizeParameters: {
                                 OriginalWidth: $('#originalWidth').val(),
