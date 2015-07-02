@@ -202,7 +202,7 @@
                 <div class="row">
                     <div class="col-md-4 col-xs-4">
                         <div class="limit">
-                            <img id="imagePreview" src=""  />    
+                            <img id="imagePreview" src=""/>
                         </div>
                     </div>
                     <div class="col-md-4 col-xs-4">
@@ -223,6 +223,7 @@
 @Html.Hidden("originalWidth", "")
 @Html.Hidden("originalHeight", "")
 @Html.Hidden("originalImage", "")
+<script src="~/Scripts/custom-ajaxLoadingAnimation.js"></script>
 <script type="text/javascript">
         (function () {
             this.AddPatternProperties = this.AddPatternProperties || {};
@@ -412,7 +413,8 @@
                 function updateImageHolder(input) {
                     if (input.files && input.files[0]) {
                         var reader = new FileReader();
-                        reader.onload = function(e) {
+                        reader.onload = function (e) {
+                            $('#imagePreview').parent().removeAjaxLoadingAnimation();
                             $('#imagePreview').attr('src', e.target.result);
                             var imageData = e.target.result;
                             var base64Start = imageData.indexOf("base64,");
@@ -421,6 +423,7 @@
                         }
                         reader.readAsDataURL(input.files[0]);
                     } else {
+                        $('#imagePreview').parent().removeAjaxLoadingAnimation();
                         $('#originalImage').val("");
                         $('#imagePreview').attr('src', "");
                         $('#blackWhitePreview').attr('src', "");
@@ -443,6 +446,8 @@
                         $('#Add').attr('disabled', 'disabled');
                         var fileName = $(this).val().split('\\').pop();
                         $('#fileNameDisplay').val(fileName);
+                        debugger;
+                        $('#imagePreview').parent().setAjaxLoadingAnimation();
                         updateImageHolder(this);
                         var image = getImage(this);
                         if (image != null) {

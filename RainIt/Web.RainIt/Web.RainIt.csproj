@@ -232,6 +232,7 @@
     <Content Include="Content\fonts\gotham-medium.ttf" />
     <None Include="Properties\PublishProfiles\DevRainIt.pubxml" />
     <None Include="Scripts\jquery-2.1.4.intellisense.js" />
+    <Content Include="Scripts\custom-ajaxLoadingAnimation.js" />
     <Content Include="Scripts\dropzone.js" />
     <Content Include="Scripts\fileinput.js" />
     <Content Include="Scripts\jquery-2.1.4.js" />
