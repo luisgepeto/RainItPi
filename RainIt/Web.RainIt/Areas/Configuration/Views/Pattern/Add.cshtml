@@ -14,19 +14,31 @@
      }
      /* This will bundle the input groups together*/
      .container  .input-group:not(:first-of-type) .input-group-addon, .container .input-group:not(:first-of-type) .form-control {
+         -ms-border-top-left-radius: 0;
          border-top-left-radius: 0;
+         -ms-border-top-right-radius: 0;
          border-top-right-radius: 0;
          border-top: none;
      }
-     .container .input-group:not(:last-of-type) .input-group-addon, .container .input-group:not(:last-of-type) .form-control{
+
+     .container .input-group:not(:last-of-type) .input-group-addon, .container .input-group:not(:last-of-type) .form-control {
+         -ms-border-bottom-left-radius: 0;
          border-bottom-left-radius: 0;
+         -ms-border-bottom-right-radius: 0;
          border-bottom-right-radius: 0;
          border-bottom: none;
      }
+
      /* This will disable the spinner buttons that break the layout*/
      .ui-spinner a.ui-spinner-button {
          display: none;
      }
+
+     /*This will limit this page column to a maximum height*/
+     .limit {
+      max-height:500px;
+      overflow:hidden;  
+    }
 </style>
 @{
     var message = TempData["StatusMessage"] as StatusMessage;
@@ -93,9 +105,6 @@
                         </div>
                     </div>
                 </div>
-                @Html.Hidden("originalWidth", "")
-                @Html.Hidden("originalHeight", "")
-                
                 <div id="image-details" class="panel panel-default">
                     <div class="panel-heading">
                         <h3 class="panel-title">Image Details</h3>
@@ -144,28 +153,31 @@
                 <input type="file" id="filePicker"/>
                 <button type="submit" name="add" id="Add" value="add" class="btn btn-success" disabled="disabled">Add</button>@Html.Raw(" ")
                 <button type="submit" name="cancel" id="Cancel" value="cancel" class="btn btn-danger">Cancel</button>
-                @using (Html.BeginForm("Index", "Pattern", new { area = "Configuration" }, FormMethod.Get, new { @style = "display:none;", @id = "cancelForm" }))
+                @using (Html.BeginForm("Index", "Pattern", new {area = "Configuration"}, FormMethod.Get, new {@style = "display:none;", @id = "cancelForm"}))
                 {
                 }
             </div>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-8 limit">
             <div id="img-preview" class="container">
                 <div class="row">
                     <div class="col-md-4 col-xs-4">
                         <img id="imagePreview" src="" class="img-responsive"/>
                     </div>
                     <div class="col-md-4 col-xs-4">
-                        <img id="grayscaleImagePreview" src="" class="img-responsive" />
+                        <img id="grayscaleImagePreview" src="" class="img-responsive"/>
                     </div>
                     <div class="col-md-4 col-xs-4">
-                        <img id="blackWhitePreview" src="" class="img-responsive" />
+                        <img id="blackWhitePreview" src="" class="img-responsive"/>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+@Html.Hidden("originalWidth", "")
+@Html.Hidden("originalHeight", "")
+@Html.Hidden("originalImage", "")
 <script type="text/javascript">
         (function () {
             this.AddPatternProperties = this.AddPatternProperties || {};
@@ -261,29 +273,33 @@
             var resizeControls = (function () {
                 var properties = {};
                 function onAjaxSuccess(data) {
+                    $('#imagePreview').attr('src', "data:image/png;base64,"+data.base64NewImage);
                     $('#Width').val(data.TargetWidth);
                     $('#Height').val(data.TargetHeight);
                 }
                 function makeAjaxCall(absoluteResizeParametersModel) {
                     $.ajax({
                         type: 'POST',
-                        url: '@Url.Action("GetResizedDimensions", "Pattern", new {area = "Configuration"})',
-                        data: JSON.stringify({ AbsoluteResizeParametersModel: absoluteResizeParametersModel }),
+                        url: '@Url.Action("GetResizedImage", "Pattern", new {area = "Configuration"})',
+                        data: JSON.stringify(absoluteResizeParametersModel),
                         success: onAjaxSuccess,
                         contentType: "application/json",
                         dataType: "json"
                     });
                 }
-                function renewParameters(newWidth, newHeight) {
+                function resizeImage(newWidth, newHeight) {
                     var isProportional = $('#IsProportional').is(':checked');
-                    var newDimensions = {
-                        OriginalWidth: $('#originalWidth').val(),
-                        OriginalHeight: $('#originalHeight').val(),
-                        TargetWidth: !isProportional && newWidth == null ? $('#Width').val() : newWidth,
-                        TargetHeight: !isProportional && newHeight == null ? $('#Height').val() : newHeight,
-                        IsProportional: isProportional
+                    var absoluteResizeParametersModel = {
+                        base64Image: $('#originalImage').val(),
+                        AbsoluteResizeParametersModel: {
+                            OriginalWidth: $('#originalWidth').val(),
+                            OriginalHeight: $('#originalHeight').val(),
+                            TargetWidth: !isProportional && newWidth == null ? $('#Width').val() : newWidth,
+                            TargetHeight: !isProportional && newHeight == null ? $('#Height').val() : newHeight,
+                            IsProportional: isProportional
+                        }
                     };
-                    makeAjaxCall(newDimensions);
+                    makeAjaxCall(absoluteResizeParametersModel);
                 }
                 properties.SetParametersTo = function (newWidth, newHeight) {
                     $('#Width').val(newWidth);
@@ -291,16 +307,16 @@
                 }
                 function addSpinnerListener() {
                     $('#Height').parent().on('spinchange', function() {
-                        renewParameters(null, $('#Height').val());
+                        resizeImage(null, $('#Height').val());
                     });
                     $('#Width').parent().on('spinchange', function () {
-                        renewParameters($('#Width').val(), null);
+                        resizeImage($('#Width').val(), null);
                     });
                 }
 
                 function addCheckListener() {
                     $('#IsProportional').change(function () {
-                        renewParameters($('#Width').val(), $('#Height').val());
+                        resizeImage($('#Width').val(), $('#Height').val());
                     });
                 }
 
@@ -322,9 +338,14 @@
                         var reader = new FileReader();
                         reader.onload = function(e) {
                             $('#imagePreview').attr('src', e.target.result);
+                            var imageData = e.target.result;
+                            var base64Start = imageData.indexOf("base64,");
+                            imageData = imageData.slice(base64Start + 7);
+                            $('#originalImage').val(imageData);
                         }
                         reader.readAsDataURL(input.files[0]);
                     } else {
+                        $('#originalImage').val("");
                         $('#imagePreview').attr('src', "");
                         $('#blackWhitePreview').attr('src', "");
                         $('#grayscaleImagePreview').attr('src', "");

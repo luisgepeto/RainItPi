@@ -61,6 +61,7 @@ ul.nav.navbar-nav {
 
 /* Alters bootstrap img-responsive to set max height of 100%*/
 .img-responsive {
+    width: auto;
     max-height: 100%;
 }
 

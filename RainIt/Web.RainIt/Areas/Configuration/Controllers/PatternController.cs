@@ -1,4 +1,5 @@
-﻿using System.Web.Http;
+﻿using System;
+using System.Web.Http;
 using System.Web.Mvc;
 using ImageProcessing.Business.Interfaces;
 using ImageProcessing.Domain;
@@ -32,7 +33,7 @@ namespace Web.RainIt.Areas.Configuration.Controllers
         }
 
         [System.Web.Mvc.HttpPost]
-        public JsonResult GetResizedDimensions(AbsoluteResizeParametersModel absoluteResizeParametersModel)
+        public JsonResult GetResizedImage(string base64Image, AbsoluteResizeParametersModel absoluteResizeParametersModel)
         {
             var absoluteResizeParameters = new AbsoluteResizeParameters()
             {
@@ -47,8 +48,15 @@ namespace Web.RainIt.Areas.Configuration.Controllers
             if (absoluteResizeParametersModel.TargetHeight.HasValue)
             {
                 absoluteResizeParameters.TargetHeight = absoluteResizeParametersModel.TargetHeight.Value;
+            
             }
-            return Json(new { absoluteResizeParameters.TargetWidth, absoluteResizeParameters.TargetHeight }, JsonRequestBehavior.AllowGet);
+            ImageDetails imageDetails;
+            var base64NewImage = String.Empty;
+            if (ImageManager.TryParseImage(base64Image, out imageDetails, absoluteResizeParameters))
+            {
+                base64NewImage = ImageManager.ConvertToBase64(imageDetails.Image);
+            }
+            return Json(new { absoluteResizeParameters.TargetWidth, absoluteResizeParameters.TargetHeight, base64NewImage }, JsonRequestBehavior.AllowGet);
         }
 
         [System.Web.Mvc.HttpPost]
