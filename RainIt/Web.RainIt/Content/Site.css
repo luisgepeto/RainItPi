@@ -23,6 +23,10 @@ textarea {
     width: 100%;
 }
 
+/* This will avoid the multiselect container issues when setting the width to default*/
+.multiselect-container input {
+    width: auto;
+}
 
 /* Set the navbar items to appear on the right*/
 ul.nav.navbar-nav {

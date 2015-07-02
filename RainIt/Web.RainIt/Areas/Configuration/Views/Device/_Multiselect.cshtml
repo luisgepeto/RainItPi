@@ -5,13 +5,15 @@
         <option value="@device.Identifier">@device.Identifier</option>
     }
 </select>
+<script src="~/Scripts/bootstrap-multiselect.js"></script>
+<link href="~/Content/bootstrap-multiselect.css" rel="stylesheet" />
 <script type="text/javascript">
     (function() {
         this.DeviceMultiselectProperties = this.DeviceMultiselectProperties || {};
         var multiselect = (function() {
             var properties = {};
-            properties.Initialize = function() {
-                $('#device-multiselect').multiselect();
+            properties.Initialize = function () {
+                $('#device-multiselect').multiselect({buttonWidth: '150px'});
             }
             properties.SelectDevices = function (deviceIds) {
                 $.each(deviceIds, function() {

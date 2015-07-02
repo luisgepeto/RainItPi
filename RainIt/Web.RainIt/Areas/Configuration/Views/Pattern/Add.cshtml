@@ -121,9 +121,20 @@
                         </div>
                         <div class="btn-group btn-block" data-toggle="buttons">
                             <label class="btn btn-default btn-block">
-                                @Html.CheckBox("IsInverted") <img src="../../../../Content/invert.png" style="max-height: 20px;" />
+                                @Html.CheckBox("IsInverted") <img src="../../../../Content/invert.png" style="max-height: 20px;"/>
                             </label>
                         </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">
+                            Multiselect
+                        </h3>
+                    </div>
+                    <div class="panel-body">
+                        @Html.Action("Multiselect", "Device", new { area = "Configuration" })
+                        <button type="submit" name="test" id="Test" value="test" class="btn btn-info">Test</button>
                     </div>
                 </div>
                 <div id="image-details" class="panel panel-default">
