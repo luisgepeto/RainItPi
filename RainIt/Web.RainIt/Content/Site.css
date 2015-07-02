@@ -103,3 +103,35 @@ strong {
     font-family: 'gotham-bold';
     src: url('fonts/gotham-bold.ttf') format('truetype');
 }
+
+/* these are the styles for the loading bar*/
+k-loading-mask, .k-loading-image, .k-loading-text {
+  position: absolute;
+}
+
+.k-loading-text {
+  text-align: center;
+}
+.k-loading-image {
+    background-image: url('loading-image-navy.gif');
+}
+.k-loading-image {
+  top: 0;
+  left: 0;
+  z-index: 2;
+}
+.k-loading-image, .k-loading-color {
+  width: 100%;
+  height: 100%;
+}
+.k-loading, .k-loading-image {
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+.k-loading-color {
+  background-color: #fff;
+}
+.k-loading-color {
+  opacity: .3;
+}

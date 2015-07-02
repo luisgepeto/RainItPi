@@ -60,6 +60,18 @@
      div[data-jqui-slider-names='Threshold'] .ui-slider-range {
          background: black;
      }
+
+     /* This will set the border on the image containers*/
+     .img-container {
+         border-style: dashed;
+         border-width: 3px;
+         border-color: #3276b1;
+         background: url("../../../../Content/icons/image.png") no-repeat center;
+         background-size: 100% auto;
+     }
+     .invisible-background {
+         background: initial;
+     }
 </style>
 @{
     var message = TempData["StatusMessage"] as StatusMessage;
@@ -125,7 +137,7 @@
                         </div>
                         <div class="btn-group btn-block" data-toggle="buttons">
                             <label class="btn btn-default btn-block">
-                                @Html.CheckBox("IsInverted") <img src="../../../../Content/invert.png" style="max-height: 20px;"/>
+                                @Html.CheckBox("IsInverted") <img src="../../../../Content/icons/invert.png" style="max-height: 20px;"/>
                             </label>
                         </div>
                     </div>
@@ -201,18 +213,18 @@
             <div id="img-preview" class="container">
                 <div class="row">
                     <div class="col-md-4 col-xs-4">
-                        <div class="limit">
+                        <div class="limit img-container">
                             <img id="imagePreview" src=""/>
                         </div>
                     </div>
                     <div class="col-md-4 col-xs-4">
-                        <div class="limit">
+                        <div class="limit img-container">
                             <img id="grayscaleImagePreview" src="" />
                         </div>
                     </div>
                     <div class="col-md-4 col-xs-4">
-                        <div class="limit">
-                            <img id="blackWhitePreview" src="" />    
+                        <div class="limit img-container">
+                            <img id="blackWhitePreview" src="" />
                         </div>
                     </div>
                 </div>
@@ -227,14 +239,16 @@
 <script type="text/javascript">
         (function () {
             this.AddPatternProperties = this.AddPatternProperties || {};
-
+            var blankImageString = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==';
             AddPatternProperties.ImageTransformer = (function () {
                 var properties = {};
                 function onAjaxSuccess(data) {
                     if (data.hasOwnProperty("grayScaleFile")) {
+                        $('#grayscaleImagePreview').parent().removeAjaxLoadingAnimation();
                         $('#grayscaleImagePreview').attr("src", "data:image/png;base64," + data.grayScaleFile);
                     }
                     if (data.hasOwnProperty("blackWhiteFile")) {
+                        $('#blackWhitePreview').parent().removeAjaxLoadingAnimation();
                         slider.EnableAll();
                         isInvertedControl.Enable();
                         resizeControls.EnableAll();
@@ -255,31 +269,39 @@
 
                 properties.GetGrayScale = function () {
                     $('#Add').attr('disabled', 'disabled');
-                    slider.DisableAll();
-                    isInvertedControl.Disable();
-                    resizeControls.DisableAll();
-                    var url = '@Url.Action("GetGrayScaleFor", "Pattern", new { area = "Configuration" }, null)' + "?colorRelativeWeight.RWeight=-1&colorRelativeWeight.GWeight=-2&colorRelativeWeight.BWeight=-3";
-                    url = url.replace("-1", $('#RWeight').val());
-                    url = url.replace("-2", $('#GWeight').val());
-                    url = url.replace("-3", $('#BWeight').val());
                     var imageData = $('#imagePreview').attr('src');
-                    var base64Start = imageData.indexOf("base64,");
-                    imageData = imageData.slice(base64Start + 7);
-                    makeTransformAjaxCall(url, imageData);
+                    if (imageData != blankImageString) {
+                        $('#grayscaleImagePreview').parent().addClass("invisible-background");
+                        $('#grayscaleImagePreview').parent().setAjaxLoadingAnimation();
+                        slider.DisableAll();
+                        isInvertedControl.Disable();
+                        resizeControls.DisableAll();
+                        var url = '@Url.Action("GetGrayScaleFor", "Pattern", new { area = "Configuration" }, null)' + "?colorRelativeWeight.RWeight=-1&colorRelativeWeight.GWeight=-2&colorRelativeWeight.BWeight=-3";
+                        url = url.replace("-1", $('#RWeight').val());
+                        url = url.replace("-2", $('#GWeight').val());
+                        url = url.replace("-3", $('#BWeight').val());
+                        var base64Start = imageData.indexOf("base64,");
+                        imageData = imageData.slice(base64Start + 7);
+                        makeTransformAjaxCall(url, imageData);
+                    }
                 }
 
                 properties.GetBlackWhite = function () {
-                    $('#Add').attr('disabled', 'disabled');
-                    slider.DisableAll();
-                    isInvertedControl.Disable();
-                    resizeControls.DisableAll();
-                    var url = '@Url.Action("GetBlackWhiteFor", "Pattern", new { area = "Configuration" }, null)' + "?isInverted=-1&thresholdPercentage=-2";
-                    url = url.replace("-1", $('#IsInverted').is(":checked"));
-                    url = url.replace("-2", ($('#Threshold').val() == "" ? 0 : $('#Threshold').val()));
                     var imageData = $('#grayscaleImagePreview').attr('src');
-                    var base64Start = imageData.indexOf("base64,");
-                    imageData = imageData.slice(base64Start + 7);
-                    makeTransformAjaxCall(url, imageData);
+                    if (imageData != blankImageString) {
+                        $('#Add').attr('disabled', 'disabled');
+                        $('#blackWhitePreview').parent().addClass("invisible-background");
+                        $('#blackWhitePreview').parent().setAjaxLoadingAnimation();
+                        slider.DisableAll();
+                        isInvertedControl.Disable();
+                        resizeControls.DisableAll();
+                        var url = '@Url.Action("GetBlackWhiteFor", "Pattern", new { area = "Configuration" }, null)' + "?isInverted=-1&thresholdPercentage=-2";
+                        url = url.replace("-1", $('#IsInverted').is(":checked"));
+                        url = url.replace("-2", ($('#Threshold').val() == "" ? 0 : $('#Threshold').val()));
+                        var base64Start = imageData.indexOf("base64,");
+                        imageData = imageData.slice(base64Start + 7);
+                        makeTransformAjaxCall(url, imageData);
+                    }
                 }
 
                 return properties;
@@ -369,17 +391,23 @@
                     $('#Height').val(newHeight);
                 }
                 function addSpinnerListener() {
-                    $('#Height').parent().on('spinchange', function() {
-                        resizeImage(null, $('#Height').val());
+                    $('#Height').parent().on('spinchange', function () {
+                        if ($('#originalImage').val() != "") {
+                            resizeImage(null, $('#Height').val());
+                        }
                     });
                     $('#Width').parent().on('spinchange', function () {
-                        resizeImage($('#Width').val(), null);
+                        if ($('#originalImage').val() != "") {
+                            resizeImage($('#Width').val(), null);
+                        }
                     });
                 }
 
                 function addCheckListener() {
                     $('#IsProportional').change(function () {
-                        resizeImage($('#Width').val(), $('#Height').val());
+                        if ($('#originalImage').val() != "") {
+                            resizeImage($('#Width').val(), $('#Height').val());
+                        }
                     });
                 }
 
@@ -414,6 +442,7 @@
                     if (input.files && input.files[0]) {
                         var reader = new FileReader();
                         reader.onload = function (e) {
+                            $('#imagePreview').parent().addClass("invisible-background");
                             $('#imagePreview').parent().removeAjaxLoadingAnimation();
                             $('#imagePreview').attr('src', e.target.result);
                             var imageData = e.target.result;
@@ -423,11 +452,14 @@
                         }
                         reader.readAsDataURL(input.files[0]);
                     } else {
+                        $('#imagePreview').parent().removeClass("invisible-background");
+                        $('#grayscaleImagePreview').parent().removeClass("invisible-background");
+                        $('#blackWhitePreview').parent().removeClass("invisible-background");
                         $('#imagePreview').parent().removeAjaxLoadingAnimation();
                         $('#originalImage').val("");
-                        $('#imagePreview').attr('src', "");
-                        $('#blackWhitePreview').attr('src', "");
-                        $('#grayscaleImagePreview').attr('src', "");
+                        $('#imagePreview').attr('src', blankImageString);
+                        $('#blackWhitePreview').attr('src', blankImageString);
+                        $('#grayscaleImagePreview').attr('src', blankImageString);
                     }
                 }
 
@@ -446,7 +478,6 @@
                         $('#Add').attr('disabled', 'disabled');
                         var fileName = $(this).val().split('\\').pop();
                         $('#fileNameDisplay').val(fileName);
-                        debugger;
                         $('#imagePreview').parent().setAjaxLoadingAnimation();
                         updateImageHolder(this);
                         var image = getImage(this);

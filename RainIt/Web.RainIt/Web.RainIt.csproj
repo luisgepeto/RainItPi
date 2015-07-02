@@ -169,13 +169,15 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Content\addimageicon.png" />
+    <Content Include="Content\icons\addimageicon.png" />
     <Content Include="Content\bootstrap-multiselect.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\bootstrapcarousel.css" />
     <Content Include="Content\fileinput.css" />
-    <Content Include="Content\invert.png" />
+    <Content Include="Content\icons\image.png" />
+    <Content Include="Content\icons\invert.png" />
+    <Content Include="Content\loading-image-navy.gif" />
     <Content Include="Content\rocket.jpg" />
     <Content Include="Content\themes\base\accordion.css" />
     <Content Include="Content\themes\base\all.css" />
