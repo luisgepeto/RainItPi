@@ -227,6 +227,9 @@
     <Content Include="Areas\Administration\Views\Shared\_Layout.cshtml" />
     <Content Include="Areas\Configuration\Views\_ViewStart.cshtml" />
     <Content Include="Areas\Administration\Views\_ViewStart.cshtml" />
+    <Content Include="Content\fonts\gotham-bold.ttf" />
+    <Content Include="Content\fonts\gotham-book.ttf" />
+    <Content Include="Content\fonts\gotham-medium.ttf" />
     <None Include="Properties\PublishProfiles\DevRainIt.pubxml" />
     <None Include="Scripts\jquery-2.1.4.intellisense.js" />
     <Content Include="Scripts\dropzone.js" />

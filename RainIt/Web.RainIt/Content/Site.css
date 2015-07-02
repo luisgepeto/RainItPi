@@ -94,3 +94,12 @@ ul.nav.navbar-nav {
 .glyphicon.blue {
     color: blue;
 }
+
+/* Changes the font when element is bold*/
+strong {
+    font-family: "gotham-bold", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+@font-face {
+    font-family: 'gotham-bold';
+    src: url('fonts/gotham-bold.ttf') format('truetype');
+}
