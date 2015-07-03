@@ -4,22 +4,25 @@
     ViewBag.Title = "All Patterns";
 }
 <style>
-    .delete-button
-    {
-        display: block;
-        position: relative;
-        top: 10px;
-        right: 0px;
-        width: 27px;
-        height: 27px;
-        background: url('http://cdn-sg1.pgimgs.com/images/pg/close-button.png') no-repeat center center;
-        margin-left: 180px;
+    .delete-button {
+        width: 30px;
+        height: 30px;
+        background: url('../../../../Content/icons/delete.png') no-repeat center center;
+        background-size: contain;
+        position: absolute;
+        left: 83%;
+        top: -15px;
+        z-index: 2;
     }
 </style>
 
 <div class="container">
     <div id="pattern-gallery" class="row shapeshift-gallery">
-        <img id="img-add" src="/Content/icons/addimageicon.png" alt="Add an image" class="img-holder col-md-2">
+        <div class="shapeshift-element col-md-2">
+            <div id="img-add" class="limit-view img-holder img-adder ">
+                <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" />
+            </div>
+        </div>
     </div>
 </div>
 
@@ -36,16 +39,18 @@
         PatternIndexProperties.Gallery = (function() {
             var properties = {};
             function createImage(image) {
-                var imageToPlace = $('<img>').attr("id", "image" + image.PatternId).attr("src", image.Path).attr("class", "img-responsive");
-                var imageHolder = $('<div>').attr("class", "img-holder col-md-"+bootstrapMdColSize).attr("id", "img-holder_" + image.PatternId);
+                var imageToPlace = $('<img>').attr("id", "image" + image.PatternId).attr("src", image.Path);
+                var column = $('<div>').attr("class", "shapeshift-element col-md-"+bootstrapMdColSize);
+                var imageHolder = $('<div>').attr("class", "limit-view img-holder").attr("id", "img-holder_" + image.PatternId);
                 var deleteButton = $('<div>').attr("class", "delete-button").attr("id", "delete_" + image.PatternId);
                 deleteButton.appendTo(imageHolder);
                 imageToPlace.appendTo(imageHolder);
-                return imageHolder;
+                imageHolder.appendTo(column);
+                return column;
             }
             function initializeUserImages() {
                 $.each(passedImages, function(index, imageData) {
-                    var imageAdder = $('#img-add');
+                    var imageAdder = $('#img-add').parent();
                     var image = createImage(imageData);
                     image.insertBefore(imageAdder);
                 });
@@ -82,7 +87,7 @@
                 enableDrag: true,
                 cutoffEnd: passedImages.length - 1,
                 enableCrossDrop: false,
-                selector : '.img-holder'
+                selector : '.shapeshift-element'
             };
             properties.Initialize = function() {
                 initializeUserImages();
