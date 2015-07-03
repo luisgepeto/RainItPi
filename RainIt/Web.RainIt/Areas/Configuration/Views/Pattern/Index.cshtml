@@ -26,7 +26,7 @@
     </div>
 </div>
 
-@Html.Partial("_ModalDelete")
+@Html.Partial("_Modal")
 @using (Html.BeginForm("Add", "Pattern", new {area = "Configuration"}, FormMethod.Get, new {id = "addPatternForm"}))
 {
 }
@@ -148,8 +148,13 @@
             properties.AddClickListener = function() {
                 $('.delete-button').click(function(e) {
                     var patternToDelete = $(e.target).attr("id").split("_")[1];
-                    ModalDeleteProperties.Initialize(makeDeleteAjaxCall, patternToDelete);
-                    ModalDeleteProperties.Show($('#image'+patternToDelete).addClass("img-responsive"));
+                    var parameters = {
+                        ButtonName: "Delete",
+                        Message: "Are you sure you want to delete this item?<br />This action cannot be undone.",
+                        ModalContent: $('#image'+patternToDelete).addClass("img-responsive")
+                    };
+                    ModalDeleteProperties.Initialize(parameters, makeDeleteAjaxCall, patternToDelete);
+                    ModalDeleteProperties.Show();
                 });
             }
             return properties;
