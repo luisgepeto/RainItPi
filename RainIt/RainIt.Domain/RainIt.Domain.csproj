@@ -96,6 +96,7 @@
     <Compile Include="DTO\RoutineDTO.cs" />
     <Compile Include="DTO\RoutinePatternDTO.cs" />
     <Compile Include="DTO\StatusMessage.cs" />
+    <Compile Include="DTO\UploadConstraintParameters.cs" />
     <Compile Include="DTO\User.cs" />
     <Compile Include="DTO\UserInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -1,6 +1,6 @@
 ﻿@using JQueryUIHelpers
 @using RainIt.Domain.DTO
-
+@model UploadConstraintParameters
 @using Web.RainIt.Models
 @{
     ViewBag.Title = "Add Pattern";
@@ -57,6 +57,12 @@
         </div>
     }
 }
+<br/>
+<br/>
+<br/><br/>
+<br/>
+
+@Html.Partial("_Alert")
 <div class="container">
     <div class="row">
         <div class="col-md-4">
@@ -65,7 +71,7 @@
                     <div class="panel-heading">
                         <h3 class="panel-title">
                             <strong>
-                                Transformation Settings    
+                                Transformation Settings
                             </strong>
                         </h3>
                     </div>
@@ -126,16 +132,17 @@
                         </h3>
                     </div>
                     <div class="panel-body">
-                        @Html.Action("Multiselect", "Device", new { area = "Configuration" })
+                        @Html.Action("Multiselect", "Device", new {area = "Configuration"})
                         <button type="submit" name="test" id="Test" value="test" class="btn btn-info">Test</button>
                     </div>
                 </div>
                 <div id="image-details" class="panel panel-default">
                     <div class="panel-heading">
-                        <h3 class="panel-title"><strong>Image Details</strong></h3>
+                        <h3 class="panel-title"><strong>Image Details</strong>
+                        </h3>
                     </div>
                     <div class="panel-body">
-                        
+
                         <div class="input-group">
                             <label for="threshold" class="input-group-addon">
                                 <span class="glyphicon glyphicon-resize-vertical" aria-hidden="true"></span>
@@ -189,17 +196,17 @@
                 <div class="row">
                     <div class="col-md-4 col-xs-4">
                         <div class="limit-add img-holder img-container">
-                            <img id="imagePreview" src="" />
+                            <img id="imagePreview" src=""/>
                         </div>
                     </div>
                     <div class="col-md-4 col-xs-4">
                         <div class="limit-add img-holder img-container">
-                            <img id="grayscaleImagePreview" src="" />
+                            <img id="grayscaleImagePreview" src=""/>
                         </div>
                     </div>
                     <div class="col-md-4 col-xs-4">
                         <div class="limit-add img-holder img-container">
-                            <img id="blackWhitePreview" src="" />
+                            <img id="blackWhitePreview" src=""/>
                         </div>
                     </div>
                 </div>
@@ -207,179 +214,199 @@
         </div>
     </div>
 </div>
+
 @Html.Hidden("originalWidth", "")
 @Html.Hidden("originalHeight", "")
 @Html.Hidden("originalImage", "")
 <script src="~/Scripts/custom-ajaxLoadingAnimation.js"></script>
 <script type="text/javascript">
-        (function () {
-            this.AddPatternProperties = this.AddPatternProperties || {};
-            var blankImageString = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==';
-            AddPatternProperties.ImageTransformer = (function () {
-                var properties = {};
-                function onAjaxSuccess(data) {
-                    if (data.hasOwnProperty("grayScaleFile")) {
-                        $('#grayscaleImagePreview').parent().removeAjaxLoadingAnimation();
-                        $('#grayscaleImagePreview').attr("src", "data:image/png;base64," + data.grayScaleFile);
-                    }
-                    if (data.hasOwnProperty("blackWhiteFile")) {
-                        $('#blackWhitePreview').parent().removeAjaxLoadingAnimation();
-                        slider.EnableAll();
-                        isInvertedControl.Enable();
-                        resizeControls.EnableAll();
-                        $('#blackWhitePreview').attr("src", "data:image/png;base64," + data.blackWhiteFile);
-                        $('#base64Image').val(data.blackWhiteFile);
-                    } 
+    (function () {
+        this.AddPatternProperties = this.AddPatternProperties || {};
+        var blankImageString = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==';
+        AddPatternProperties.ImageTransformer = (function () {
+            var properties = {};
+            function onAjaxSuccess(data) {
+                if (data.hasOwnProperty("grayScaleFile")) {
+                    $('#grayscaleImagePreview').parent().removeAjaxLoadingAnimation();
+                    $('#grayscaleImagePreview').attr("src", "data:image/png;base64," + data.grayScaleFile);
                 }
-
-                function makeTransformAjaxCall(url, imageData) {
-                    $.ajax({
-                        url: url,
-                        data: { base64Image: imageData },
-                        type: "POST",
-                        contentType: "application/x-www-form-urlencoded",
-                        success: onAjaxSuccess
-                    });
+                if (data.hasOwnProperty("blackWhiteFile")) {
+                    $('#blackWhitePreview').parent().removeAjaxLoadingAnimation();
+                    slider.EnableAll();
+                    isInvertedControl.Enable();
+                    resizeControls.EnableAll();
+                    $('#blackWhitePreview').attr("src", "data:image/png;base64," + data.blackWhiteFile);
+                    $('#base64Image').val(data.blackWhiteFile);
                 }
+            }
 
-                properties.GetGrayScale = function () {
+            function makeTransformAjaxCall(url, imageData) {
+                $.ajax({
+                    url: url,
+                    data: { base64Image: imageData },
+                    type: "POST",
+                    contentType: "application/x-www-form-urlencoded",
+                    success: onAjaxSuccess
+                });
+            }
+
+            properties.GetGrayScale = function () {
+                $('#Add').attr('disabled', 'disabled');
+                var imageData = $('#imagePreview').attr('src');
+                if (imageData != blankImageString && imageData != "") {
+                    $('#grayscaleImagePreview').parent().addClass("invisible-background");
+                    $('#grayscaleImagePreview').parent().setAjaxLoadingAnimation();
+                    slider.DisableAll();
+                    isInvertedControl.Disable();
+                    resizeControls.DisableAll();
+                    var url = '@Url.Action("GetGrayScaleFor", "Pattern", new { area = "Configuration" }, null)' + "?colorRelativeWeight.RWeight=-1&colorRelativeWeight.GWeight=-2&colorRelativeWeight.BWeight=-3";
+                    url = url.replace("-1", $('#RWeight').val());
+                    url = url.replace("-2", $('#GWeight').val());
+                    url = url.replace("-3", $('#BWeight').val());
+                    var base64Start = imageData.indexOf("base64,");
+                    imageData = imageData.slice(base64Start + 7);
+                    makeTransformAjaxCall(url, imageData);
+                }
+            }
+
+            properties.GetBlackWhite = function () {
+                var imageData = $('#grayscaleImagePreview').attr('src');
+                if (imageData != blankImageString && imageData != "") {
                     $('#Add').attr('disabled', 'disabled');
-                    var imageData = $('#imagePreview').attr('src');
-                    if (imageData != blankImageString && imageData!="") {
-                        $('#grayscaleImagePreview').parent().addClass("invisible-background");
-                        $('#grayscaleImagePreview').parent().setAjaxLoadingAnimation();
-                        slider.DisableAll();
-                        isInvertedControl.Disable();
-                        resizeControls.DisableAll();
-                        var url = '@Url.Action("GetGrayScaleFor", "Pattern", new { area = "Configuration" }, null)' + "?colorRelativeWeight.RWeight=-1&colorRelativeWeight.GWeight=-2&colorRelativeWeight.BWeight=-3";
-                        url = url.replace("-1", $('#RWeight').val());
-                        url = url.replace("-2", $('#GWeight').val());
-                        url = url.replace("-3", $('#BWeight').val());
-                        var base64Start = imageData.indexOf("base64,");
-                        imageData = imageData.slice(base64Start + 7);
-                        makeTransformAjaxCall(url, imageData);
-                    }
+                    $('#blackWhitePreview').parent().addClass("invisible-background");
+                    $('#blackWhitePreview').parent().setAjaxLoadingAnimation();
+                    slider.DisableAll();
+                    isInvertedControl.Disable();
+                    resizeControls.DisableAll();
+                    var url = '@Url.Action("GetBlackWhiteFor", "Pattern", new { area = "Configuration" }, null)' + "?isInverted=-1&thresholdPercentage=-2";
+                    url = url.replace("-1", $('#IsInverted').is(":checked"));
+                    url = url.replace("-2", ($('#Threshold').val() == "" ? 0 : $('#Threshold').val()));
+                    var base64Start = imageData.indexOf("base64,");
+                    imageData = imageData.slice(base64Start + 7);
+                    makeTransformAjaxCall(url, imageData);
                 }
+            }
 
-                properties.GetBlackWhite = function () {
-                    var imageData = $('#grayscaleImagePreview').attr('src');
-                    if (imageData != blankImageString && imageData != "") {
-                        $('#Add').attr('disabled', 'disabled');
-                        $('#blackWhitePreview').parent().addClass("invisible-background");
-                        $('#blackWhitePreview').parent().setAjaxLoadingAnimation();
-                        slider.DisableAll();
-                        isInvertedControl.Disable();
-                        resizeControls.DisableAll();
-                        var url = '@Url.Action("GetBlackWhiteFor", "Pattern", new { area = "Configuration" }, null)' + "?isInverted=-1&thresholdPercentage=-2";
-                        url = url.replace("-1", $('#IsInverted').is(":checked"));
-                        url = url.replace("-2", ($('#Threshold').val() == "" ? 0 : $('#Threshold').val()));
-                        var base64Start = imageData.indexOf("base64,");
-                        imageData = imageData.slice(base64Start + 7);
-                        makeTransformAjaxCall(url, imageData);
-                    }
-                }
+            return properties;
+        }());
 
-                return properties;
-            }());
-
-            var isInvertedControl = (function () {
-                var properties = {};
-                properties.AddChangeListener = function () {
-                    $('#IsInverted').change(function () {
-                        if ($('#grayscaleImagePreview').attr('src') != "") {
-                            AddPatternProperties.ImageTransformer.GetBlackWhite();
-                        }
-                    });
-                }
-                properties.Disable = function () {
-                    $('#IsInverted').parent().attr('disabled', true);
-                }
-                properties.Enable = function () {
-                    $('#IsInverted').parent().attr('disabled', false);
-                }
-                return properties;
-            }());
-
-            var blackImageHolder = (function() {
-                var properties = {};
-                properties.AddLoadListener = function() {
-                    $('#blackWhitePreview').on('load', function () {
-                        $('#Add').removeAttr('disabled');
-                    });
-                }
-                return properties;
-            }());
-
-            var grayImageHolder = (function () {
-                var properties = {};
-                properties.AddLoadListener = function () {
-                    $('#grayscaleImagePreview').on('load', function () {
+        var isInvertedControl = (function () {
+            var properties = {};
+            properties.AddChangeListener = function () {
+                $('#IsInverted').change(function () {
+                    if ($('#grayscaleImagePreview').attr('src') != "") {
                         AddPatternProperties.ImageTransformer.GetBlackWhite();
-                    });
-                }
-                return properties;
-            }());
+                    }
+                });
+            }
+            properties.Disable = function () {
+                $('#IsInverted').parent().attr('disabled', true);
+            }
+            properties.Enable = function () {
+                $('#IsInverted').parent().attr('disabled', false);
+            }
+            return properties;
+        }());
 
-            var normalImageHolder = (function () {
-                var properties = {};
-                properties.AddLoadListener = function () {
-                    $('#imagePreview').on('load', function () {
-                        AddPatternProperties.ImageTransformer.GetGrayScale();
-                    });
-                }
-                return properties;
-            }());
+        var blackImageHolder = (function () {
+            var properties = {};
+            properties.AddLoadListener = function () {
+                $('#blackWhitePreview').on('load', function () {
+                    $('#Add').removeAttr('disabled');
+                });
+            }
+            return properties;
+        }());
 
-            var resizeControls = (function () {
-                var properties = {};
-                
-                function resizeImage(targetWidth, targetHeight) {
-                    var isProportional = $('#IsProportional').is(':checked');
-                    var originalWidth = $('#originalWidth').val();
-                    var originalHeight = $('#originalHeight').val();
-                    var originalRatio = originalWidth / originalHeight;
-                    targetWidth = !isProportional && targetWidth == null ? $('#Width').val() : targetWidth;
-                    targetHeight = !isProportional && targetHeight == null ? $('#Height').val() : targetHeight;
-                    if (targetWidth == null) {
-                        targetWidth = originalRatio * targetHeight;
-                    }
-                    if (targetHeight == null) {
-                        targetHeight = targetWidth / originalRatio;
-                    }
-                    var currentRatio = targetWidth / targetHeight;
-                    if (isProportional && currentRatio != originalRatio) {
-                        targetWidth = originalRatio * targetHeight;
-                    }
-                    $('#Width').val(targetWidth);
-                    $('#Height').val(targetHeight);
-                    var targetRatio = targetWidth / targetHeight;
-                    if (targetHeight > $('.img-holder').height()) {
-                        targetHeight = $('.img-holder').height();
-                    }
-                    targetWidth = targetRatio * targetHeight;
-                    if (targetWidth > $('.img-holder').width()) {
-                        targetWidth = $('.img-holder').width();
-                    }
-                    targetHeight = targetWidth / targetRatio;
-                    $('#imagePreview').attr('width', targetWidth);
-                    $('#imagePreview').attr('height', targetHeight);
-                    $('#grayscaleImagePreview').attr('width', targetWidth);
-                    $('#grayscaleImagePreview').attr('height', targetHeight);
-                    $('#blackWhitePreview').attr('width', targetWidth);
-                    $('#blackWhitePreview').attr('height', targetHeight);
+        var grayImageHolder = (function () {
+            var properties = {};
+            properties.AddLoadListener = function () {
+                $('#grayscaleImagePreview').on('load', function () {
+                    AddPatternProperties.ImageTransformer.GetBlackWhite();
+                });
+            }
+            return properties;
+        }());
+
+        var normalImageHolder = (function () {
+            var properties = {};
+            properties.AddLoadListener = function () {
+                $('#imagePreview').on('load', function () {
+                    AddPatternProperties.ImageTransformer.GetGrayScale();
+                });
+            }
+            return properties;
+        }());
+
+        var resizeControls = (function () {
+            var properties = {};
+
+            function resizeImage(targetWidth, targetHeight) {
+                var isProportional = $('#IsProportional').is(':checked');
+                var originalWidth = $('#originalWidth').val();
+                var originalHeight = $('#originalHeight').val();
+                var originalRatio = originalWidth / originalHeight;
+                targetWidth = !isProportional && targetWidth == null ? $('#Width').val() : targetWidth;
+                targetHeight = !isProportional && targetHeight == null ? $('#Height').val() : targetHeight;
+                if (targetWidth == null) {
+                    targetWidth = originalRatio * targetHeight;
                 }
-                properties.SetParametersTo = function (newWidth, newHeight) {
-                    $('#Width').val(newWidth);
-                    $('#Height').val(newHeight);
+                if (targetHeight == null) {
+                    targetHeight = targetWidth / originalRatio;
                 }
-                function addSpinnerListener() {
-                    $('#Height').parent().on('spinchange', function () {
-                        if ($('#originalImage').val() != "") {
-                            resizeImage(null, $('#Height').val());
+                var currentRatio = targetWidth / targetHeight;
+                if (isProportional && currentRatio != originalRatio) {
+                    targetWidth = originalRatio * targetHeight;
+                }
+                $('#Width').val(targetWidth);
+                $('#Height').val(targetHeight);
+                var targetRatio = targetWidth / targetHeight;
+                if (targetHeight > $('.img-holder').height()) {
+                    targetHeight = $('.img-holder').height();
+                }
+                targetWidth = targetRatio * targetHeight;
+                if (targetWidth > $('.img-holder').width()) {
+                    targetWidth = $('.img-holder').width();
+                }
+                targetHeight = targetWidth / targetRatio;
+                $('#imagePreview').attr('width', targetWidth);
+                $('#imagePreview').attr('height', targetHeight);
+                $('#grayscaleImagePreview').attr('width', targetWidth);
+                $('#grayscaleImagePreview').attr('height', targetHeight);
+                $('#blackWhitePreview').attr('width', targetWidth);
+                $('#blackWhitePreview').attr('height', targetHeight);
+            }
+            properties.SetParametersTo = function (newWidth, newHeight) {
+                $('#Width').val(newWidth);
+                $('#Height').val(newHeight);
+            }
+            function addSpinnerListener() {
+                $('#Height').parent().on('spinchange', function () {
+                    if ($('#originalImage').val() != "") {
+                        if ($('#Height').val() > Number('@Model.MaxHeight')) {
+                            var alertParameters = {
+                                Class: "alert-danger",
+                                Content: $("<ul><li>The selected height is bigger than the maximum allowed.</li></ul>")
+                            };
+                            AlertProperties.Initialize(alertParameters);
+                            AlertProperties.Show();
+                                $('#Height').val(Number('@Model.MaxHeight'));
+                                
+                        }
+                        resizeImage(null, $('#Height').val());
                         }
                     });
                     $('#Width').parent().on('spinchange', function () {
                         if ($('#originalImage').val() != "") {
+                            if ($('#Width').val() > Number('@Model.MaxWidth')) {
+                                var alertParameters = {
+                                    Class: "alert-danger",
+                                    Content: $("<ul><li>The selected width is bigger than the maximum allowed.</li></ul>")
+                                };
+                                AlertProperties.Initialize(alertParameters);
+                                AlertProperties.Show();
+                                $('#Width').val(Number('@Model.MaxWidth'));
+                            }
                             resizeImage($('#Width').val(), null);
                         }
                     });
@@ -569,37 +596,37 @@
                 function makeSubmitAjaxCall() {
                     $.ajax({
                         url: '@Url.Action("Add", "Pattern", new{area ="Configuration"})',
-                        data: getData(),
-                        type: "POST",
-                        contentType: "application/x-www-form-urlencoded",
-                        success: onAjaxSuccess
-                    });
-                }
-
-                properties.AddSubmitClickListener = function () {
-                    $('#Add').click(function () {
-                        makeSubmitAjaxCall();
-                    });
-                }
-                return properties;
-            }());
-           
-
-            AddPatternProperties.SetupPage = function () {
-                filePicker.Initialize();
-                filePicker.AddChangeListener();
-                normalImageHolder.AddLoadListener();
-                grayImageHolder.AddLoadListener();
-                blackImageHolder.AddLoadListener();
-                slider.AddChangeListener();
-                slider.RemoveDisplay();
-                isInvertedControl.AddChangeListener();
-                button.AddCancelClickListener();
-                button.AddSubmitClickListener();
+                    data: getData(),
+                    type: "POST",
+                    contentType: "application/x-www-form-urlencoded",
+                    success: onAjaxSuccess
+                });
             }
+
+            properties.AddSubmitClickListener = function () {
+                $('#Add').click(function () {
+                    makeSubmitAjaxCall();
+                });
+            }
+            return properties;
         }());
 
-        $(document).ready(function () {
-            AddPatternProperties.SetupPage();
-        });
+
+        AddPatternProperties.SetupPage = function () {
+            filePicker.Initialize();
+            filePicker.AddChangeListener();
+            normalImageHolder.AddLoadListener();
+            grayImageHolder.AddLoadListener();
+            blackImageHolder.AddLoadListener();
+            slider.AddChangeListener();
+            slider.RemoveDisplay();
+            isInvertedControl.AddChangeListener();
+            button.AddCancelClickListener();
+            button.AddSubmitClickListener();
+        }
+    }());
+
+    $(document).ready(function () {
+        AddPatternProperties.SetupPage();
+    });
     </script>

@@ -290,6 +290,7 @@
     <Content Include="Areas\Configuration\Views\Device\Index.cshtml" />
     <Content Include="Areas\Configuration\Views\Device\Add.cshtml" />
     <Content Include="Areas\Configuration\Views\Device\_Multiselect.cshtml" />
+    <Content Include="Views\Shared\_Alert.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

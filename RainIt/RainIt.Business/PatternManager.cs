@@ -37,6 +37,7 @@ namespace RainIt.Business
                 ? AddPattern(pattern, fileName)
                 : StatusMessage.WriteError("The selected file name is already in use");
         }
+
         private StatusMessage AddPattern(ImageDetails pattern, string fileName)
         {
             string generatedUri;
@@ -72,6 +73,16 @@ namespace RainIt.Business
         #endregion
 
         #region READ METHODS
+        public UploadConstraintParameters GetUploadConstraintParameters()
+        {
+            return new UploadConstraintParameters()
+            {
+                MaxFileSize = int.Parse(ConfigurationManager.AppSettings["MaxPatternByteCount"]),
+                MaxHeight = int.Parse(ConfigurationManager.AppSettings["MaxPatternPixelHeight"]),
+                MaxWidth = int.Parse(ConfigurationManager.AppSettings["MaxPatternPixelWidth"]),
+                MaxNameLength = 50
+            };
+        }
         public List<PatternDTO> GetUserPatterns()
         {
             return RainItContext.UserPatternSet.Select(p => new PatternDTO()

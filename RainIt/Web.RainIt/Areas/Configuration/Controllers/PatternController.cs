@@ -29,7 +29,8 @@ namespace Web.RainIt.Areas.Configuration.Controllers
 
         public ActionResult Add()
         {
-            return View();
+            var constraintParameters = PatternManager.GetUploadConstraintParameters();
+            return View(constraintParameters);
         }
 
         [System.Web.Mvc.HttpPost]

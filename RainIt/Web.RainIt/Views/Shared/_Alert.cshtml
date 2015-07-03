@@ -1,0 +1,26 @@
+﻿<div id="myAlert" class="alert" role="alert">
+    
+</div>
+<script type="text/javascript">
+    (function() {
+        this.AlertProperties = this.AlertProperties || {};
+        AlertProperties.Show = function () {
+            $('#myAlert').show(400, "linear");
+        }
+        function initialize(parameters) {
+            $('#myAlert').removeClass();
+            $('#myAlert').addClass("alert alert-dismissable");
+            $('#myAlert').addClass(parameters.Class);
+            $('#myAlert').html('<button id="alertClose" type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button>');
+            parameters.Content.clone().appendTo($('#myAlert'));
+        }
+
+        AlertProperties.Initialize = function (parameters) {
+            initialize(parameters);
+            $('#alertClose').click(function() {
+                    $('#myAlert').hide(400, "linear");
+                }
+            );
+        }
+    }());
+</script>
