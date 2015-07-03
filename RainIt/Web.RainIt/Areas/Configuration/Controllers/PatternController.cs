@@ -33,33 +33,6 @@ namespace Web.RainIt.Areas.Configuration.Controllers
         }
 
         [System.Web.Mvc.HttpPost]
-        public JsonResult GetResizedImage(string base64Image, AbsoluteResizeParametersModel absoluteResizeParametersModel)
-        {
-            var absoluteResizeParameters = new AbsoluteResizeParameters()
-            {
-                IsProportional = absoluteResizeParametersModel.IsProportional,
-                OriginalWidth = absoluteResizeParametersModel.OriginalWidth,
-                OriginalHeight = absoluteResizeParametersModel.OriginalHeight
-            };
-            if (absoluteResizeParametersModel.TargetWidth.HasValue)
-            {
-                absoluteResizeParameters.TargetWidth = absoluteResizeParametersModel.TargetWidth.Value;
-            }
-            if (absoluteResizeParametersModel.TargetHeight.HasValue)
-            {
-                absoluteResizeParameters.TargetHeight = absoluteResizeParametersModel.TargetHeight.Value;
-            
-            }
-            ImageDetails imageDetails;
-            var base64NewImage = String.Empty;
-            if (ImageManager.TryParseImage(base64Image, out imageDetails, absoluteResizeParameters))
-            {
-                base64NewImage = ImageManager.ConvertToBase64(imageDetails.Image);
-            }
-            return Json(new { absoluteResizeParameters.TargetWidth, absoluteResizeParameters.TargetHeight, base64NewImage }, JsonRequestBehavior.AllowGet);
-        }
-
-        [System.Web.Mvc.HttpPost]
         public JsonResult Add(PatternUploadModel patternUploadModel)
         {
             ImageDetails imageDetails;

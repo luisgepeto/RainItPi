@@ -42,7 +42,6 @@
         overflow:hidden;  
     }
      .limit img {
-         width: auto;
          max-width: 100%;
          max-height: 100%;
      }
@@ -357,34 +356,41 @@
 
             var resizeControls = (function () {
                 var properties = {};
-                function onAjaxSuccess(data) {
-                    $('#imagePreview').attr('src', "data:image/png;base64,"+data.base64NewImage);
-                    $('#Width').val(data.TargetWidth);
-                    $('#Height').val(data.TargetHeight);
-                }
-                function makeAjaxCall(absoluteResizeParametersModel) {
-                    $.ajax({
-                        type: 'POST',
-                        url: '@Url.Action("GetResizedImage", "Pattern", new {area = "Configuration"})',
-                        data: JSON.stringify(absoluteResizeParametersModel),
-                        success: onAjaxSuccess,
-                        contentType: "application/json",
-                        dataType: "json"
-                    });
-                }
-                function resizeImage(newWidth, newHeight) {
+                
+                function resizeImage(targetWidth, targetHeight) {
                     var isProportional = $('#IsProportional').is(':checked');
-                    var absoluteResizeParametersModel = {
-                        base64Image: $('#originalImage').val(),
-                        AbsoluteResizeParametersModel: {
-                            OriginalWidth: $('#originalWidth').val(),
-                            OriginalHeight: $('#originalHeight').val(),
-                            TargetWidth: !isProportional && newWidth == null ? $('#Width').val() : newWidth,
-                            TargetHeight: !isProportional && newHeight == null ? $('#Height').val() : newHeight,
-                            IsProportional: isProportional
-                        }
-                    };
-                    makeAjaxCall(absoluteResizeParametersModel);
+                    var originalWidth = $('#originalWidth').val();
+                    var originalHeight = $('#originalHeight').val();
+                    var originalRatio = originalWidth / originalHeight;
+                    targetWidth = !isProportional && targetWidth == null ? $('#Width').val() : targetWidth;
+                    targetHeight = !isProportional && targetHeight == null ? $('#Height').val() : targetHeight;
+                    if (targetWidth == null) {
+                        targetWidth = originalRatio * targetHeight;
+                    }
+                    if (targetHeight == null) {
+                        targetHeight = targetWidth / originalRatio;
+                    }
+                    var currentRatio = targetWidth / targetHeight;
+                    if (isProportional && currentRatio != originalRatio) {
+                        targetWidth = originalRatio * targetHeight;
+                    }
+                    $('#Width').val(targetWidth);
+                    $('#Height').val(targetHeight);
+                    var targetRatio = targetWidth / targetHeight;
+                    if (targetHeight > $('.img-container').height()) {
+                        targetHeight = $('.img-container').height();
+                    }
+                    targetWidth = targetRatio * targetHeight;
+                    if (targetWidth > $('.img-container').width()) {
+                        targetWidth = $('.img-container').width();
+                    }
+                    targetHeight = targetWidth / targetRatio;
+                    $('#imagePreview').attr('width', targetWidth);
+                    $('#imagePreview').attr('height', targetHeight);
+                    $('#grayscaleImagePreview').attr('width', targetWidth);
+                    $('#grayscaleImagePreview').attr('height', targetHeight);
+                    $('#blackWhitePreview').attr('width', targetWidth);
+                    $('#blackWhitePreview').attr('height', targetHeight);
                 }
                 properties.SetParametersTo = function (newWidth, newHeight) {
                     $('#Width').val(newWidth);
@@ -411,6 +417,13 @@
                     });
                 }
 
+                function addWindowListener() {
+                    $(window).resize(function () {
+                        if ($('#originalImage').val() != "") {
+                            resizeImage($('#Width').val(), $('#Height').val());
+                        }
+                    });
+                }
                 properties.Initialize = function (width, height) {
                     $('#originalWidth').val(width);
                     $('#originalHeight').val(height);
@@ -418,6 +431,7 @@
                     $('#Height').val(height);
                     addSpinnerListener();
                     addCheckListener();
+                    addWindowListener();
                 }
 
                 properties.DisableAll = function() {
