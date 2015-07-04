@@ -183,7 +183,7 @@
             </div>
             <div class="row">
                 <input type="file" id="filePicker"/>
-                <button type="submit" name="add" id="Add" value="add" class="btn btn-success" disabled="disabled">Add</button>@Html.Raw(" ")
+                <button type="submit" name="add" id="Add" value="add" class="btn btn-success">Add</button>@Html.Raw(" ")
                 <button type="submit" name="cancel" id="Cancel" value="cancel" class="btn btn-danger">Cancel</button>
                 @using (Html.BeginForm("Index", "Pattern", new {area = "Configuration"}, FormMethod.Get, new {@style = "display:none;", @id = "cancelForm"}))
                 {
@@ -354,11 +354,7 @@
             function addChangeListener() {
                 $('#Height').parent().on('spinchange', function () {
                     if (originalImage.GetValue() != "") {
-                        if (height.GetValue() > Number('@Model.MaxHeight')) {
-                            AlertProperties.Initialize({Class: "alert-danger",Content: ["The selected height is bigger than the maximum allowed. (" + "@Model.MaxHeight" + "px)"]});
-                        } else {
-                            resize.ResizeTo(null, height.GetValue());
-                        }
+                        resize.ResizeTo(null, height.GetValue());
                     }
                 });
             }
@@ -384,11 +380,7 @@
             function addChangeListener() {
                 $('#Width').parent().on('spinchange', function () {
                     if (originalImage.GetValue() != "") {
-                        if (width.GetValue() > Number('@Model.MaxWidth')) {
-                            AlertProperties.Initialize({Class: "alert-danger", Content: ["The selected width is bigger than the maximum allowed. (" + "@Model.MaxWidth" + "px)"]});
-                        } else {
-                            resize.ResizeTo(width.GetValue(), null);
-                        }
+                        resize.ResizeTo(width.GetValue(), null);
                     }
                 });
             }
@@ -472,7 +464,7 @@
                 var properties = {};
                 function addChangeListener() {
                     $('#Threshold').parent().on('slidechange', function () {
-                        grayscaleImageHolder.GetGrayscale();
+                        blackWhiteImageHolder.GetBlackWhite();
                     });
                 }
                 properties.Initialize = function () {
@@ -540,13 +532,11 @@
             var properties = {};
             function addChangeListener() {
                 $("#filePicker").change(function () {
-                    addButton.Disable();
                     normalImageHolder.ResetSize();
                     grayscaleImageHolder.ResetSize();
                     blackWhiteImageHolder.ResetSize();
                     fileName.SetValue($(this).val().split('\\').pop());
                     normalImageHolder.UpdateFromInput(this);
-                    debugger;
                     var image = imageData.GetImageFromInput(this);
                     if (image != null) {
                         image.onload = function () {
@@ -608,9 +598,31 @@
                     success: onAjaxSuccess
                 });
             }
+            function validate() {
+                var contentArray = [];
+                var isFileNameValid = fileName.GetValue().trim() != "" && fileName.GetValue().trim().length <= Number('@Model.MaxNameLength') ? true : contentArray.push("A file name must be specified with length less than " + '@Model.MaxNameLength' + " characters");
+                var isImageDataValid = imageData.GetBase64String(blackWhiteImageHolder.GetRawSrc()) != "" && imageData.GetBase64String(blackWhiteImageHolder.GetRawSrc()) != imageData.GetBase64String(imageData.BlankImageString) ? true : contentArray.push("No black & white image data found");
+                var isImageDataValid = originalWidth.GetValue() != "" && originalWidth.GetValue() != 0;
+                var isOriginalHeightValid = originalHeight.GetValue() != "" && originalHeight.GetValue() != 0;
+                var isWidthValid = width.GetValue() != "" && width.GetValue() != 0 && width.GetValue() <= Number('@Model.MaxWidth') ? true : contentArray.push("Specified width dimension is not valid. The value must be in the range 0px - " + '@Model.MaxWidth' + "px");
+                var isHeightValid = height.GetValue() != "" && height.GetValue() != 0 && height.GetValue() <= Number('@Model.MaxHeight') ? true : contentArray.push("Specified height dimension is not valid. The value must be in the range 0px - " + '@Model.MaxHeight' + "px");
+
+                if (contentArray.length > 0) {
+                    AlertProperties.Initialize({ Class: "alert-danger", Content: contentArray });      
+                }
+                return isFileNameValid === true
+                    && isImageDataValid === true
+                    && isImageDataValid === true
+                    && isOriginalHeightValid === true
+                    && isWidthValid === true
+                    && isHeightValid === true;
+            }
+
             function addClickListener() {
                 $('#Add').click(function () {
-                    makeAjaxCall();
+                    if (validate()) {
+                        makeAjaxCall();
+                    }
                 });
             }
             properties.Initialize = function () {
@@ -652,12 +664,6 @@
             }
 
             properties.GetGrayscale = function () {
-                addButton.Disable();
-                slider.DisableAll();
-                isInverted.Disable();
-                width.Disable();
-                height.Disable();
-                fileName.Disable();
                 if (normalImageHolder.GetRawSrc() != imageData.BlankImageString && normalImageHolder.GetRawSrc() != "") {
                     $('#grayscaleImagePreview').parent().addClass("invisible-background");
                     $('#grayscaleImagePreview').parent().setAjaxLoadingAnimation();
@@ -729,7 +735,6 @@
             var properties = {};
             function addLoadListener() {
                 $('#blackWhitePreview').on('load', function () {
-                    addButton.Enable();
                 });
             }
             properties.SetSize = function (targetWidth, targetHeight) {
@@ -745,24 +750,12 @@
             }
             function onAjaxSuccess(data) {
                 if (data.hasOwnProperty("blackWhiteFile")) {
-                    addButton.Enable();
-                    slider.EnableAll();
-                    isInverted.Enable();
-                    width.Enable();
-                    height.Enable();
-                    fileName.Enable();
                     $('#blackWhitePreview').parent().removeAjaxLoadingAnimation();
                     $('#blackWhitePreview').attr("src", "data:image/png;base64," + data.blackWhiteFile);
                     $('#base64Image').val(data.blackWhiteFile);
                 }
             }
             properties.GetBlackWhite = function () {
-                addButton.Disable();
-                slider.DisableAll();
-                isInverted.Disable();
-                width.Disable();
-                height.Disable();
-                fileName.Disable();
                 if (grayscaleImageHolder.GetRawSrc() != imageData.BlankImageString && grayscaleImageHolder.GetRawSrc() != "") {
                     $('#blackWhitePreview').parent().addClass("invisible-background");
                     $('#blackWhitePreview').parent().setAjaxLoadingAnimation();
@@ -787,9 +780,9 @@
             return properties;
         }());
 
-        
 
-       
+
+
 
         AddPatternProperties.SetupPage = function () {
             //Hidden Inputs

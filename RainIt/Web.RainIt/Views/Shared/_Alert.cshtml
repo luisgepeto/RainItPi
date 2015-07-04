@@ -5,15 +5,15 @@
     (function() {
         this.AlertProperties = this.AlertProperties || {};
         AlertProperties.Show = function () {
-            $('#myAlert').show(400, "linear");
+            $('#myAlert').show();
         }
         AlertProperties.Hide = function () {
-            $('#myAlert').hide(400, "linear");
+            $('#myAlert').hide();
         }
         function resetToDefault() {
             $('#myAlert').removeClass();
-            $('#myAlert').addClass("alert alert-dismissable");
-            $('#myAlert').html('<button id="alertClose" type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button>');
+            $('#myAlert').addClass("alert");
+            $('#myAlert').html('');
         }
         function setClass(newClass) {
             $('#myAlert').addClass(newClass);
@@ -53,10 +53,14 @@
 
         AlertProperties.Initialize = function (parameters) {
             initialize(parameters);
-            $('#alertClose').click(function() {
-                    $('#myAlert').hide(400, "linear");
-                }
-            );
+            $(document).off("click");
+            setTimeout(function() {
+                $(document).click(function () {
+                    if ($('#myAlert').is(":visible")) {
+                        AlertProperties.Hide();
+                    }
+                });
+            }, 500);
         }
-    }());
+    }());    
 </script>
