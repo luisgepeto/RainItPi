@@ -1,4 +1,4 @@
-﻿<div id="myAlert" class="alert" role="alert">
+﻿<div id="myAlert" class="alert" role="alert" style="display: none;">
     
 </div>
 <script type="text/javascript">
@@ -7,12 +7,48 @@
         AlertProperties.Show = function () {
             $('#myAlert').show(400, "linear");
         }
-        function initialize(parameters) {
+        AlertProperties.Hide = function () {
+            $('#myAlert').hide(400, "linear");
+        }
+        function resetToDefault() {
             $('#myAlert').removeClass();
             $('#myAlert').addClass("alert alert-dismissable");
-            $('#myAlert').addClass(parameters.Class);
             $('#myAlert').html('<button id="alertClose" type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button>');
-            parameters.Content.clone().appendTo($('#myAlert'));
+        }
+        function setClass(newClass) {
+            $('#myAlert').addClass(newClass);
+        }
+        function setContent(content) {
+            var contentLength = content.length;
+            var list = $("<ul>");
+            for (var i = 0; i < contentLength; i++) {
+                var element = $("<li>").html(content[i]);
+                element.appendTo(list);
+            }
+            list.appendTo($('#myAlert'));
+        }
+
+        function addContent(content) {
+            var contentLength = content.length;
+            var list = $("ul").length ? $("ul") : $("<ul>");
+            for (var i = 0; i < contentLength; i++) {
+                var element = $("<li>").html(content[i]);
+                element.appendTo(list);
+            }
+            if (!$("ul").length) {
+                list.appendTo($('#myAlert'));
+            }
+        }
+        function initialize(parameters) {
+            if (!$('#myAlert').is(":visible")) {
+                resetToDefault();
+                setClass(parameters.Class);
+                setContent(parameters.Content);
+            } else {
+                AlertProperties.Hide();
+                addContent(parameters.Content);
+            }
+            AlertProperties.Show();
         }
 
         AlertProperties.Initialize = function (parameters) {
