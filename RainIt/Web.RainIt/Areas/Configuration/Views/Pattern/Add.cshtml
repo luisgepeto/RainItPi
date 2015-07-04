@@ -221,6 +221,7 @@
 <script type="text/javascript">
     (function () {
         this.AddPatternProperties = this.AddPatternProperties || {};
+        //Helper Classes
         var imageData = (function () {
             var properties = {};
             properties.BlankImageString = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==';
@@ -242,6 +243,7 @@
             }
             return properties;
         }());
+        //Hidden Inputs
         var originalImage = (function () {
             var properties = {};
             properties.GetValue = function () {
@@ -272,6 +274,7 @@
             }
             return properties;
         }());
+        //Image Details
         var fileName = (function () {
             var properties = {};
             properties.GetValue = function () {
@@ -320,13 +323,35 @@
             }
             return properties;
         }());
+        var isProportional = (function () {
+            var properties = {};
+            function addChangeListener() {
+                //$('#IsInverted').change(function () {
+                //    blackWhiteImageHolder.GetBlackWhite();
+                //});
+            }
+            properties.Disable = function () {
+                $('#IsProportional').parent().attr('disabled', true);
+            }
+            properties.Enable = function () {
+                $('#IsProportional').parent().attr('disabled', false);
+            }
+            properties.Initialize = function () {
+                addChangeListener();
+            }
+            properties.GetValue = function () {
+                return $('#IsProportional').is(":checked");
+            }
+            return properties;
+        }());
+        //Transformation Settings
         var slider = (function () {
             var properties = {};
             properties.RWeight = (function () {
                 var properties = {};
                 function addChangeListener() {
                     $('#RWeight').parent().on('slidechange', function () {
-                        AddPatternProperties.ImageTransformer.GetGrayScale();
+                        grayscaleImageHolder.GetGrayScale();
                     });
                 }
                 properties.Initialize = function () {
@@ -341,7 +366,7 @@
                 var properties = {};
                 function addChangeListener() {
                     $('#GWeight').parent().on('slidechange', function () {
-                        AddPatternProperties.ImageTransformer.GetGrayScale();
+                        grayscaleImageHolder.GetGrayScale();
                     });
                 }
                 properties.Initialize = function () {
@@ -356,7 +381,7 @@
                 var properties = {};
                 function addChangeListener() {
                     $('#BWeight').parent().on('slidechange', function () {
-                        AddPatternProperties.ImageTransformer.GetGrayScale();
+                        grayscaleImageHolder.GetGrayScale();
                     });
                 }
                 properties.Initialize = function () {
@@ -371,7 +396,7 @@
                 var properties = {};
                 function addChangeListener() {
                     $('#Threshold').parent().on('slidechange', function () {
-                        AddPatternProperties.ImageTransformer.GetGrayScale();
+                        grayscaleImageHolder.GetGrayScale();
                     });
                 }
                 properties.Initialize = function () {
@@ -405,7 +430,7 @@
             var properties = {};
             function addChangeListener() {
                 $('#IsInverted').change(function () {
-                    AddPatternProperties.ImageTransformer.GetBlackWhite();
+                    blackWhiteImageHolder.GetBlackWhite();
                 });
             }
             properties.Disable = function () {
@@ -422,27 +447,7 @@
             }
             return properties;
         }());
-        var isProportional = (function () {
-            var properties = {};
-            function addChangeListener() {
-                //$('#IsInverted').change(function () {
-                //    AddPatternProperties.ImageTransformer.GetBlackWhite();
-                //});
-            }
-            properties.Disable = function () {
-                $('#IsProportional').parent().attr('disabled', true);
-            }
-            properties.Enable = function () {
-                $('#IsProportional').parent().attr('disabled', false);
-            }
-            properties.Initialize = function () {
-                addChangeListener();
-            }
-            properties.GetValue = function () {
-                return $('#IsProportional').is(":checked");
-            }
-            return properties;
-        }());
+        //Buttons
         var cancelButton = (function () {
             var properties = {};
             function addClickListener() {
@@ -452,6 +457,46 @@
             }
             properties.Initialize = function () {
                 addClickListener();
+            }
+            return properties;
+        }());
+        var filePicker = (function () {
+            var properties = {};
+            function addChangeListener() {
+                $("#filePicker").change(function () {
+                    addButton.Disable();
+                    normalImageHolder.ResetSize();
+                    grayscaleImageHolder.ResetSize();
+                    blackWhiteImageHolder.ResetSize();
+                    fileName.SetValue($(this).val().split('\\').pop());
+                    normalImageHolder.UpdateFromInput(this);
+                    var image = imageData.GetImageFromInput(this);
+                    if (image != null) {
+                        image.onload = function () {
+                            originalWidth.SetValue(image.width);
+                            originalHeight.SetValue(image.height);
+                            width.SetValue(image.width);
+                            height.SetValue(image.height);
+                        }
+                    } else {
+                        originalWidth.SetValue("");
+                        originalHeight.SetValue("");
+                        width.SetValue("");
+                        height.SetValue("");
+                    }
+                });
+            }
+
+            properties.Initialize = function () {
+                $("#filePicker").fileinput({
+                    showPreview: false,
+                    showRemove: false,
+                    showUpload: false,
+                    showCaption: false,
+                    allowedFileTypes: ['image'],
+                    allowedFileExtensions: ['jpg', 'gif', 'png']
+                });
+                addChangeListener();
             }
             return properties;
         }());
@@ -500,65 +545,21 @@
                 $('#Add').removeAttr('disabled');
             }
             return properties;
-        }());
+        }());  
         
-
-        var normalImageHolder = (function () {
-            var properties = {};
-            function addLoadListener() {
-                $('#imagePreview').on('load', function () {
-                    AddPatternProperties.ImageTransformer.GetGrayScale();
-                });
-            }
-            properties.ResetSize = function () {
-                $('#imagePreview').removeAttr('width');
-                $('#imagePreview').removeAttr('height');
-            }
-            properties.Initialize = function () {
-                addLoadListener();
-            }
-            properties.GetRawSrc = function () {
-                return $('#imagePreview').attr('src');
-            }
-            function onLoad(e) {
-                $('#imagePreview').parent().addClass("invisible-background");
-                $('#imagePreview').parent().removeAjaxLoadingAnimation();
-                $('#imagePreview').attr('src', e.target.result);
-            }
-
-            properties.UpdateFromInput = function (input) {
-                if (input.files && input.files[0]) {
-                    $('#imagePreview').parent().setAjaxLoadingAnimation();
-                    var reader = new FileReader();
-                    reader.onload = onLoad;
-                    reader.readAsDataURL(input.files[0]);
-                } else {
-                    $('#imagePreview').parent().removeAjaxLoadingAnimation();
-                    $('#imagePreview').parent().removeClass("invisible-background");
-                    $('#imagePreview').attr('src', imageData.BlankImageString);
-                    //$('#grayscaleImagePreview').parent().removeClass("invisible-background");
-                    //$('#blackWhitePreview').parent().removeClass("invisible-background");
-                    //$('#originalImage').val("");
-
-                    //$('#blackWhitePreview').attr('src', imageData.BlankImageString);
-                    //$('#grayscaleImagePreview').attr('src', imageData.BlankImageString);
-                }
-            }
-            return properties;
-        }());
-
+        //Image Holders
         var grayscaleImageHolder = (function () {
             var properties = {};
             function addLoadListener() {
                 $('#grayscaleImagePreview').on('load', function () {
-                    AddPatternProperties.ImageTransformer.GetBlackWhite();
+                    blackWhiteImageHolder.GetBlackWhite();
                 });
             }
             properties.ResetSize = function () {
                 $('#grayscaleImagePreview').removeAttr('width');
                 $('#grayscaleImagePreview').removeAttr('height');
             }
-            properties.GetRawSrc = function() {
+            properties.GetRawSrc = function () {
                 return $('#grayscaleImagePreview').attr('src');
             }
             function onAjaxSuccess(data) {
@@ -567,6 +568,7 @@
                     $('#grayscaleImagePreview').attr("src", "data:image/png;base64," + data.grayScaleFile);
                 }
             }
+
             properties.GetGrayscale = function () {
                 addButton.Disable();
                 slider.DisableAll();
@@ -588,10 +590,50 @@
                         contentType: "application/x-www-form-urlencoded",
                         success: onAjaxSuccess
                     });
+                } else {
+                    $('#grayscaleImagePreview').parent().removeClass("invisible-background");
+                    $('#grayscaleImagePreview').attr('src', imageData.BlankImageString);
                 }
             }
             properties.Initialize = function () {
                 addLoadListener();
+            }
+            return properties;
+        }());
+
+        var normalImageHolder = (function () {
+            var properties = {};
+            function addLoadListener() {
+                $('#imagePreview').on('load', function () {
+                    grayscaleImageHolder.GetGrayscale();
+                });
+            }
+            properties.ResetSize = function () {
+                $('#imagePreview').removeAttr('width');
+                $('#imagePreview').removeAttr('height');
+            }
+            properties.Initialize = function () {
+                addLoadListener();
+            }
+            properties.GetRawSrc = function () {
+                return $('#imagePreview').attr('src');
+            }
+            function onLoad(e) {
+                $('#imagePreview').parent().addClass("invisible-background");
+                $('#imagePreview').parent().removeAjaxLoadingAnimation();
+                $('#imagePreview').attr('src', e.target.result);
+            }
+            properties.UpdateFromInput = function (input) {
+                if (input.files && input.files[0]) {
+                    $('#imagePreview').parent().setAjaxLoadingAnimation();
+                    var reader = new FileReader();
+                    reader.onload = onLoad;
+                    reader.readAsDataURL(input.files[0]);
+                } else {
+                    $('#imagePreview').parent().removeAjaxLoadingAnimation();
+                    $('#imagePreview').parent().removeClass("invisible-background");
+                    $('#imagePreview').attr('src', imageData.BlankImageString);
+                }
             }
             return properties;
         }());
@@ -643,6 +685,9 @@
                         contentType: "application/x-www-form-urlencoded",
                         success: onAjaxSuccess
                     });
+                } else {
+                    $('#blackWhitePreview').parent().removeClass("invisible-background");
+                    $('#blackWhitePreview').attr('src', imageData.BlankImageString);
                 }
             }
             return properties;
@@ -652,10 +697,9 @@
             var properties = {};
 
             function resizeImage(targetWidth, targetHeight) {
-                var isProportional = $('#IsProportional').is(':checked');
                 var originalRatio = originalWidth.GetValue() / originalHeight.GetValue();
-                targetWidth = !isProportional && targetWidth == null ? width.GetValue() : targetWidth;
-                targetHeight = !isProportional && targetHeight == null ? height.GetValue() : targetHeight;
+                targetWidth = !isProportional.GetValue() && targetWidth == null ? width.GetValue() : targetWidth;
+                targetHeight = !isProportional.GetValue() && targetHeight == null ? height.GetValue() : targetHeight;
                 if (targetWidth == null) {
                     targetWidth = originalRatio * targetHeight;
                 }
@@ -741,63 +785,17 @@
                 width.Disable();
                 height.Disable();
                 fileName.Disable();
-                $('#IsProportional').parent().attr('disabled', true);
+                isProportional.Disable();
             }
 
             properties.EnableAll = function () {
                 width.Enable();
                 height.Enable();
                 fileName.Enable();
-                $('#IsProportional').parent().attr('disabled', false);
+                isProportional.Disable();
             }
             return properties;
         }());
-
-
-
-        var filePicker = (function () {
-            var properties = {};
-            function addChangeListener() {
-                $("#filePicker").change(function () {
-                    addButton.Disable();
-                    normalImageHolder.ResetSize();
-                    grayscaleImageHolder.ResetSize();
-                    blackWhiteImageHolder.ResetSize();
-                    fileName.SetValue($(this).val().split('\\').pop());
-                    normalImageHolder.UpdateFromInput(this);
-                    var image = imageData.GetImageFromInput(this);
-                    if (image != null) {
-                        image.onload = function () {
-                            originalWidth.SetValue(image.width);
-                            originalHeight.SetValue(image.height);
-                            width.SetValue(image.width);
-                            height.SetValue(image.height);
-                        }
-                    } else {
-                        originalWidth.SetValue("");
-                        originalHeight.SetValue("");
-                        width.SetValue("");
-                        height.SetValue("");
-                    }
-                });
-            }
-
-            properties.Initialize = function () {
-                $("#filePicker").fileinput({
-                    showPreview: false,
-                    showRemove: false,
-                    showUpload: false,
-                    showCaption: false,
-                    allowedFileTypes: ['image'],
-                    allowedFileExtensions: ['jpg', 'gif', 'png']
-                });
-                addChangeListener();
-            }
-            return properties;
-        }());
-
-        
-
 
         AddPatternProperties.SetupPage = function () {
             isInverted.Initialize();
@@ -808,8 +806,6 @@
             grayscaleImageHolder.Initialize();
             blackWhiteImageHolder.Initialize();
             slider.Initialize();
-            button.AddCancelClickListener();
-            button.AddSubmitClickListener();
         }
     }());
 
