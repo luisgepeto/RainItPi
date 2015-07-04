@@ -60,7 +60,7 @@ namespace Web.RainIt.Areas.Configuration.Controllers
         }
 
         [System.Web.Mvc.HttpPost]
-        public JsonResult GetGrayScaleFor([FromBody] string base64Image,
+        public JsonResult GetGrayscaleFor([FromBody] string base64Image,
             [FromUri] ColorRelativeWeight colorRelativeWeight)
         {
             ImageDetails imageDetails;
