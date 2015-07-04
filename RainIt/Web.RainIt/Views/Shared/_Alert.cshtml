@@ -5,10 +5,10 @@
     (function() {
         this.AlertProperties = this.AlertProperties || {};
         AlertProperties.Show = function () {
-            $('#myAlert').show();
+            $('#myAlert').show(400, "linear");
         }
         AlertProperties.Hide = function () {
-            $('#myAlert').hide();
+            $('#myAlert').hide(400, "linear");
         }
         function resetToDefault() {
             $('#myAlert').removeClass();
