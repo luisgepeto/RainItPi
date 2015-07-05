@@ -165,7 +165,6 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\RegistrationModel.cs" />
-    <Compile Include="Areas\Configuration\Models\PatternUploadModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

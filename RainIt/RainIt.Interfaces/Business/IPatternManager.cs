@@ -10,7 +10,7 @@ namespace RainIt.Interfaces.Business
 {
     public interface IPatternManager
     {
-        StatusMessage AddUserPattern(ImageDetails pattern, string fileName, bool canUpdate = false);
+        StatusMessage AddUserPattern(ImageDetails pattern, PatternUploadModel patternUploadModel, bool canUpdate = false);
         UploadConstraintParameters GetUploadConstraintParameters();
         List<PatternDTO> GetUserPatterns();
         List<PatternDTO> GetAllPatterns();

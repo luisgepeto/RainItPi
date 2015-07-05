@@ -92,6 +92,7 @@
     <Compile Include="DTO\DeviceInfoDTO.cs" />
     <Compile Include="DTO\Login.cs" />
     <Compile Include="DTO\PatternDTO.cs" />
+    <Compile Include="DTO\PatternUploadModel.cs" />
     <Compile Include="DTO\Registration.cs" />
     <Compile Include="DTO\RoutineDTO.cs" />
     <Compile Include="DTO\RoutinePatternDTO.cs" />
@@ -118,7 +119,12 @@
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\ImageProcessing\ImageProcessing.Domain\ImageProcessing.Domain.csproj">
+      <Project>{0DB8BAD7-561F-41C6-B480-7CECA2C0C2A7}</Project>
+      <Name>ImageProcessing.Domain</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

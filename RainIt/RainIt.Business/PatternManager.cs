@@ -28,24 +28,24 @@ namespace RainIt.Business
         }
 
         #region CREATE METHODS
-        public StatusMessage AddUserPattern(ImageDetails pattern, string fileName, bool canUpdate = false)
+        public StatusMessage AddUserPattern(ImageDetails pattern, PatternUploadModel patternUploadModel, bool canUpdate = false)
         {
             if (!IsFileSizeValid(pattern)) return StatusMessage.WriteError("The file size is not valid.");
             if (!AreDimensionsValid(pattern)) return StatusMessage.WriteError("The file dimensions are not valid.");
             int patternId;
-            return !DoesUserFileNameExist(fileName, out patternId)
-                ? AddPattern(pattern, fileName)
+            return !DoesUserFileNameExist(patternUploadModel.FileName, out patternId)
+                ? AddPattern(pattern, patternUploadModel)
                 : StatusMessage.WriteError("The selected file name is already in use");
         }
 
-        private StatusMessage AddPattern(ImageDetails pattern, string fileName)
+        private StatusMessage AddPattern(ImageDetails pattern, PatternUploadModel patternUploadModel)
         {
             string generatedUri;
-            var canAddToCloud = AzureCloudContext.TryAddToCloudInContainer(pattern.ImageStream, fileName,
+            var canAddToCloud = AzureCloudContext.TryAddToCloudInContainer(pattern.ImageStream, patternUploadModel.FileName,
                 RainItContext.CurrentUser.Username, out generatedUri);
-            return !canAddToCloud.IsError ? AddToDatabase(pattern, fileName, generatedUri) : canAddToCloud;
+            return !canAddToCloud.IsError ? AddToDatabase(pattern, patternUploadModel, generatedUri) : canAddToCloud;
         }
-        private StatusMessage AddToDatabase(ImageDetails imageDetails, string fileName, string filePath)
+        private StatusMessage AddToDatabase(ImageDetails imageDetails, PatternUploadModel patternUploadModel, string filePath)
         {
             try
             {
@@ -54,9 +54,17 @@ namespace RainIt.Business
                     BytesFileSize = imageDetails.FileSize,
                     FileType = imageDetails.FileType,
                     Height = imageDetails.Height,
-                    Name = fileName,
+                    Name = patternUploadModel.FileName,
                     Path = filePath,
-                    Width = imageDetails.Width
+                    Width = imageDetails.Width,
+                    ConversionParameter = new ConversionParameter()
+                    {
+                        RWeight = patternUploadModel.ColorRelativeWeight.RWeight,
+                        GWeight = patternUploadModel.ColorRelativeWeight.GWeight,
+                        BWeight = patternUploadModel.ColorRelativeWeight.BWeight,
+                        IsInverted = patternUploadModel.BlackWhiteConversionParameters.IsInverted,
+                        ThresholdValue = patternUploadModel.BlackWhiteConversionParameters.ThresholdValue
+                    }
                 };
                 var user = RainItContext.UserSet.Single(u => u.Username == RainItContext.CurrentUser.Username);
                 patternToAdd.UserId = user.UserId;

@@ -39,7 +39,7 @@ namespace Web.RainIt.Areas.Configuration.Controllers
             StatusMessage canAdd = null;
             if (ImageManager.TryParseImage(patternUploadModel.Base64Image, out imageDetails, patternUploadModel.AbsoluteResizeParameters))
             {
-                canAdd = PatternManager.AddUserPattern(imageDetails, patternUploadModel.FileName);
+                canAdd = PatternManager.AddUserPattern(imageDetails, patternUploadModel);
             }
             else
             {

@@ -1,6 +1,6 @@
 ﻿using ImageProcessing.Domain;
 
-namespace Web.RainIt.Areas.Configuration.Models
+namespace RainIt.Domain.DTO
 {
     public class PatternUploadModel
     {
