@@ -106,6 +106,7 @@
     <Compile Include="Repository\DeviceInfo.cs" />
     <Compile Include="Repository\Password.cs" />
     <Compile Include="Repository\Pattern.cs" />
+    <Compile Include="Repository\ConversionParameter.cs" />
     <Compile Include="Repository\Role.cs" />
     <Compile Include="Repository\Routine.cs" />
     <Compile Include="Repository\RoutinePattern.cs" />

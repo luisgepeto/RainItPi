@@ -577,13 +577,23 @@
                 var data = {
                     PatternUploadModel: {
                         FileName: fileName.GetValue(),
-                        Base64Image: imageData.GetBase64String(blackWhiteImageHolder.GetRawSrc()),
+                        Base64Image: originalImage.GetValue(),
                         AbsoluteResizeParameters: {
                             OriginalWidth: originalWidth.GetValue(),
                             OriginalHeight: originalHeight.GetValue(),
                             TargetWidth: width.GetValue(),
                             TargetHeight: height.GetValue(),
                             IsProportional: isProportional.GetValue()
+                        },
+                        BlackWhiteConversionParameters : {
+                            IsBlackWhite: true,
+                            IsInverted: isInverted.GetValue(),
+                            ThresholdPercentage: slider.Threshold.GetValue()
+                        },
+                        ColorRelativeWeight: {
+                            RWeight: slider.RWeight.GetValue(),
+                            GWeight: slider.GWeight.GetValue(),
+                            BWeight: slider.BWeight.GetValue()
                         }
                     }
                 };

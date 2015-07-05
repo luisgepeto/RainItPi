@@ -7,5 +7,7 @@ namespace Web.RainIt.Areas.Configuration.Models
         public string FileName { get; set; }
         public string Base64Image { get; set; }
         public AbsoluteResizeParameters AbsoluteResizeParameters { get; set; }
+        public BlackWhiteConversionParameters BlackWhiteConversionParameters { get; set; }
+        public ColorRelativeWeight ColorRelativeWeight { get; set; }
     }
 }

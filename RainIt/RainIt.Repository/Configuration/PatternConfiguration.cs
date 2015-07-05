@@ -15,12 +15,10 @@ namespace RainIt.Repository.Configuration
             Property(p => p.BytesFileSize).IsRequired();
             Property(p => p.Width).IsRequired();
             Property(p => p.Height).IsRequired();
-            Property(p => p.Path).IsRequired();     
-      
-            //HasMany(r => r.RoutinePatterns)
-            //    .WithRequired(rp => rp.Pattern)
-            //    .HasForeignKey(rp => rp.PatternId)
-            //    .WillCascadeOnDelete(true);    
+            Property(p => p.Path).IsRequired();
+            HasRequired(p => p.ConversionParameter)
+                      .WithRequiredPrincipal(cp => cp.Pattern)
+                      .WillCascadeOnDelete(true);
         }
     }
 }

@@ -102,6 +102,7 @@
   <ItemGroup>
     <Compile Include="AzureCloudContext.cs" />
     <Compile Include="Configuration\AddressConfiguration.cs" />
+    <Compile Include="Configuration\ConversionParameterConfiguration.cs" />
     <Compile Include="Configuration\DeviceConfiguration.cs" />
     <Compile Include="Configuration\DeviceCredentialConfiguration.cs" />
     <Compile Include="Configuration\DeviceInfoConfiguration.cs" />
@@ -143,6 +144,10 @@
     <Compile Include="Migrations\201506212129134_OnlyOneRolePerUserMigration.cs" />
     <Compile Include="Migrations\201506212129134_OnlyOneRolePerUserMigration.Designer.cs">
       <DependentUpon>201506212129134_OnlyOneRolePerUserMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201507050837410_ConversionParameterMigration.cs" />
+    <Compile Include="Migrations\201507050837410_ConversionParameterMigration.Designer.cs">
+      <DependentUpon>201507050837410_ConversionParameterMigration.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -194,6 +199,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201506212129134_OnlyOneRolePerUserMigration.resx">
       <DependentUpon>201506212129134_OnlyOneRolePerUserMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201507050837410_ConversionParameterMigration.resx">
+      <DependentUpon>201507050837410_ConversionParameterMigration.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

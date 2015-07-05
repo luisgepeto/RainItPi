@@ -114,6 +114,7 @@ namespace RainIt.Repository
             modelBuilder.Configurations.Add(new DeviceConfiguration());
             modelBuilder.Configurations.Add(new DeviceInfoConfiguration());
             modelBuilder.Configurations.Add(new DeviceCredentialConfiguration());
+            modelBuilder.Configurations.Add(new ConversionParameterConfiguration());
         }
     }
 }
