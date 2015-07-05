@@ -6,7 +6,6 @@ using ImageProcessing.Domain;
 using RainIt.Domain.DTO;
 using RainIt.Interfaces.Business;
 using Web.RainIt.Areas.Configuration.Models;
-using Web.RainIt.Models.Pattern;
 
 namespace Web.RainIt.Areas.Configuration.Controllers
 {

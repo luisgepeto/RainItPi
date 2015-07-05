@@ -101,7 +101,7 @@ strong {
 }
 @font-face {
     font-family: 'gotham-bold';
-    src: url('fonts/gotham-bold.ttf') format('truetype');
+    src: url('fonts/gotham-bold.woff') format('woff');
 }
 
 /* these are the styles for the loading bar*/

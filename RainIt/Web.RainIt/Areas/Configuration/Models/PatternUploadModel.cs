@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.EnterpriseServices.Internal;
-using System.Linq;
-using System.Web;
-using ImageProcessing.Domain;
+﻿using ImageProcessing.Domain;
 
-namespace Web.RainIt.Models.Pattern
+namespace Web.RainIt.Areas.Configuration.Models
 {
     public class PatternUploadModel
     {

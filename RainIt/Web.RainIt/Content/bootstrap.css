@@ -321,9 +321,8 @@ body {
 
 @font-face {
     font-family: 'gotham-book';
-    src: url('fonts/gotham-book.ttf') format('truetype');
+    src: url('fonts/gotham-book.woff') format('woff');
 }
-
 input,
 button,
 select,

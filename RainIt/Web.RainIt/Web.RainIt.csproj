@@ -164,8 +164,8 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\Account\RegistrationModel.cs" />
-    <Compile Include="Models\Pattern\PatternUploadModel.cs" />
+    <Compile Include="Models\RegistrationModel.cs" />
+    <Compile Include="Areas\Configuration\Models\PatternUploadModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -230,10 +230,16 @@
     <Content Include="Areas\Administration\Views\Shared\_Layout.cshtml" />
     <Content Include="Areas\Configuration\Views\_ViewStart.cshtml" />
     <Content Include="Areas\Administration\Views\_ViewStart.cshtml" />
-    <Content Include="Content\fonts\gotham-bold.ttf" />
-    <Content Include="Content\fonts\gotham-book.ttf" />
-    <Content Include="Content\fonts\gotham-medium.ttf" />
     <Content Include="Views\Shared\_Modal.cshtml" />
+    <Content Include="Content\fonts\gotham-bold.woff">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\fonts\gotham-book.woff">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\fonts\gotham-medium.woff">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="Properties\PublishProfiles\DevRainIt.pubxml" />
     <None Include="Scripts\jquery-2.1.4.intellisense.js" />
     <Content Include="Scripts\custom-ajaxLoadingAnimation.js" />

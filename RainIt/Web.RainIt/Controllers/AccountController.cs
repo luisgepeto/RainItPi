@@ -8,7 +8,6 @@ using RainIt.Domain.DTO;
 using RainIt.Domain.Repository;
 using RainIt.Interfaces.Business;
 using Web.RainIt.Models;
-using Web.RainIt.Models.Account;
 
 namespace Web.RainIt.Controllers
 {
