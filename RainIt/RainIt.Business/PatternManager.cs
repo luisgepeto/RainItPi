@@ -28,7 +28,7 @@ namespace RainIt.Business
         }
 
         #region CREATE METHODS
-        public StatusMessage AddUserPattern(ImageDetails pattern, PatternUploadModel patternUploadModel, bool canUpdate = false)
+        public StatusMessage AddUserPattern(ImageDetails pattern, PatternUploadModel patternUploadModel)
         {
             if (!IsFileSizeValid(pattern)) return StatusMessage.WriteError("The file size is not valid.");
             if (!AreDimensionsValid(pattern)) return StatusMessage.WriteError("The file dimensions are not valid.");
@@ -63,7 +63,7 @@ namespace RainIt.Business
                         GWeight = patternUploadModel.ColorRelativeWeight.GWeight,
                         BWeight = patternUploadModel.ColorRelativeWeight.BWeight,
                         IsInverted = patternUploadModel.BlackWhiteConversionParameters.IsInverted,
-                        ThresholdValue = patternUploadModel.BlackWhiteConversionParameters.ThresholdValue
+                        ThresholdPercentage = patternUploadModel.BlackWhiteConversionParameters.ThresholdPercentage
                     }
                 };
                 var user = RainItContext.UserSet.Single(u => u.Username == RainItContext.CurrentUser.Username);
@@ -115,7 +115,7 @@ namespace RainIt.Business
                     GWeight = p.ConversionParameter.GWeight,
                     BWeight = p.ConversionParameter.BWeight,
                     IsInverted = p.ConversionParameter.IsInverted,
-                    ThresholdValue = p.ConversionParameter.ThresholdValue
+                    ThresholdPercentage = p.ConversionParameter.ThresholdPercentage
                 }
             }).Single();
         }
@@ -138,35 +138,41 @@ namespace RainIt.Business
         #endregion
 
         #region UPDATE METHODS
-        public StatusMessage UpdateUserPattern(ImageDetails pattern, string fileName)
+        public StatusMessage UpdateUserPattern(ImageDetails pattern, PatternUploadModel patternUploadModel)
         {
             if (!IsFileSizeValid(pattern)) return StatusMessage.WriteError("The file size is not valid.");
             if (!AreDimensionsValid(pattern)) return StatusMessage.WriteError("The file dimensions are not valid.");
-            int patternId;
-            return DoesUserFileNameExist(fileName, out patternId)
-                ? UpdatePattern(pattern, fileName, patternId)
+            Pattern patternToEdit;
+            return DoesUserPatternExist(patternUploadModel.PatternId, out patternToEdit)
+                ? UpdatePattern(pattern, patternToEdit, patternUploadModel)
                 : StatusMessage.WriteError("The selected file name was not found");
         }
-        private StatusMessage UpdatePattern(ImageDetails pattern, string fileName, int patternId)
+        private StatusMessage UpdatePattern(ImageDetails imagePattern, Pattern pattern, PatternUploadModel patternUploadModel)
         {
             string generatedUri;
-            var canUpdateInCloud = AzureCloudContext.TryUpdateToCloudInContainer(pattern.ImageStream,
-                fileName,
-                RainItContext.CurrentUser.Username, out generatedUri);
+            var canUpdateInCloud = AzureCloudContext.TryUpdateToCloudInContainer(imagePattern.ImageStream,
+                pattern.Name,patternUploadModel.FileName,RainItContext.CurrentUser.Username, out generatedUri);
             return !canUpdateInCloud.IsError 
-                ? UpdateInDatabase(pattern, patternId, generatedUri) 
+                ? UpdateInDatabase(imagePattern, patternUploadModel, generatedUri) 
                 : canUpdateInCloud;
         }
-        private StatusMessage UpdateInDatabase(ImageDetails imageDetails, int patternId, string filePath)
+        private StatusMessage UpdateInDatabase(ImageDetails imageDetails, PatternUploadModel patternUploadModel, string generatedUri)
         {
             try
             {
-                var patternToUpdate = RainItContext.UserPatternSet.Single(p => p.PatternId == patternId);
+                var patternToUpdate = RainItContext.UserPatternSet.Single(p => p.PatternId == patternUploadModel.PatternId);
                 patternToUpdate.BytesFileSize = imageDetails.FileSize;
                 patternToUpdate.FileType = imageDetails.FileType;
                 patternToUpdate.Height = imageDetails.Height;
-                patternToUpdate.Path = filePath;
+                patternToUpdate.Path = generatedUri;
                 patternToUpdate.Width = imageDetails.Width;
+                patternToUpdate.Name = patternUploadModel.FileName;
+                patternToUpdate.ConversionParameter.RWeight = patternUploadModel.ColorRelativeWeight.RWeight;
+                patternToUpdate.ConversionParameter.GWeight = patternUploadModel.ColorRelativeWeight.GWeight;
+                patternToUpdate.ConversionParameter.BWeight = patternUploadModel.ColorRelativeWeight.BWeight;
+                patternToUpdate.ConversionParameter.ThresholdPercentage = patternUploadModel.BlackWhiteConversionParameters.ThresholdPercentage;
+                patternToUpdate.ConversionParameter.IsInverted = patternUploadModel.BlackWhiteConversionParameters.IsInverted;
+
                 RainItContext.SaveChanges();
                 return StatusMessage.WriteMessage("The pattern was successfully updated in the database");
             }
@@ -178,28 +184,20 @@ namespace RainIt.Business
         #endregion
 
         #region DELETE METHODS
-        public StatusMessage DeleteUserPattern(string fileName)
-        {
-            int patternId;
-            return DoesUserFileNameExist(fileName, out patternId)
-                ? DeletePattern(fileName, patternId)
-                : StatusMessage.WriteError("The selected pattern was not found");
-        }
-
         public StatusMessage DeleteUserPattern(int patternId)
         {
-            string fileName;
-            return DoesUserPatternExist(patternId, out fileName)
-                ? DeletePattern(fileName, patternId)
+            Pattern patternToDelete;
+            return DoesUserPatternExist(patternId, out patternToDelete)
+                ? DeletePattern(patternToDelete)
                 : StatusMessage.WriteError("The selected pattern was not found");
         }
 
-        private StatusMessage DeletePattern(string fileName, int patternId)
+        private StatusMessage DeletePattern(Pattern pattern)
         {
-            var canDeleteFromCloud = AzureCloudContext.TryDeleteFromCloudInContainer(fileName,
+            var canDeleteFromCloud = AzureCloudContext.TryDeleteFromCloudInContainer(pattern.Name,
                 RainItContext.CurrentUser.Username);
             return !canDeleteFromCloud.IsError 
-                ? DeleteFromDatabase(patternId) 
+                ? DeleteFromDatabase(pattern.PatternId) 
                 : canDeleteFromCloud;
         }
 
@@ -242,15 +240,10 @@ namespace RainIt.Business
             patternId = pattern.PatternId;
             return true;
         }
-        private bool DoesUserPatternExist(int patternId, out string fileName)
+        private bool DoesUserPatternExist(int patternId, out Pattern outPattern)
         {
-            fileName = String.Empty;
-            var pattern = RainItContext.UserPatternSet.SingleOrDefault(p => p.PatternId == patternId);
-
-            if (pattern == null) return false;
-
-            fileName = pattern.Name;
-            return true;
+            outPattern = RainItContext.UserPatternSet.SingleOrDefault(p => p.PatternId == patternId);
+            return outPattern != null;
         }
         #endregion
     }

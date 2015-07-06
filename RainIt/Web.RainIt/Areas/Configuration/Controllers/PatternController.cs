@@ -35,13 +35,12 @@ namespace Web.RainIt.Areas.Configuration.Controllers
             ViewBag.ConstraintParameters = PatternManager.GetUploadConstraintParameters();
             var pattern = new PatternDTO()
             {
-
                 ConversionParameterDTO = new ConversionParameterDTO()
                 {
                     RWeight = 0.5,
                     GWeight = 0.5,
                     BWeight = 0.5,
-                    ThresholdValue = 50
+                    ThresholdPercentage = 50
                 }
             };
             return View(pattern);
@@ -61,7 +60,10 @@ namespace Web.RainIt.Areas.Configuration.Controllers
             StatusMessage canAdd = null;
             if (ImageManager.TryParseImage(patternUploadModel.Base64Image, out imageDetails, patternUploadModel.AbsoluteResizeParameters))
             {
-                canAdd = PatternManager.AddUserPattern(imageDetails, patternUploadModel);
+                if (patternUploadModel.PatternId == 0)
+                    canAdd = PatternManager.AddUserPattern(imageDetails, patternUploadModel);
+                else
+                    canAdd = PatternManager.UpdateUserPattern(imageDetails, patternUploadModel);
             }
             else
             {

@@ -112,7 +112,7 @@
                                 <span class="sr-only">BW Threshold:</span>
                             </label>
                             <div class="form-control">
-                                @Html.JQueryUI().Slider("Threshold", (int)Model.ConversionParameterDTO.ThresholdValue).Range(SliderRange.Min)
+                                @Html.JQueryUI().Slider("Threshold", (int)Model.ConversionParameterDTO.ThresholdPercentage).Range(SliderRange.Min)
                             </div>
                             <span class="input-group-addon">%</span>
                         </div>

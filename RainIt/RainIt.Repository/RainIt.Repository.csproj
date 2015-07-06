@@ -149,6 +149,10 @@
     <Compile Include="Migrations\201507050837410_ConversionParameterMigration.Designer.cs">
       <DependentUpon>201507050837410_ConversionParameterMigration.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201507062215483_ThresholdPercentageMigration.cs" />
+    <Compile Include="Migrations\201507062215483_ThresholdPercentageMigration.Designer.cs">
+      <DependentUpon>201507062215483_ThresholdPercentageMigration.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RainItContext.cs" />
@@ -202,6 +206,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201507050837410_ConversionParameterMigration.resx">
       <DependentUpon>201507050837410_ConversionParameterMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201507062215483_ThresholdPercentageMigration.resx">
+      <DependentUpon>201507062215483_ThresholdPercentageMigration.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

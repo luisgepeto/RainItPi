@@ -17,7 +17,7 @@ namespace RainIt.Repository.Configuration
             Property(cp => cp.RWeight).IsRequired();
             Property(cp => cp.GWeight).IsRequired();
             Property(cp => cp.BWeight).IsRequired();
-            Property(cp => cp.ThresholdValue).IsRequired();
+            Property(cp => cp.ThresholdPercentage).IsRequired();
             Property(cp => cp.IsInverted).IsRequired();
         }
     }

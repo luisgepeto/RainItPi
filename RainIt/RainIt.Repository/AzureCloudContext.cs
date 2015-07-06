@@ -38,9 +38,12 @@ namespace RainIt.Repository
             }
         }
 
-        public StatusMessage TryUpdateToCloudInContainer(MemoryStream fileStream, string fileName, string containerName, out string generatedUri)
+        public StatusMessage TryUpdateToCloudInContainer(MemoryStream fileStream, string oldFileName, string newFileName, string containerName, out string generatedUri)
         {
-            return TryAddToCloudInContainer(fileStream, fileName, containerName, out generatedUri);
+            generatedUri = String.Empty;
+            return TryDeleteFromCloudInContainer(oldFileName, containerName).IsError
+                ? StatusMessage.WriteMessage("The file could not be overwritten in the cloud")
+                : TryAddToCloudInContainer(fileStream, newFileName, containerName, out generatedUri);
         }
 
         public StatusMessage TryDeleteFromCloudInContainer(string fileName, string containerName)

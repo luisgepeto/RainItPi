@@ -7,7 +7,7 @@ namespace RainIt.Domain.DTO
         public double RWeight { get; set; }
         public double GWeight { get; set; }
         public double BWeight { get; set; }
-        public double ThresholdValue { get; set; }
+        public double ThresholdPercentage { get; set; }
         public bool IsInverted { get; set; }
     }
 }

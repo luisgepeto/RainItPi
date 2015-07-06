@@ -18,10 +18,10 @@ namespace RainIt.Business.Tests
             return StatusMessage.WriteMessage("everything is ok");
         }
 
-        public StatusMessage TryUpdateToCloudInContainer(MemoryStream fileStream, string fileName, string containerName,
+        public StatusMessage TryUpdateToCloudInContainer(MemoryStream fileStream, string oldFileName, string newFileName, string containerName,
             out string generatedUri)
         {
-            generatedUri =  "path for " + fileName + " in container " + containerName;
+            generatedUri =  "path for " + oldFileName + " changed to "+newFileName+" in container " + containerName;
             return StatusMessage.WriteMessage("everything is ok");
         }
 
