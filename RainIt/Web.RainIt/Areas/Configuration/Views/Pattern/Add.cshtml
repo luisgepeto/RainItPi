@@ -82,7 +82,7 @@
                                 <span class="sr-only">R Weight:</span>
                             </label>
                             <div class="form-control">
-                                @Html.JQueryUI().Slider("RWeight", 50).Range(SliderRange.Min)
+                                @Html.JQueryUI().Slider("RWeight", (int)(Model.ConversionParameterDTO.RWeight * 100)).Range(SliderRange.Min)
                             </div>
                             <span class="input-group-addon">%</span>
                         </div>
@@ -92,7 +92,7 @@
                                 <span class="sr-only">G Weight:</span>
                             </label>
                             <div class="form-control">
-                                @Html.JQueryUI().Slider("GWeight", 50).Range(SliderRange.Min)
+                                @Html.JQueryUI().Slider("GWeight", (int)(Model.ConversionParameterDTO.GWeight * 100)).Range(SliderRange.Min)
                             </div>
                             <span class="input-group-addon">%</span>
                         </div>
@@ -102,7 +102,7 @@
                                 <span class="sr-only">B Weight:</span>
                             </label>
                             <div class="form-control">
-                                @Html.JQueryUI().Slider("BWeight", 50).Range(SliderRange.Min)
+                                @Html.JQueryUI().Slider("BWeight", (int)(Model.ConversionParameterDTO.BWeight*100)).Range(SliderRange.Min)
                             </div>
                             <span class="input-group-addon">%</span>
                         </div>
@@ -112,7 +112,7 @@
                                 <span class="sr-only">BW Threshold:</span>
                             </label>
                             <div class="form-control">
-                                @Html.JQueryUI().Slider("Threshold", 50).Range(SliderRange.Min)
+                                @Html.JQueryUI().Slider("Threshold", (int)Model.ConversionParameterDTO.ThresholdValue).Range(SliderRange.Min)
                             </div>
                             <span class="input-group-addon">%</span>
                         </div>
@@ -184,7 +184,7 @@
             </div>
             <div class="row">
                 <input type="file" id="filePicker"/>
-                <button type="submit" name="add" id="Add" value="add" class="btn btn-success">Add</button>@Html.Raw(" ")
+                <button type="submit" name="add" id="Add" value="add" class="btn btn-success">@(Model.PatternId != 0 ? "Update": "Add")</button>@Html.Raw(" ")
                 <button type="submit" name="cancel" id="Cancel" value="cancel" class="btn btn-danger">Cancel</button>
                 @using (Html.BeginForm("Index", "Pattern", new {area = "Configuration"}, FormMethod.Get, new {@style = "display:none;", @id = "cancelForm"}))
                 {
@@ -309,6 +309,12 @@
             properties.SetValue = function (value) {
                 $('#originalWidth').val(value);
             }
+            properties.Initialize = function () {
+                if ('@Model.Width' != "0") {
+                    properties.SetValue('@Model.Width');
+                }
+                else properties.SetValue("");
+            }
             return properties;
         }());
         var originalHeight = (function () {
@@ -318,6 +324,12 @@
             }
             properties.SetValue = function (value) {
                 $('#originalHeight').val(value);
+            }
+            properties.Initialize = function () {
+                if ('@Model.Height' != "0") {
+                    properties.SetValue('@Model.Height');
+                }
+                else properties.SetValue("");
             }
             return properties;
         }());
@@ -335,6 +347,11 @@
             }
             properties.Enable = function () {
                 $('#fileName').attr('disabled', false);
+            }
+            properties.Initialize = function () {
+                if ('@Model.Name' != "") {
+                    properties.SetValue('@Model.Name');
+                }
             }
             return properties;
         }());
@@ -360,6 +377,10 @@
                 });
             }
             properties.Initialize = function () {
+                if ('@Model.Height' != "0") {
+                    properties.SetValue('@Model.Height');
+                }
+                else properties.SetValue("");
                 addChangeListener();
             }
             return properties;
@@ -386,6 +407,10 @@
                 });
             }
             properties.Initialize = function () {
+                if ('@Model.Width' != "0") {
+                    properties.SetValue('@Model.Width');
+                }
+                else properties.SetValue("");
                 addChangeListener();
             }
             return properties;
@@ -405,11 +430,14 @@
             properties.Enable = function () {
                 $('#IsProportional').parent().attr('disabled', false);
             }
-            properties.Initialize = function () {
-                addChangeListener();
-            }
             properties.GetValue = function () {
                 return $('#IsProportional').is(":checked");
+            }
+            properties.SetValue = function (value) {
+                $('#IsProportional').prop("checked", value);
+            }
+            properties.Initialize = function () {
+                addChangeListener();
             }
             return properties;
         }());
@@ -429,6 +457,12 @@
                 properties.GetValue = function () {
                     return $('#RWeight').val();
                 }
+                properties.SetValue = function (value) {
+                    $('#RWeight').parent().slider({ value: value });
+                    $('#RWeight').parent().slider("value", value);
+                    $('#RWeight').val(value);
+
+                }
                 return properties;
             }());
             properties.GWeight = (function () {
@@ -443,6 +477,12 @@
                 }
                 properties.GetValue = function () {
                     return $('#GWeight').val();
+                }
+                properties.SetValue = function (value) {
+                    $('#GWeight').parent().slider({ value: value });
+                    $('#GWeight').parent().slider("value", value);
+                    $('#GWeight').val(value);
+
                 }
                 return properties;
             }());
@@ -459,6 +499,12 @@
                 properties.GetValue = function () {
                     return $('#BWeight').val();
                 }
+                properties.SetValue = function (value) {
+                    $('#BWeight').parent().slider({ value: value });
+                    $('#BWeight').parent().slider("value", value);
+                    $('#BWeight').val(value);
+
+                }
                 return properties;
             }());
             properties.Threshold = (function () {
@@ -473,6 +519,11 @@
                 }
                 properties.GetValue = function () {
                     return $('#Threshold').val();
+                }
+                properties.SetValue = function (value) {
+                    $('#Threshold').parent().slider({ value: value });
+                    $('#Threshold').parent().slider("value", value);
+                    $('#Threshold').val(value);
                 }
                 return properties;
             }());
@@ -509,10 +560,19 @@
                 $('#IsInverted').parent().attr('disabled', false);
             }
             properties.Initialize = function () {
+                if ('@Model.ConversionParameterDTO.IsInverted' != "") {
+                    if ('@Model.ConversionParameterDTO.IsInverted' == "True") {
+                        $('#IsInverted').parent().addClass("active");
+                        properties.SetValue('@Model.ConversionParameterDTO.IsInverted', true);
+                    }
+                }
                 addChangeListener();
             }
             properties.GetValue = function () {
                 return $('#IsInverted').is(":checked");
+            }
+            properties.SetValue = function (value) {
+                $('#IsInverted').prop("checked", value);
             }
             return properties;
         }());
@@ -586,7 +646,7 @@
                             TargetHeight: height.GetValue(),
                             IsProportional: isProportional.GetValue()
                         },
-                        BlackWhiteConversionParameters : {
+                        BlackWhiteConversionParameters: {
                             IsBlackWhite: true,
                             IsInverted: isInverted.GetValue(),
                             ThresholdPercentage: slider.Threshold.GetValue()
@@ -613,17 +673,18 @@
                 var contentArray = [];
                 var isFileNameValid = fileName.GetValue().trim() != "" && fileName.GetValue().trim().length <= Number('@constraintParameters.MaxNameLength') ? true : contentArray.push("A file name must be specified with length less than " + '@constraintParameters.MaxNameLength' + " characters");
                 var isImageDataValid = imageData.GetBase64String(blackWhiteImageHolder.GetRawSrc()) != "" && imageData.GetBase64String(blackWhiteImageHolder.GetRawSrc()) != imageData.GetBase64String(imageData.BlankImageString) ? true : contentArray.push("No black & white image data found");
-                var isImageDataValid = originalWidth.GetValue() != "" && originalWidth.GetValue() != 0;
+                var isOriginalWidthValid = originalWidth.GetValue() != "" && originalWidth.GetValue() != 0;
                 var isOriginalHeightValid = originalHeight.GetValue() != "" && originalHeight.GetValue() != 0;
                 var isWidthValid = width.GetValue() != "" && width.GetValue() != 0 && width.GetValue() <= Number('@constraintParameters.MaxWidth') ? true : contentArray.push("Specified width dimension is not valid. The value cannot exceed " + '@constraintParameters.MaxWidth' + "px");
                 var isHeightValid = height.GetValue() != "" && height.GetValue() != 0 && height.GetValue() <= Number('@constraintParameters.MaxHeight') ? true : contentArray.push("Specified height dimension is not valid. The value cannot exceed " + '@constraintParameters.MaxHeight' + "px");
 
                 if (contentArray.length > 0) {
-                    AlertProperties.Initialize({ Class: "alert-danger", Content: contentArray });      
+                    AlertProperties.Initialize({ Class: "alert-danger", Content: contentArray });
                 }
                 return isFileNameValid === true
                     && isImageDataValid === true
                     && isImageDataValid === true
+                    && isOriginalWidthValid === true
                     && isOriginalHeightValid === true
                     && isWidthValid === true
                     && isHeightValid === true;
@@ -798,7 +859,10 @@
         AddPatternProperties.SetupPage = function () {
             //Hidden Inputs
             browserWindow.Initialize();
+            originalWidth.Initialize();
+            originalHeight.Initialize();
             //ImageDetails
+            fileName.Initialize();
             height.Initialize();
             width.Initialize();
             isProportional.Initialize();

@@ -13,7 +13,7 @@ namespace RainIt.Interfaces.Business
         StatusMessage AddUserPattern(ImageDetails pattern, PatternUploadModel patternUploadModel, bool canUpdate = false);
         UploadConstraintParameters GetUploadConstraintParameters();
         List<PatternDTO> GetUserPatterns();
-        PatternDTO GetUserPattern(int id);
+        PatternDTO GetUserPattern(int patternId);
         List<PatternDTO> GetAllPatterns();
         string GetPatternUrl(int patternId);
         StatusMessage UpdateUserPattern(ImageDetails pattern, string fileName);

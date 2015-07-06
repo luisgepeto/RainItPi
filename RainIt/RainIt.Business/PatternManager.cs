@@ -102,7 +102,7 @@ namespace RainIt.Business
         }
         public PatternDTO GetUserPattern(int patternId)
         {
-            return RainItContext.UserPatternSet.Select(p => new PatternDTO()
+            return RainItContext.UserPatternSet.Where(p => p.PatternId == patternId).Select(p => new PatternDTO()
             {
                 Name = p.Name,
                 PatternId = p.PatternId,

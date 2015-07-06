@@ -29,7 +29,17 @@ namespace Web.RainIt.Areas.Configuration.Controllers
         public ActionResult Add()
         {
             ViewBag.ConstraintParameters = PatternManager.GetUploadConstraintParameters();
-            var pattern = new PatternDTO();
+            var pattern = new PatternDTO()
+            {
+
+                ConversionParameterDTO = new ConversionParameterDTO()
+                {
+                    RWeight = 0.5,
+                    GWeight = 0.5,
+                    BWeight = 0.5,
+                    ThresholdValue = 50
+                }
+            };
             return View(pattern);
         }
 
