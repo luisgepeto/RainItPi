@@ -37,9 +37,9 @@ namespace Web.RainIt.Areas.Configuration.Controllers
             {
                 ConversionParameterDTO = new ConversionParameterDTO()
                 {
-                    RWeight = 0.5,
-                    GWeight = 0.5,
-                    BWeight = 0.5,
+                    RWeight = 50,
+                    GWeight = 50,
+                    BWeight = 50,
                     ThresholdPercentage = 50
                 }
             };
