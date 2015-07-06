@@ -28,26 +28,26 @@ namespace ImageProcessing.Domain
 		public double RWeight{
 			get 
 			{
-				return _rWeight / TotalSum;
+				return _rWeight;
 			}
 		    set { _rWeight = (int) value; }
 		}
 		public double GWeight{
 			get 
 			{
-				return _gWeight / TotalSum;
+				return _gWeight;
 			}
             set { _gWeight = (int) value; }
 		}
 		public double BWeight{
 			get 
 			{
-				return _bWeight / TotalSum;
+				return _bWeight;
 			}
             set { _bWeight = (int) value; }
 		}
 
-		double TotalSum{
+		public double TotalSum{
 			get
 			{
 				var totalSum = _rWeight + _gWeight + _bWeight;

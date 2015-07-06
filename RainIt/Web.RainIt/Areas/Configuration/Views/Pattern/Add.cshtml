@@ -10,58 +10,60 @@
 <link href="~/Content/fileinput.css" rel="stylesheet"/>
 <style>
     /* This will solve the problem about the file upload displaying incorrectly*/
-     .form-control {
-         padding: 0px 12px;
-     }
-     /* This will bundle the input groups together*/
-     .container  .input-group:not(:first-of-type) .input-group-addon, .container .input-group:not(:first-of-type) .form-control {
-         -ms-border-top-left-radius: 0;
-         border-top-left-radius: 0;
-         -ms-border-top-right-radius: 0;
-         border-top-right-radius: 0;
-         border-top: none;
-     }
+    .form-control {
+        padding: 0px 12px;
+    }
+    /* This will bundle the input groups together*/
+    .container .input-group:not(:first-of-type) .input-group-addon, .container .input-group:not(:first-of-type) .form-control {
+        -ms-border-top-left-radius: 0;
+        border-top-left-radius: 0;
+        -ms-border-top-right-radius: 0;
+        border-top-right-radius: 0;
+        border-top: none;
+    }
 
-     .container .input-group:not(:last-of-type) .input-group-addon, .container .input-group:not(:last-of-type) .form-control {
-         -ms-border-bottom-left-radius: 0;
-         border-bottom-left-radius: 0;
-         -ms-border-bottom-right-radius: 0;
-         border-bottom-right-radius: 0;
-         border-bottom: none;
-     }
+    .container .input-group:not(:last-of-type) .input-group-addon, .container .input-group:not(:last-of-type) .form-control {
+        -ms-border-bottom-left-radius: 0;
+        border-bottom-left-radius: 0;
+        -ms-border-bottom-right-radius: 0;
+        border-bottom-right-radius: 0;
+        border-bottom: none;
+    }
 
-     /* This will disable the spinner buttons that break the layout*/
-     .ui-spinner a.ui-spinner-button {
-         display: none;
-     }
+    /* This will disable the spinner buttons that break the layout*/
+    .ui-spinner a.ui-spinner-button {
+        display: none;
+    }
 
-     /* This will set the slider background color*/
-     div[data-jqui-slider-names='RWeight'] .ui-slider-range {
-         background: red;
-     }
-     div[data-jqui-slider-names='GWeight'] .ui-slider-range {
-         background: green;
-     }
-     div[data-jqui-slider-names='BWeight'] .ui-slider-range {
-         background: blue;
-     }
-     div[data-jqui-slider-names='Threshold'] .ui-slider-range {
-         background: black;
-     }
+    /* This will set the slider background color*/
+    div[data-jqui-slider-names='RWeight'] .ui-slider-range {
+        background: red;
+    }
+    div[data-jqui-slider-names='GWeight'] .ui-slider-range {
+        background: green;
+    }
+    div[data-jqui-slider-names='BWeight'] .ui-slider-range {
+        background: blue;
+    }
+    div[data-jqui-slider-names='Threshold'] .ui-slider-range {
+        background: black;
+    }
 </style>
+<br/>
+<br/>
+<br />
 @{
     var message = TempData["StatusMessage"] as StatusMessage;
     if (message != null)
     {
-        <div id="statusMessage" style="color: @(message.IsError ? "red" : "green")">
-            @message.Message
+        <div class="alert @(message.IsError ? "alert-danger" : "alert-success") alert-disimissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <ul>
+                <li>@message.Message</li>
+            </ul>
         </div>
     }
 }
-<br/>
-<br/>
-<br/>
-<br/>
 @Html.Partial("_Alert")
 <div class="container">
     <div class="row">
@@ -82,7 +84,7 @@
                                 <span class="sr-only">R Weight:</span>
                             </label>
                             <div class="form-control">
-                                @Html.JQueryUI().Slider("RWeight", (int)(Model.ConversionParameterDTO.RWeight * 100)).Range(SliderRange.Min)
+                                @Html.JQueryUI().Slider("RWeight", (int)(Model.ConversionParameterDTO.RWeight)).Range(SliderRange.Min)
                             </div>
                             <span class="input-group-addon">%</span>
                         </div>
@@ -92,7 +94,7 @@
                                 <span class="sr-only">G Weight:</span>
                             </label>
                             <div class="form-control">
-                                @Html.JQueryUI().Slider("GWeight", (int)(Model.ConversionParameterDTO.GWeight * 100)).Range(SliderRange.Min)
+                                @Html.JQueryUI().Slider("GWeight", (int)(Model.ConversionParameterDTO.GWeight)).Range(SliderRange.Min)
                             </div>
                             <span class="input-group-addon">%</span>
                         </div>
@@ -102,7 +104,7 @@
                                 <span class="sr-only">B Weight:</span>
                             </label>
                             <div class="form-control">
-                                @Html.JQueryUI().Slider("BWeight", (int)(Model.ConversionParameterDTO.BWeight*100)).Range(SliderRange.Min)
+                                @Html.JQueryUI().Slider("BWeight", (int)(Model.ConversionParameterDTO.BWeight)).Range(SliderRange.Min)
                             </div>
                             <span class="input-group-addon">%</span>
                         </div>

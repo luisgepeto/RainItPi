@@ -120,7 +120,7 @@ namespace ImageProcessing.Business
 		}
 
 		private int GetAverage (Color color, ColorRelativeWeight relativeWeight){
-			return (int)(color.R*relativeWeight.RWeight + color.G*relativeWeight.GWeight + color.B*relativeWeight.BWeight);
+			return (int)((color.R*relativeWeight.RWeight + color.G*relativeWeight.GWeight + color.B*relativeWeight.BWeight)/relativeWeight.TotalSum);
 		}
 
 		private Image GetImage(Color[,] pixelMatrix){
