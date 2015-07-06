@@ -14,6 +14,9 @@
         top: -15px;
         z-index: 2;
     }
+    .img-element {
+        cursor: pointer;
+    }
 </style>
 
 <div class="container">
@@ -30,6 +33,9 @@
 @using (Html.BeginForm("Add", "Pattern", new {area = "Configuration"}, FormMethod.Get, new {id = "addPatternForm"}))
 {
 }
+@using (Html.BeginForm("Edit", "Pattern", new { area = "Configuration"}, FormMethod.Get, new { id = "editPatternForm" }))
+{
+}
 <script src="~/Scripts/jquery.shapeshift.js"></script>
 <script type="text/javascript">
     (function() {
@@ -43,7 +49,7 @@
         PatternIndexProperties.Gallery = (function() {
             var properties = {};
             function createImage(image) {
-                var imageToPlace = $('<img>').attr("id", "image" + image.PatternId).attr("src", image.Path);
+                var imageToPlace = $('<img>').attr("id", "image_" + image.PatternId).attr("src", image.Path).attr("class", "img-element");
                 var column = $('<div>').attr("class", "shapeshift-element col-md-"+bootstrapMdColSize);
                 var imageHolder = $('<div>').attr("class", "limit-view img-holder").attr("id", "img-holder_" + image.PatternId);
                 var deleteButton = $('<div>').attr("class", "delete-button pointer").attr("id", "delete_" + image.PatternId);
@@ -84,7 +90,7 @@
                         }
                     });
                 });
-                
+
             }
 
             properties.Parameters = {
@@ -109,20 +115,7 @@
 
         var addImage = (function() {
             var properties = {};
-            function onAjaxSuccess(data) {
-                $('#mainBody').html(data);
-            }
-            function onAjaxError() {
-                alert("something happened");
-            }
-            function makeAddAjaxCall() {
-                $.ajax({
-                    url: '@Url.Action("Add", "Pattern", new {area = "Configuration"}, null)',
-                    success: onAjaxSuccess,
-                    error: onAjaxError,
-                    dataType: 'html'
-                });
-            }
+
             properties.AddClickListener = function() {
                 $('#img-add').click(function() {
                     $('#addPatternForm').submit();
@@ -131,6 +124,22 @@
             return properties;
         }());
 
+        var editImage = (function() {
+            var properties = {};
+            function submitForm(imageId) {
+                var action = $('#editPatternForm').attr("action");
+                action = action+"/"+imageId;
+                $('#editPatternForm').attr("action", action);
+                $('#editPatternForm').submit();
+            }
+            properties.AddClickListener = function() {
+                $('.img-element').click(function(e) {
+                    var id = $(e.currentTarget).attr("id").split("_")[1];
+                    submitForm(id);
+                });
+            }
+            return properties;
+        }());
         var deleteButton = (function() {
             var properties = {};
 
@@ -159,11 +168,12 @@
             }
             return properties;
         }());
-        
+
         PatternIndexProperties.SetupPage = function() {
             PatternIndexProperties.Gallery.Initialize();
             addImage.AddClickListener();
             deleteButton.AddClickListener();
+            editImage.AddClickListener();
         };
     }());
 

@@ -28,10 +28,17 @@ namespace Web.RainIt.Areas.Configuration.Controllers
 
         public ActionResult Add()
         {
-            var constraintParameters = PatternManager.GetUploadConstraintParameters();
-            return View(constraintParameters);
+            ViewBag.ConstraintParameters = PatternManager.GetUploadConstraintParameters();
+            var pattern = new PatternDTO();
+            return View(pattern);
         }
 
+        public ActionResult Edit(int id)
+        {
+            ViewBag.ConstraintParameters = PatternManager.GetUploadConstraintParameters();
+            var pattern = PatternManager.GetUserPattern(id);
+            return View("Add", pattern);
+        }
         [System.Web.Mvc.HttpPost]
         public JsonResult Add(PatternUploadModel patternUploadModel)
         {

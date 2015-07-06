@@ -88,6 +88,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DTO\Address.cs" />
+    <Compile Include="DTO\ConversionParameterDTO.cs" />
     <Compile Include="DTO\DeviceDTO.cs" />
     <Compile Include="DTO\DeviceInfoDTO.cs" />
     <Compile Include="DTO\Login.cs" />

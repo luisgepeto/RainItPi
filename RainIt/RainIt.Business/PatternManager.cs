@@ -100,7 +100,25 @@ namespace RainIt.Business
                 Path = p.Path
             }).ToList();
         }
-
+        public PatternDTO GetUserPattern(int patternId)
+        {
+            return RainItContext.UserPatternSet.Select(p => new PatternDTO()
+            {
+                Name = p.Name,
+                PatternId = p.PatternId,
+                Path = p.Path,
+                Height = p.Height,
+                Width = p.Width,
+                ConversionParameterDTO = new ConversionParameterDTO()
+                {
+                    RWeight = p.ConversionParameter.RWeight,
+                    GWeight = p.ConversionParameter.GWeight,
+                    BWeight = p.ConversionParameter.BWeight,
+                    IsInverted = p.ConversionParameter.IsInverted,
+                    ThresholdValue = p.ConversionParameter.ThresholdValue
+                }
+            }).Single();
+        }
         public List<PatternDTO> GetAllPatterns()
         {
             return RainItContext.PatternSet.Select(p => new PatternDTO()

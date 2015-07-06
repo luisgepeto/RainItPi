@@ -1,9 +1,10 @@
 ﻿@using JQueryUIHelpers
 @using RainIt.Domain.DTO
-@model UploadConstraintParameters
+@model PatternDTO
 @using Web.RainIt.Models
 @{
     ViewBag.Title = "Add Pattern";
+    var constraintParameters = ViewBag.ConstraintParameters as UploadConstraintParameters ?? new UploadConstraintParameters();
 }
 <script src="~/Scripts/fileinput.js"></script>
 <link href="~/Content/fileinput.css" rel="stylesheet"/>
@@ -610,12 +611,12 @@
             }
             function validate() {
                 var contentArray = [];
-                var isFileNameValid = fileName.GetValue().trim() != "" && fileName.GetValue().trim().length <= Number('@Model.MaxNameLength') ? true : contentArray.push("A file name must be specified with length less than " + '@Model.MaxNameLength' + " characters");
+                var isFileNameValid = fileName.GetValue().trim() != "" && fileName.GetValue().trim().length <= Number('@constraintParameters.MaxNameLength') ? true : contentArray.push("A file name must be specified with length less than " + '@constraintParameters.MaxNameLength' + " characters");
                 var isImageDataValid = imageData.GetBase64String(blackWhiteImageHolder.GetRawSrc()) != "" && imageData.GetBase64String(blackWhiteImageHolder.GetRawSrc()) != imageData.GetBase64String(imageData.BlankImageString) ? true : contentArray.push("No black & white image data found");
                 var isImageDataValid = originalWidth.GetValue() != "" && originalWidth.GetValue() != 0;
                 var isOriginalHeightValid = originalHeight.GetValue() != "" && originalHeight.GetValue() != 0;
-                var isWidthValid = width.GetValue() != "" && width.GetValue() != 0 && width.GetValue() <= Number('@Model.MaxWidth') ? true : contentArray.push("Specified width dimension is not valid. The value cannot exceed " + '@Model.MaxWidth' + "px");
-                var isHeightValid = height.GetValue() != "" && height.GetValue() != 0 && height.GetValue() <= Number('@Model.MaxHeight') ? true : contentArray.push("Specified height dimension is not valid. The value cannot exceed " + '@Model.MaxHeight' + "px");
+                var isWidthValid = width.GetValue() != "" && width.GetValue() != 0 && width.GetValue() <= Number('@constraintParameters.MaxWidth') ? true : contentArray.push("Specified width dimension is not valid. The value cannot exceed " + '@constraintParameters.MaxWidth' + "px");
+                var isHeightValid = height.GetValue() != "" && height.GetValue() != 0 && height.GetValue() <= Number('@constraintParameters.MaxHeight') ? true : contentArray.push("Specified height dimension is not valid. The value cannot exceed " + '@constraintParameters.MaxHeight' + "px");
 
                 if (contentArray.length > 0) {
                     AlertProperties.Initialize({ Class: "alert-danger", Content: contentArray });      
