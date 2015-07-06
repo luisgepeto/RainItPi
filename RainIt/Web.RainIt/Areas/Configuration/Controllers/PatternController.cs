@@ -1,4 +1,8 @@
 ﻿using System;
+using System.Drawing;
+using System.IO;
+using System.Net;
+using System.Text;
 using System.Web.Http;
 using System.Web.Mvc;
 using ImageProcessing.Business.Interfaces;
@@ -47,6 +51,7 @@ namespace Web.RainIt.Areas.Configuration.Controllers
         {
             ViewBag.ConstraintParameters = PatternManager.GetUploadConstraintParameters();
             var pattern = PatternManager.GetUserPattern(id);
+            pattern.Base64Image = ImageManager.ConvertToBase64(pattern.Path);
             return View("Add", pattern);
         }
         [System.Web.Mvc.HttpPost]

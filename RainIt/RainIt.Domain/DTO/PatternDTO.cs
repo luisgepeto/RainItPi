@@ -3,6 +3,7 @@
     public class PatternDTO
     {
         public int PatternId { get; set; }
+        public string Base64Image { get; set; }
         public string Name { get; set; }
         public string Path { get; set; }
         public int Width { get; set; }

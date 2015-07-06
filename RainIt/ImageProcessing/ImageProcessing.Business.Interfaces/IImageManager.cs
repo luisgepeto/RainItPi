@@ -15,6 +15,7 @@ namespace ImageProcessing.Business.Interfaces
 	    bool TryParseImage(string base64Image, out ImageDetails imageDetails);
         bool TryParseImage(string base64Image, out ImageDetails imageDetails, ResizeParameters resizeParameters);
 	    string ConvertToBase64(Image image);
+        string ConvertToBase64(string imagePath);
 	    Image Resize(Image image, ResizeParameters resizeParameters);
 	}
 }

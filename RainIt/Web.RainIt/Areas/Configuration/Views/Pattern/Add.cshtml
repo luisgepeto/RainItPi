@@ -225,7 +225,7 @@
         //Helper Classes
         var imageData = (function () {
             var properties = {};
-            properties.BlankImageString = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==';
+            properties.BlankImageString = 'data:image/png;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==';
             properties.GetBase64String = function (imageString) {
                 var base64Start = imageString.indexOf("base64,");
                 if (base64Start >= 0) {
@@ -241,6 +241,17 @@
                     return img;
                 }
                 return null;
+            }
+
+            properties.GetBase64StringFromUrl = function (image, callback) {
+                var canvas = document.createElement('CANVAS');
+                var ctx = canvas.getContext('2d');
+                canvas.height = image.height;
+                canvas.width = image.width;
+                ctx.drawImage(image, 0, 0);
+                var dataURL = canvas.toDataURL('image/png');
+                callback(dataURL);
+                canvas = null;
             }
             return properties;
         }());
@@ -298,6 +309,12 @@
             }
             properties.SetValue = function (value) {
                 $('#originalImage').val(value);
+            }
+
+            properties.Initialize = function () {
+                if ('@Model.Base64Image' != "") {
+                    $('#originalImage').val('@Model.Base64Image');
+                }
             }
             return properties;
         }());
@@ -637,6 +654,7 @@
             function getData() {
                 var data = {
                     PatternUploadModel: {
+                        PatternId: '@Model.PatternId',
                         FileName: fileName.GetValue(),
                         Base64Image: originalImage.GetValue(),
                         AbsoluteResizeParameters: {
@@ -777,6 +795,10 @@
                 $('#imagePreview').removeAttr('height');
             }
             properties.Initialize = function () {
+                if ('@Model.Base64Image' != "") {
+                    $('#imagePreview').parent().addClass("invisible-background");
+                    $('#imagePreview').attr("src","data:image/png;base64,"+ '@Model.Base64Image');
+                }
                 addLoadListener();
             }
             properties.GetRawSrc = function () {
@@ -861,6 +883,7 @@
             browserWindow.Initialize();
             originalWidth.Initialize();
             originalHeight.Initialize();
+            originalImage.Initialize();
             //ImageDetails
             fileName.Initialize();
             height.Initialize();

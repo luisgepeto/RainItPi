@@ -160,7 +160,7 @@
                     var parameters = {
                         ButtonName: "Delete",
                         Message: "Are you sure you want to delete this item?<br />This action cannot be undone.",
-                        ModalContent: $('#image'+patternToDelete).addClass("img-responsive")
+                        ModalContent: $('#image_'+patternToDelete).addClass("img-responsive")
                     };
                     ModalDeleteProperties.Initialize(parameters, makeDeleteAjaxCall, patternToDelete);
                     ModalDeleteProperties.Show();

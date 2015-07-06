@@ -23,7 +23,14 @@ namespace ImageProcessing.Business
             return imageFromUrl;
         }
 
-		public Image Resize(Image image, ResizeParameters resizeParameters){
+	    public string ConvertToBase64(string imagePath)
+	    {
+            var memoryStream = new MemoryStream(new WebClient().DownloadData(imagePath));
+            var base64String = Convert.ToBase64String(memoryStream.ToArray());
+	        return base64String;
+	    }
+
+	    public Image Resize(Image image, ResizeParameters resizeParameters){
 			Type parametersType = resizeParameters.GetType ();
 			if (typeof(AbsoluteResizeParameters).IsAssignableFrom (parametersType)) {
 				return Resize (image, (AbsoluteResizeParameters)resizeParameters);
