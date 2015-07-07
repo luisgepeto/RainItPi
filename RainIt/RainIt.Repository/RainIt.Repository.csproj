@@ -154,9 +154,9 @@
     <Compile Include="Migrations\201507062215483_ThresholdPercentageMigration.Designer.cs">
       <DependentUpon>201507062215483_ThresholdPercentageMigration.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201507070542088_SamplePatternMigration.cs" />
-    <Compile Include="Migrations\201507070542088_SamplePatternMigration.Designer.cs">
-      <DependentUpon>201507070542088_SamplePatternMigration.cs</DependentUpon>
+    <Compile Include="Migrations\201507071439058_SamplePatternMigration.cs" />
+    <Compile Include="Migrations\201507071439058_SamplePatternMigration.Designer.cs">
+      <DependentUpon>201507071439058_SamplePatternMigration.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -211,6 +211,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201507050837410_ConversionParameterMigration.resx">
       <DependentUpon>201507050837410_ConversionParameterMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201507071439058_SamplePatternMigration.resx">
+      <DependentUpon>201507071439058_SamplePatternMigration.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

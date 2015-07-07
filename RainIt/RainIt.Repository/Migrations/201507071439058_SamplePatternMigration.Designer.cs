@@ -13,7 +13,7 @@ namespace RainIt.Repository.Migrations
         
         string IMigrationMetadata.Id
         {
-            get { return "201507070542088_SamplePatternMigration"; }
+            get { return "201507071439058_SamplePatternMigration"; }
         }
         
         string IMigrationMetadata.Source
