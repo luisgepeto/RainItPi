@@ -726,7 +726,55 @@
             }
             return properties;
         }());
+        var testButton = (function () {
+            var properties = {};
+            function onAjaxSuccess() {
 
+            }
+            function makeAjaxCall(imageBase64String, selectedDevices) {
+                $.ajax({
+                    url: '@Url.Action("Test", "Pattern", new{area ="Configuration"})',
+                    data: {
+                        base64Image: imageBase64String,
+                        deviceIdentifierList: selectedDevices
+                    },
+                    type: "POST",
+                    contentType: "application/x-www-form-urlencoded",
+                    success: onAjaxSuccess
+                });
+            }
+            function validate() {
+                var contentArray = [];
+                var areSelectedDevicesValid = DeviceMultiselectProperties.GetSelectedDevices().length > 0  ? true : contentArray.push("At least one device must be selected");
+                var isImageDataValid = imageData.GetBase64String(blackWhiteImageHolder.GetRawSrc()) != "" && imageData.GetBase64String(blackWhiteImageHolder.GetRawSrc()) != imageData.GetBase64String(imageData.BlankImageString) ? true : contentArray.push("No black & white image data found");
+                var isOriginalWidthValid = originalWidth.GetValue() != "" && originalWidth.GetValue() != 0;
+                var isOriginalHeightValid = originalHeight.GetValue() != "" && originalHeight.GetValue() != 0;
+                var isWidthValid = width.GetValue() != "" && width.GetValue() != 0 && width.GetValue() <= Number('@constraintParameters.MaxWidth') ? true : contentArray.push("Specified width dimension is not valid. The value cannot exceed " + '@constraintParameters.MaxWidth' + "px");
+                var isHeightValid = height.GetValue() != "" && height.GetValue() != 0 && height.GetValue() <= Number('@constraintParameters.MaxHeight') ? true : contentArray.push("Specified height dimension is not valid. The value cannot exceed " + '@constraintParameters.MaxHeight' + "px");
+
+                if (contentArray.length > 0) {
+                    AlertProperties.Initialize({ Class: "alert-danger", Content: contentArray });
+                }
+                return areSelectedDevicesValid === true
+                    && isImageDataValid === true
+                    && isImageDataValid === true
+                    && isOriginalWidthValid === true
+                    && isOriginalHeightValid === true
+                    && isWidthValid === true
+                    && isHeightValid === true;
+            }
+            function addClickListener() {
+                $('#Test').click(function () {
+                    if (validate()) {
+                        makeAjaxCall(imageData.GetBase64String(blackWhiteImageHolder.GetRawSrc()), DeviceMultiselectProperties.GetSelectedDevices());
+                    }
+                });
+            }
+            properties.Initialize = function() {
+                addClickListener();
+            }
+            return properties;
+        }());
         //Image Holders
         var grayscaleImageHolder = (function () {
             var properties = {};
@@ -797,7 +845,7 @@
             properties.Initialize = function () {
                 if ('@Model.Base64Image' != "") {
                     $('#imagePreview').parent().addClass("invisible-background");
-                    $('#imagePreview').attr("src","data:image/png;base64,"+ '@Model.Base64Image');
+                    $('#imagePreview').attr("src", "data:image/png;base64," + '@Model.Base64Image');
                 }
                 addLoadListener();
             }
@@ -896,6 +944,7 @@
             addButton.Initialize();
             cancelButton.Initialize();
             filePicker.Initialize();
+            testButton.Initialize();
             //Image Holders
             normalImageHolder.Initialize();
             grayscaleImageHolder.Initialize();

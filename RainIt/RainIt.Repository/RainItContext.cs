@@ -74,6 +74,8 @@ namespace RainIt.Repository
         public DbSet<RoutinePattern> RoutinePatternSet { get; set; }
         public DbSet<Device> DeviceSet { get; set; }
         public DbSet<DeviceInfo> DeviceInfoSet { get; set; }
+        public DbSet<SamplePattern> SamplePatternSet { get; set; }
+
         //public DbSet<DeviceCredential> DeviceCredentialSet { get; set; }
 
         public IQueryable<Pattern> UserPatternSet
@@ -115,6 +117,7 @@ namespace RainIt.Repository
             modelBuilder.Configurations.Add(new DeviceInfoConfiguration());
             modelBuilder.Configurations.Add(new DeviceCredentialConfiguration());
             modelBuilder.Configurations.Add(new ConversionParameterConfiguration());
+            modelBuilder.Configurations.Add(new SamplePatternConfiguration());
         }
     }
 }

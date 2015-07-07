@@ -16,5 +16,6 @@ namespace RainIt.Domain.Repository
         public virtual User User { get; set; }
         public virtual ICollection<RoutinePattern> RoutinePatterns { get; set; }
         public virtual ConversionParameter ConversionParameter { get; set; }
+        public virtual SamplePattern SamplePattern { get; set; }
     }
 }

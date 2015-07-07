@@ -1,5 +1,6 @@
 ﻿
 
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Web;
@@ -11,6 +12,8 @@ namespace RainIt.Interfaces.Business
     public interface IPatternManager
     {
         StatusMessage AddUserPattern(ImageDetails pattern, PatternUploadModel patternUploadModel, bool canUpdate = false);
+        StatusMessage SetToTest(ImageDetails pattern, string base64Image, List<Guid> deviceIdentifierList);
+
         UploadConstraintParameters GetUploadConstraintParameters();
         List<PatternDTO> GetUserPatterns();
         PatternDTO GetUserPattern(int patternId);
