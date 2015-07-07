@@ -62,6 +62,7 @@ namespace RainIt.Business
                 currentSamplePattern.UpdateDateTime = DateTime.UtcNow;
                 currentSamplePattern.Device =
                     RainItContext.UserDeviceSet.Single(d => d.DeviceInfo.Identifier == deviceIdentifier);
+                currentSamplePattern.DeviceId = currentSamplePattern.Device.DeviceId;
                 RainItContext.SamplePatternSet.AddOrUpdate(currentSamplePattern);
                 RainItContext.SaveChanges();
             }
