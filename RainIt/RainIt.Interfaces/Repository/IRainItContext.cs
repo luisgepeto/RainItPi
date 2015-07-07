@@ -23,6 +23,7 @@ namespace RainIt.Interfaces.Repository
         IQueryable<Routine> UserRoutineSet { get; }
         IQueryable<Device> UserDeviceSet { get; }
         IQueryable<Routine> DeviceRoutineSet { get; }
+        DbSet<SamplePattern> SamplePatternSet { get; }
         int SaveChanges();
     }
 }

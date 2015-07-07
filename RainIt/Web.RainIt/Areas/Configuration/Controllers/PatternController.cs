@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Text;
 using System.Web.Http;
@@ -116,6 +118,22 @@ namespace Web.RainIt.Areas.Configuration.Controllers
             StatusMessage canAdd = PatternManager.DeleteUserPattern(patternId);
             TempData["StatusMessage"] = canAdd;
             return Json(Url.Action("Index", "Pattern" , new{area = "Configuration"}));
+        }
+
+        [System.Web.Mvc.HttpPost]
+        public JsonResult Test(string base64Image, List<Guid> deviceIdentifierList)
+        {
+            StatusMessage canSet = null;
+            ImageDetails imageDetails;
+            if (deviceIdentifierList!= null && deviceIdentifierList.Any() && ImageManager.TryParseImage(base64Image, out imageDetails))
+            {
+                canSet = PatternManager.SetToTest(imageDetails, base64Image, deviceIdentifierList);
+            }
+            else
+            {
+                canSet = StatusMessage.WriteError("The selected file is not an image");
+            }
+            return Json(new { canSet }, JsonRequestBehavior.DenyGet);
         }
     }
 }

@@ -2,6 +2,7 @@
 using System.CodeDom;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Data.Entity.Migrations;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -36,6 +37,39 @@ namespace RainIt.Business
             return !DoesUserFileNameExist(patternUploadModel.FileName, out patternId)
                 ? AddPattern(pattern, patternUploadModel)
                 : StatusMessage.WriteError("The selected file name is already in use");
+        }
+
+        public StatusMessage SetToTest(ImageDetails pattern, string base64Image, List<Guid> deviceIdentifierList)
+        {
+            if (!IsFileSizeValid(pattern)) return StatusMessage.WriteError("The file size is not valid.");
+            if (!AreDimensionsValid(pattern)) return StatusMessage.WriteError("The file dimensions are not valid.");
+            foreach (var deviceIdentifier in deviceIdentifierList)
+            {
+                SetToTest(base64Image, deviceIdentifier);
+            }
+            return StatusMessage.WriteMessage("Successfylly testing in the selected devices");
+        }
+
+        private StatusMessage SetToTest(string base64Image, Guid deviceIdentifier)
+        {
+            try
+            {
+                var currentSamplePattern =
+                RainItContext.SamplePatternSet
+                .SingleOrDefault(sp => sp.Device.DeviceInfo.Identifier == deviceIdentifier) ??
+                new SamplePattern();
+                currentSamplePattern.Base64Image = base64Image;
+                currentSamplePattern.UpdateDateTime = DateTime.UtcNow;
+                currentSamplePattern.Device =
+                    RainItContext.UserDeviceSet.Single(d => d.DeviceInfo.Identifier == deviceIdentifier);
+                RainItContext.SamplePatternSet.AddOrUpdate(currentSamplePattern);
+                RainItContext.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                return StatusMessage.WriteError("An error occurred while trying to test the selected pattern");
+            }
+            return StatusMessage.WriteMessage("Successfully testing the selected pattern");
         }
 
         private StatusMessage AddPattern(ImageDetails pattern, PatternUploadModel patternUploadModel)

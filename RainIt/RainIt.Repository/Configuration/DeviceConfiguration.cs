@@ -9,9 +9,6 @@ namespace RainIt.Repository.Configuration
         {
             ToTable(schema + ".Device");
             HasKey(d => d.DeviceId);
-            //HasRequired(d => d.DeviceCredential)
-            //    .WithRequiredPrincipal(p => p.Device)
-            //    .WillCascadeOnDelete(true);
             HasRequired(d => d.DeviceInfo)
                 .WithRequiredPrincipal(p => p.Device)
                 .WillCascadeOnDelete(true);
@@ -23,6 +20,9 @@ namespace RainIt.Repository.Configuration
                     cs.MapRightKey("RoutineId");
                     cs.ToTable("DeviceRoutine");
                 });
+            HasOptional(d => d.SamplePattern)
+                .WithRequired(sp=> sp.Device)
+                .WillCascadeOnDelete(true);
         }
     }
 }

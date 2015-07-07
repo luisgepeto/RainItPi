@@ -111,6 +111,7 @@
     <Compile Include="Configuration\RoleConfiguration.cs" />
     <Compile Include="Configuration\RoutineConfiguration.cs" />
     <Compile Include="Configuration\RoutinePatternConfiguration.cs" />
+    <Compile Include="Configuration\SamplePatternConfiguration.cs" />
     <Compile Include="Configuration\UserConfiguration.cs" />
     <Compile Include="Configuration\UserInfoConfiguration.cs" />
     <Compile Include="Migrations\201506101754131_initial.cs" />
@@ -152,6 +153,10 @@
     <Compile Include="Migrations\201507062215483_ThresholdPercentageMigration.cs" />
     <Compile Include="Migrations\201507062215483_ThresholdPercentageMigration.Designer.cs">
       <DependentUpon>201507062215483_ThresholdPercentageMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201507070542088_SamplePatternMigration.cs" />
+    <Compile Include="Migrations\201507070542088_SamplePatternMigration.Designer.cs">
+      <DependentUpon>201507070542088_SamplePatternMigration.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -206,9 +211,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201507050837410_ConversionParameterMigration.resx">
       <DependentUpon>201507050837410_ConversionParameterMigration.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201507062215483_ThresholdPercentageMigration.resx">
-      <DependentUpon>201507062215483_ThresholdPercentageMigration.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

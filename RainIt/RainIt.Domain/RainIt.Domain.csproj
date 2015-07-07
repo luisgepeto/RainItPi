@@ -112,6 +112,7 @@
     <Compile Include="Repository\Role.cs" />
     <Compile Include="Repository\Routine.cs" />
     <Compile Include="Repository\RoutinePattern.cs" />
+    <Compile Include="Repository\SamplePattern.cs" />
     <Compile Include="Repository\User.cs" />
     <Compile Include="Repository\UserInfo.cs" />
     <Compile Include="Services\User.cs" />
