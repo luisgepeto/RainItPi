@@ -612,25 +612,20 @@
             var properties = {};
             function addChangeListener() {
                 $("#filePicker").change(function () {
-                    normalImageHolder.ResetSize();
-                    grayscaleImageHolder.ResetSize();
-                    blackWhiteImageHolder.ResetSize();
-                    fileName.SetValue($(this).val().split('\\').pop());
-                    normalImageHolder.UpdateFromInput(this);
-                    var image = imageData.GetImageFromInput(this);
+                    var thisInput = this;
+                    var image = imageData.GetImageFromInput(thisInput);
                     if (image != null) {
                         image.onload = function () {
+                            normalImageHolder.ResetSize();
+                            grayscaleImageHolder.ResetSize();
+                            blackWhiteImageHolder.ResetSize();
+                            fileName.SetValue($(thisInput).val().split('\\').pop());
+                            normalImageHolder.UpdateFromInput(thisInput);
                             originalWidth.SetValue(image.width);
                             originalHeight.SetValue(image.height);
                             width.SetValue(image.width);
                             height.SetValue(image.height);
                         }
-                    } else {
-                        originalWidth.SetValue("");
-                        originalHeight.SetValue("");
-                        originalImage.SetValue("");
-                        width.SetValue("");
-                        height.SetValue("");
                     }
                 });
             }
