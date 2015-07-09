@@ -135,7 +135,7 @@
                     </div>
                     <div class="panel-body">
                         @Html.Action("Multiselect", "Device", new {area = "Configuration"})
-                        <button type="submit" name="test" id="Test" value="test" class="btn btn-info">Test</button>
+                        <button type="submit" name="test" id="Test" value="test" class="btn btn-primary">Test</button>
                     </div>
                 </div>
                 <div id="image-details" class="panel panel-default">
@@ -725,16 +725,33 @@
         }());
         var testButton = (function () {
             var properties = {};
-            function onAjaxSuccess() {
-
+            function onAjaxSuccess(data) {
+                if (!data.canSet.IsError) {
+                    AlertProperties.Initialize({ Class: "alert-success", Content: [data.canSet.Message] });
+                } else {
+                    AlertProperties.Initialize({ Class: "alert-danger", Content: [data.canSet.Message] });
+                }
             }
-            function makeAjaxCall(imageBase64String, selectedDevices) {
+            function getData() {
+                var data = {
+                    PatternUploadModel: {
+                        Base64Image: imageData.GetBase64String(blackWhiteImageHolder.GetRawSrc()),
+                        AbsoluteResizeParameters: {
+                            OriginalWidth: originalWidth.GetValue(),
+                            OriginalHeight: originalHeight.GetValue(),
+                            TargetWidth: width.GetValue(),
+                            TargetHeight: height.GetValue(),
+                            IsProportional: isProportional.GetValue()
+                        }
+                    },
+                    deviceIdentifierList: DeviceMultiselectProperties.GetSelectedDevices()
+                };
+                return data;
+            }
+            function makeAjaxCall() {
                 $.ajax({
                     url: '@Url.Action("Test", "Pattern", new{area ="Configuration"})',
-                    data: {
-                        base64Image: imageBase64String,
-                        deviceIdentifierList: selectedDevices
-                    },
+                    data: getData(),
                     type: "POST",
                     contentType: "application/x-www-form-urlencoded",
                     success: onAjaxSuccess
@@ -763,7 +780,7 @@
             function addClickListener() {
                 $('#Test').click(function () {
                     if (validate()) {
-                        makeAjaxCall(imageData.GetBase64String(blackWhiteImageHolder.GetRawSrc()), DeviceMultiselectProperties.GetSelectedDevices());
+                        makeAjaxCall();
                     }
                 });
             }

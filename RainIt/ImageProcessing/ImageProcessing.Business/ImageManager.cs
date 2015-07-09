@@ -5,6 +5,7 @@ using ImageProcessing.Business.Interfaces;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Net;
+using RainIt.Domain.DTO;
 
 namespace ImageProcessing.Business
 {
@@ -139,21 +140,23 @@ namespace ImageProcessing.Business
 
 	    public bool TryParseImage(string base64Image, out ImageDetails imageDetails)
 	    {
-	        return TryParseImage(base64Image, out imageDetails, null);
+	        var newPatternUploadModel = new PatternUploadModel() {Base64Image = base64Image};
+	        return TryParseImage(newPatternUploadModel, out imageDetails);
 	    }
 
-	    public bool TryParseImage(string base64Image, out ImageDetails imageDetails, ResizeParameters resizeParameters)
+	    public bool TryParseImage(PatternUploadModel patternUploadModel, out ImageDetails imageDetails)
 	    {
 	        imageDetails = null;
             var canParse = false;
             try
             {
-                var image = ParseImage(base64Image);
-                if (resizeParameters != null)
+                var image = ParseImage(patternUploadModel.Base64Image);
+                if (patternUploadModel.AbsoluteResizeParameters != null)
                 {
-                    image = (Bitmap) Resize(image, resizeParameters);    
+                    image = (Bitmap) Resize(image, patternUploadModel.AbsoluteResizeParameters);    
                 }
                 imageDetails = new ImageDetails(image);
+                imageDetails.Base64Image = ConvertToBase64(image);
                 canParse = true;
             }
             catch (Exception ex)

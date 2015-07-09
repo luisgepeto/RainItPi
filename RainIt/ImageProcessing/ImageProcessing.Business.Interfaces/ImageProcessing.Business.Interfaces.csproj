@@ -91,6 +91,10 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
+    <ProjectReference Include="..\..\RainIt.Domain\RainIt.Domain.csproj">
+      <Project>{C2C093AB-A86B-4D53-9678-7902E0E01FFE}</Project>
+      <Name>RainIt.Domain</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ImageProcessing.Domain\ImageProcessing.Domain.csproj">
       <Project>{0DB8BAD7-561F-41C6-B480-7CECA2C0C2A7}</Project>
       <Name>ImageProcessing.Domain</Name>

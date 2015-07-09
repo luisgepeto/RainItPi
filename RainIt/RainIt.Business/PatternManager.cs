@@ -39,15 +39,15 @@ namespace RainIt.Business
                 : StatusMessage.WriteError("The selected file name is already in use");
         }
 
-        public StatusMessage SetToTest(ImageDetails pattern, string base64Image, List<Guid> deviceIdentifierList)
+        public StatusMessage SetToTest(ImageDetails pattern, List<Guid> deviceIdentifierList)
         {
             if (!IsFileSizeValid(pattern)) return StatusMessage.WriteError("The file size is not valid.");
             if (!AreDimensionsValid(pattern)) return StatusMessage.WriteError("The file dimensions are not valid.");
             foreach (var deviceIdentifier in deviceIdentifierList)
             {
-                SetToTest(base64Image, deviceIdentifier);
+                SetToTest(pattern.Base64Image, deviceIdentifier);
             }
-            return StatusMessage.WriteMessage("Successfylly testing in the selected devices");
+            return StatusMessage.WriteMessage("Successfully testing in the selected devices");
         }
 
         private StatusMessage SetToTest(string base64Image, Guid deviceIdentifier)

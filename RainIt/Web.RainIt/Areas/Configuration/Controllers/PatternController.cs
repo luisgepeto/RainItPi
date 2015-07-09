@@ -60,7 +60,7 @@ namespace Web.RainIt.Areas.Configuration.Controllers
         {
             ImageDetails imageDetails;
             StatusMessage canAdd = null;
-            if (ImageManager.TryParseImage(patternUploadModel.Base64Image, out imageDetails, patternUploadModel.AbsoluteResizeParameters))
+            if (ImageManager.TryParseImage(patternUploadModel, out imageDetails))
             {
                 if (patternUploadModel.PatternId == 0)
                     canAdd = PatternManager.AddUserPattern(imageDetails, patternUploadModel);
@@ -121,17 +121,19 @@ namespace Web.RainIt.Areas.Configuration.Controllers
         }
 
         [System.Web.Mvc.HttpPost]
-        public JsonResult Test(string base64Image, List<Guid> deviceIdentifierList)
+        public JsonResult Test(PatternUploadModel patternUploadModel, List<Guid> deviceIdentifierList)
         {
-            StatusMessage canSet = null;
+            StatusMessage canSet = new StatusMessage();
             ImageDetails imageDetails;
-            if (deviceIdentifierList!= null && deviceIdentifierList.Any() && ImageManager.TryParseImage(base64Image, out imageDetails))
+            if (deviceIdentifierList == null || !deviceIdentifierList.Any())
+                canSet = StatusMessage.WriteError("No device was selected");
+            if (!canSet.IsError && ImageManager.TryParseImage(patternUploadModel, out imageDetails))
             {
-                canSet = PatternManager.SetToTest(imageDetails, base64Image, deviceIdentifierList);
+                canSet = PatternManager.SetToTest(imageDetails, deviceIdentifierList);
             }
             else
             {
-                canSet = StatusMessage.WriteError("The selected file is not an image");
+                canSet = StatusMessage.WriteError("The selected file is not an image");    
             }
             return Json(new { canSet }, JsonRequestBehavior.DenyGet);
         }

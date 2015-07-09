@@ -16,7 +16,8 @@ namespace ImageProcessing.Domain
             Image = image;
             ImageStream = GetStream();
         }
-        
+
+        public string Base64Image { get; set; }
         public Image Image { get; set; }
 
         public long FileSize
