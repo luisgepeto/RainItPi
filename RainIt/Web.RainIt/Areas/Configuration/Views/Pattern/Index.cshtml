@@ -36,6 +36,8 @@
 @using (Html.BeginForm("Edit", "Pattern", new { area = "Configuration"}, FormMethod.Get, new { id = "editPatternForm" }))
 {
 }
+<script src="~/Scripts/custom-ajaxLoadingAnimation.js"></script>
+
 <script src="~/Scripts/jquery.shapeshift.js"></script>
 <script type="text/javascript">
     (function() {
@@ -65,7 +67,6 @@
                     image.insertBefore(imageAdder);
                 });
             }
-
             function addBootstrapClearFixes() {
                 var bootstrapSizes = ['xs', 'sm', 'md', 'lg'];
                 $.each(bootstrapSizes, function(index, currentSize) {
@@ -90,9 +91,7 @@
                         }
                     });
                 });
-
             }
-
             properties.Parameters = {
                 enableDrag: false,
                 cutoffEnd: passedImages.length - 1,
@@ -113,18 +112,20 @@
             return properties;
         }());
 
-        var addImage = (function() {
+        var addButton = (function() {
             var properties = {};
-
-            properties.AddClickListener = function() {
+            function addClickListener() {
                 $('#img-add').click(function() {
                     $('#addPatternForm').submit();
                 });
             }
+            properties.Initialize = function () {
+                addClickListener();
+            }
             return properties;
         }());
 
-        var editImage = (function() {
+        var image = (function() {
             var properties = {};
             function submitForm(imageId) {
                 var action = $('#editPatternForm').attr("action");
@@ -132,14 +133,51 @@
                 $('#editPatternForm').attr("action", action);
                 $('#editPatternForm').submit();
             }
-            properties.AddClickListener = function() {
+           function addClickListener() {
                 $('.img-element').click(function(e) {
                     var id = $(e.currentTarget).attr("id").split("_")[1];
                     submitForm(id);
                 });
+           }
+           function onAjaxSuccess(data) {
+               $('#image_' + data.patternId).parent().removeAjaxLoadingAnimation();
+               var originalSrc = $('#image_' + data.patternId).attr("src");
+               $('#image_' + data.patternId).attr("data-orig-src", originalSrc);
+               $('#image_' + data.patternId).attr("data-bw-src", "data:image/png;base64," + data.blackWhiteFile);
+           }
+           function makeHoverAjaxCall(patternId) {
+               $('#image_' + patternId).parent().setAjaxLoadingAnimation();
+                var url = '@Url.Action("GetBlackWhiteFor", "Pattern", new { area = "Configuration", patternId = -1})';
+                url = url.replace("-1", patternId);
+               $.ajax({
+                   url: url,
+                   type: "GET",
+                   contentType: "application/x-www-form-urlencoded",
+                   success: onAjaxSuccess
+               });
+            }
+            
+            function addHoverListener() {
+                $('.img-element').hover(function(e) {
+                    var id = $(e.currentTarget).attr("id").split("_")[1];
+                    var originalSource = $('#image_' + id).attr("data-orig-src");
+                    var bwSource = $('#image_' + id).attr("data-bw-src");
+                    var isBw = $('#image_' + id).attr("data-is-bw") == "true";
+                    if (originalSource && bwSource) {
+                        $('#image_' + id).attr("src", isBw ? originalSource : bwSource);
+                        $('#image_' + id).attr("data-is-bw", isBw ? "false" : "true");
+                    } else {
+                        makeHoverAjaxCall(id);
+                    }
+                });
+            }
+            properties.Initialize = function() {
+                addClickListener();
+                addHoverListener();
             }
             return properties;
         }());
+
         var deleteButton = (function() {
             var properties = {};
 
@@ -154,7 +192,7 @@
                 );
             }
 
-            properties.AddClickListener = function() {
+            function addClickListener () {
                 $('.delete-button').click(function(e) {
                     var patternToDelete = $(e.target).attr("id").split("_")[1];
                     var parameters = {
@@ -166,14 +204,17 @@
                     ModalDeleteProperties.Show();
                 });
             }
+            properties.Initialize = function() {
+                addClickListener();
+            }
             return properties;
         }());
 
         PatternIndexProperties.SetupPage = function() {
             PatternIndexProperties.Gallery.Initialize();
-            addImage.AddClickListener();
-            deleteButton.AddClickListener();
-            editImage.AddClickListener();
+            addButton.Initialize();
+            deleteButton.Initialize();
+            image.Initialize();
         };
     }());
 

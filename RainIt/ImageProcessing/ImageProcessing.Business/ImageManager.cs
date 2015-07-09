@@ -24,6 +24,14 @@ namespace ImageProcessing.Business
             return imageFromUrl;
         }
 
+	    public ImageDetails GetImageFromPath(string imagePath)
+	    {
+	        var memoryStream = new MemoryStream(new WebClient().DownloadData(imagePath));
+            var base64String = Convert.ToBase64String(memoryStream.ToArray());
+	        var image = ParseImage(base64String);
+	        var imageDetails = new ImageDetails(image) {Base64Image = base64String};
+	        return imageDetails;
+	    }
 	    public string ConvertToBase64(string imagePath)
 	    {
             var memoryStream = new MemoryStream(new WebClient().DownloadData(imagePath));

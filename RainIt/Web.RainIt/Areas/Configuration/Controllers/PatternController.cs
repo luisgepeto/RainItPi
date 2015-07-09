@@ -112,6 +112,18 @@ namespace Web.RainIt.Areas.Configuration.Controllers
             return Json(false, JsonRequestBehavior.DenyGet);
         }
 
+        public JsonResult GetBlackWhiteFor(int patternId)
+        {
+            var pattern = PatternManager.GetUserPattern(patternId);
+            var imageDetails = ImageManager.GetImageFromPath(pattern.Path);
+            var blackWhiteImage = ImageManager.GetBlackWhite(imageDetails.Image,
+                                        pattern.ConversionParameterDTO.IsInverted, 
+                                        pattern.ConversionParameterDTO.BWeight,
+                                        new ColorRelativeWeight((int) pattern.ConversionParameterDTO.RWeight,(int) pattern.ConversionParameterDTO.GWeight, (int) pattern.ConversionParameterDTO.BWeight));
+            var blackWhiteFile = ImageManager.ConvertToBase64(blackWhiteImage);
+            return Json(new {patternId, blackWhiteFile}, JsonRequestBehavior.AllowGet);
+        }
+
         [System.Web.Mvc.HttpPost]
         public JsonResult Delete(int patternId)
         {
