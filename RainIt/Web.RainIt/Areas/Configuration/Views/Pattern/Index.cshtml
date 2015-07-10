@@ -14,6 +14,19 @@
         top: -15px;
         z-index: 2;
     }
+    .img-title {
+        position: absolute;
+        bottom: 5px;
+        left: 5px;
+        background-color: skyblue;
+        padding: 5px;
+        max-width: 190px;
+        width: 190px;
+        max-height: 30px;
+        height: 30px;
+        overflow: hidden;
+        word-break: break-all;
+    }
 </style>
 
 <div class="container">
@@ -50,7 +63,9 @@
                 var deleteButton = $('<div>').attr("class", "delete-button pointer").attr("id", "delete_" + image.PatternId);
                 deleteButton.appendTo(imageHolder);
                 imageToPlace.appendTo(imageHolder);
+                var caption = $('<div>').attr("id", "img-title_" + image.PatternId).addClass("caption img-title").html("<p>" + image.Name + "</p>").css("display", "none");
                 imageHolder.appendTo(column);
+                caption.appendTo(column);
                 return column;
             }
             function initializeUserImages() {
@@ -144,10 +159,12 @@
                     if ($('#image_' + id).attr("data-bw-src") == undefined && hasAjaxRunFor.indexOf(id) == -1) {
                         makeHoverAjaxCall(id);
                     }
-                },
+                        $('#img-title_' + id).show();
+                    },
                 function(e) {
                     var id = $(e.currentTarget).attr("id").split("_")[1];
                     $('#image_' + id).parent().children('.k-loading-mask').hide();
+                    $('#img-title_' + id).hide();
                 });
 
                 $('.img-element').hover(function(e) {
