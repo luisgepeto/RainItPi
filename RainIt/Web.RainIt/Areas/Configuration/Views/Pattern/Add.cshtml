@@ -274,8 +274,8 @@
                 if (isProportional.GetValue() && currentRatio != originalRatio) {
                     targetWidth = originalRatio * targetHeight;
                 }
-                width.SetValue(targetWidth);
-                height.SetValue(targetHeight);
+                width.SetValue(Math.round(targetWidth));
+                height.SetValue(Math.round(targetHeight));
                 var targetRatio = targetWidth / targetHeight;
                 if (targetHeight > $('.img-holder').height()) {
                     targetHeight = $('.img-holder').height();
@@ -377,8 +377,7 @@
         var height = (function () {
             var properties = {};
             properties.GetValue = function () {
-                debugger;
-                return $('#Height').val();
+                return Math.round($('#Height').val());
             }
             properties.SetValue = function (value) {
                 $('#Height').val(value);
@@ -408,7 +407,7 @@
         var width = (function () {
             var properties = {};
             properties.GetValue = function () {
-                return $('#Width').val();
+                return Math.round($('#Width').val());
             }
             properties.SetValue = function (value) {
                 $('#Width').val(value);
