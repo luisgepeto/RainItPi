@@ -13,7 +13,8 @@
         var multiselect = (function() {
             var properties = {};
             properties.Initialize = function () {
-                $('#device-multiselect').multiselect({buttonWidth: '150px'});
+                $('#device-multiselect').multiselect({ buttonWidth: '150px', disableIfEmpty: true });
+
             }
             properties.SelectDevices = function (deviceIds) {
                 $.each(deviceIds, function() {
