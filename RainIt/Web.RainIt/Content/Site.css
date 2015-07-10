@@ -74,9 +74,12 @@ ul.nav.navbar-nav {
         position: relative;
         width: 100%;
 }
-.shapeshift-gallery .col-md-2 {
+.shapeshift-element {
     position: absolute;
     height: 200px;
+    width: 200px;
+    padding-left: 15px;
+    padding-right: 15px;
 }
 
 /* This is intended to work as additional space on top of the bootstrap .row*/
@@ -147,9 +150,9 @@ k-loading-mask, .k-loading-image, .k-loading-text {
      .img-container {
          background: url("icons/image.png") no-repeat center;
      }
-.img-adder {
-    background: url('icons/add.png') no-repeat center;
-}
+    .img-adder {
+        background: url('icons/add.png') no-repeat center;
+    }
      .invisible-background {
          background: initial;
      }
