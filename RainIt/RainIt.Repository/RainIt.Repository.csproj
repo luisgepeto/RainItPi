@@ -146,17 +146,9 @@
     <Compile Include="Migrations\201506212129134_OnlyOneRolePerUserMigration.Designer.cs">
       <DependentUpon>201506212129134_OnlyOneRolePerUserMigration.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201507050837410_ConversionParameterMigration.cs" />
-    <Compile Include="Migrations\201507050837410_ConversionParameterMigration.Designer.cs">
-      <DependentUpon>201507050837410_ConversionParameterMigration.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201507062215483_ThresholdPercentageMigration.cs" />
-    <EmbeddedResource Include="Migrations\201507062215483_ThresholdPercentageMigration.Designer.cs">
-      <DependentUpon>201507062215483_ThresholdPercentageMigration.cs</DependentUpon>
-    </EmbeddedResource>
-    <Compile Include="Migrations\201507071439058_SamplePatternMigration.cs" />
-    <Compile Include="Migrations\201507071439058_SamplePatternMigration.Designer.cs">
-      <DependentUpon>201507071439058_SamplePatternMigration.cs</DependentUpon>
+    <Compile Include="Migrations\201507100605432_ConversionParameterAndSamplePatternMigration.cs" />
+    <Compile Include="Migrations\201507100605432_ConversionParameterAndSamplePatternMigration.Designer.cs">
+      <DependentUpon>201507100605432_ConversionParameterAndSamplePatternMigration.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -209,11 +201,8 @@
     <EmbeddedResource Include="Migrations\201506212129134_OnlyOneRolePerUserMigration.resx">
       <DependentUpon>201506212129134_OnlyOneRolePerUserMigration.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201507050837410_ConversionParameterMigration.resx">
-      <DependentUpon>201507050837410_ConversionParameterMigration.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201507071439058_SamplePatternMigration.resx">
-      <DependentUpon>201507071439058_SamplePatternMigration.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201507100605432_ConversionParameterAndSamplePatternMigration.resx">
+      <DependentUpon>201507100605432_ConversionParameterAndSamplePatternMigration.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

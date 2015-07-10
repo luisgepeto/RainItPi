@@ -3,10 +3,25 @@ namespace RainIt.Repository.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class SamplePatternMigration : DbMigration
+    public partial class ConversionParameterAndSamplePatternMigration : DbMigration
     {
         public override void Up()
         {
+            CreateTable(
+                "dbo.ConversionParameter",
+                c => new
+                    {
+                        PatternId = c.Int(nullable: false),
+                        RWeight = c.Double(nullable: false),
+                        GWeight = c.Double(nullable: false),
+                        BWeight = c.Double(nullable: false),
+                        ThresholdPercentage = c.Double(nullable: false),
+                        IsInverted = c.Boolean(nullable: false),
+                    })
+                .PrimaryKey(t => t.PatternId)
+                .ForeignKey("dbo.Pattern", t => t.PatternId, cascadeDelete: true)
+                .Index(t => t.PatternId);
+            
             CreateTable(
                 "dbo.SamplePattern",
                 c => new
@@ -29,10 +44,13 @@ namespace RainIt.Repository.Migrations
         {
             DropForeignKey("dbo.SamplePattern", "SamplePatternId", "dbo.Device");
             DropForeignKey("dbo.Pattern", "SamplePattern_SamplePatternId", "dbo.SamplePattern");
+            DropForeignKey("dbo.ConversionParameter", "PatternId", "dbo.Pattern");
             DropIndex("dbo.SamplePattern", new[] { "SamplePatternId" });
+            DropIndex("dbo.ConversionParameter", new[] { "PatternId" });
             DropIndex("dbo.Pattern", new[] { "SamplePattern_SamplePatternId" });
             DropColumn("dbo.Pattern", "SamplePattern_SamplePatternId");
             DropTable("dbo.SamplePattern");
+            DropTable("dbo.ConversionParameter");
         }
     }
 }
