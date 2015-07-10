@@ -611,12 +611,15 @@
         }());
         var filePicker = (function () {
             var properties = {};
+            var allowedFileExtensions = ['jpg', 'gif', 'png'];
+            var maxFileSize = Number('@constraintParameters.MaxBytesFileSize')/1024;
             function addChangeListener() {
                 $("#filePicker").change(function () {
                     var thisInput = this;
                     var image = imageData.GetImageFromInput(thisInput);
                     if (image != null) {
                         image.onload = function () {
+                            AlertProperties.Hide();
                             normalImageHolder.ResetSize();
                             grayscaleImageHolder.ResetSize();
                             blackWhiteImageHolder.ResetSize();
@@ -630,6 +633,17 @@
                     }
                 });
             }
+             function addErrorListener() {
+                 $("#filePicker").on('fileerror', function (e, data) {
+                     var contentArray = [];
+                     if (data.file.size/1024 > maxFileSize)
+                         contentArray.push("The file size cannot exceed " + maxFileSize + "Kb");
+                     if (allowedFileExtensions.indexOf(data.file.name.split('.').pop()) == -1)
+                         contentArray.push("The file is not an accepted image type");
+                     if(contentArray.length)
+                         AlertProperties.Initialize({ Class: "alert-danger", Content: contentArray });
+                 });
+             }
 
             properties.Initialize = function () {
                 $("#filePicker").fileinput({
@@ -638,9 +652,11 @@
                     showUpload: false,
                     showCaption: false,
                     allowedFileTypes: ['image'],
-                    allowedFileExtensions: ['jpg', 'gif', 'png']
+                    allowedFileExtensions: allowedFileExtensions,
+                    maxFileSize: maxFileSize
                 });
                 addChangeListener();
+                addErrorListener();
             }
             return properties;
         }());
@@ -709,6 +725,7 @@
             function addClickListener() {
                 $('#Add').click(function () {
                     if (validate()) {
+                        AlertProperties.Hide();
                         makeAjaxCall();
                     }
                 });
@@ -781,6 +798,7 @@
             function addClickListener() {
                 $('#Test').click(function () {
                     if (validate()) {
+                        AlertProperties.Hide();
                         makeAjaxCall();
                     }
                 });

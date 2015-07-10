@@ -120,7 +120,7 @@ namespace RainIt.Business
         {
             return new UploadConstraintParameters()
             {
-                MaxFileSize = int.Parse(ConfigurationManager.AppSettings["MaxPatternByteCount"]),
+                MaxBytesFileSize = int.Parse(ConfigurationManager.AppSettings["MaxPatternByteCount"]),
                 MaxHeight = int.Parse(ConfigurationManager.AppSettings["MaxPatternPixelHeight"]),
                 MaxWidth = int.Parse(ConfigurationManager.AppSettings["MaxPatternPixelWidth"]),
                 MaxNameLength = 50
