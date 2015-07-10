@@ -10,7 +10,7 @@
         background: url('../../../../Content/icons/delete.png') no-repeat center center;
         background-size: contain;
         position: absolute;
-        left: 83%;
+        left: 92%;
         top: -15px;
         z-index: 2;
     }
@@ -68,7 +68,9 @@
                 enableDrag: false,
                 cutoffEnd: passedImages.length - 1,
                 enableCrossDrop: false,
-                selector : '.shapeshift-element'
+                selector : '.shapeshift-element',
+                gutterY: 30,
+                gutterX: 30
             };
             properties.Initialize = function() {
                 initializeUserImages();

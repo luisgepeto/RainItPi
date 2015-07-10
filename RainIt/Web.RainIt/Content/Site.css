@@ -78,8 +78,6 @@ ul.nav.navbar-nav {
     position: absolute;
     height: 200px;
     width: 200px;
-    padding-left: 15px;
-    padding-right: 15px;
 }
 
 /* This is intended to work as additional space on top of the bootstrap .row*/
