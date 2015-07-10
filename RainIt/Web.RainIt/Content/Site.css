@@ -140,9 +140,6 @@ k-loading-mask, .k-loading-image, .k-loading-text {
 /* This will set the border on the image containers and holders*/
      .img-holder {
          width: 100%;
-         border-style: dashed;
-         border-width: 3px;
-         border-color: #3276b1;
          background-size: 100% auto;
      }
      .img-container {
