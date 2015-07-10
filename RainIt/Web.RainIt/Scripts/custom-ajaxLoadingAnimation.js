@@ -26,7 +26,8 @@
 
         var htmlCoveringDiv = '<div class="k-loading-mask"><span class="k-loading-text">'+displayText+'</span><div class="k-loading-image"></div><div class="k-loading-color"></div></div>';
 
-        this.css('position', 'relative');
+        //please review this, as it will change the container presentation.
+        //this.css('position', 'relative');
         this.append(htmlCoveringDiv);
 
         this.children('.k-loading-mask')
@@ -35,7 +36,7 @@
             .css('width', containerSettings.Width)
             .css('height', containerSettings.Height)
             .css('text-align', 'center')
-            .css('z-index', 99999);
+            .css('z-index', 999);
 
         var textSettings = getContainerSettings(this.children().children('.k-loading-text'));
         this.children().children('.k-loading-text')
@@ -54,6 +55,14 @@
 
     $.fn.removeAjaxLoadingAnimation = function () {
         this.children("div.k-loading-mask").remove();
+        return this;
+    }
+
+    $.fn.toggleAjaxLoadingAnimation = function () {
+        if(this.children("div.k-loading-mask").length)
+            this.removeAjaxLoadingAnimation();
+        else
+            this.setAjaxLoadingAnimation();
         return this;
     }
 

@@ -51,7 +51,7 @@
         PatternIndexProperties.Gallery = (function() {
             var properties = {};
             function createImage(image) {
-                var imageToPlace = $('<img>').attr("id", "image_" + image.PatternId).attr("src", image.Path).attr("class", "img-element");
+                var imageToPlace = $('<img>').attr("id", "image_" + image.PatternId).attr("src", image.Path).attr("class", "img-element").attr("data-orig-src", image.Path);
                 var column = $('<div>').attr("class", "shapeshift-element col-md-"+bootstrapMdColSize);
                 var imageHolder = $('<div>').attr("class", "limit-view img-holder").attr("id", "img-holder_" + image.PatternId);
                 var deleteButton = $('<div>').attr("class", "delete-button pointer").attr("id", "delete_" + image.PatternId);
@@ -127,6 +127,7 @@
 
         var image = (function() {
             var properties = {};
+            var hasAjaxRunFor = [];
             function submitForm(imageId) {
                 var action = $('#editPatternForm').attr("action");
                 action = action+"/"+imageId;
@@ -141,11 +142,13 @@
            }
            function onAjaxSuccess(data) {
                $('#image_' + data.patternId).parent().removeAjaxLoadingAnimation();
-               var originalSrc = $('#image_' + data.patternId).attr("src");
-               $('#image_' + data.patternId).attr("data-orig-src", originalSrc);
                $('#image_' + data.patternId).attr("data-bw-src", "data:image/png;base64," + data.blackWhiteFile);
+               if ($('#image_' + data.patternId).is(":hover")) {
+                   $('#image_' + data.patternId).attr("src",  $('#image_' + data.patternId).attr("data-bw-src"));
+               }
            }
            function makeHoverAjaxCall(patternId) {
+               hasAjaxRunFor.push(patternId);
                $('#image_' + patternId).parent().setAjaxLoadingAnimation();
                 var url = '@Url.Action("GetBlackWhiteFor", "Pattern", new { area = "Configuration", patternId = -1})';
                 url = url.replace("-1", patternId);
@@ -157,18 +160,30 @@
                });
             }
             
+            function hoverFunction(id, mouseChangeFunction) {
+                var originalSource = $('#image_' + id).attr("data-orig-src");
+                var bwSource = $('#image_' + id).attr("data-bw-src");
+                if (originalSource && bwSource) {
+                    mouseChangeFunction(id);
+                }
+            }
             function addHoverListener() {
-                $('.img-element').hover(function(e) {
+                $('.img-holder').hover(function(e) {
                     var id = $(e.currentTarget).attr("id").split("_")[1];
-                    var originalSource = $('#image_' + id).attr("data-orig-src");
-                    var bwSource = $('#image_' + id).attr("data-bw-src");
-                    var isBw = $('#image_' + id).attr("data-is-bw") == "true";
-                    if (originalSource && bwSource) {
-                        $('#image_' + id).attr("src", isBw ? originalSource : bwSource);
-                        $('#image_' + id).attr("data-is-bw", isBw ? "false" : "true");
-                    } else {
+                    $('#image_' + id).parent().children('.k-loading-mask').show();
+                    if ($('#image_' + id).attr("data-bw-src") == undefined && hasAjaxRunFor.indexOf(id) == -1) {
                         makeHoverAjaxCall(id);
                     }
+                    hoverFunction(id, function(id) {
+                        $('#image_' + id).attr("src",  $('#image_' + id).attr("data-bw-src"));
+                    });
+                },
+                function(e) {
+                    var id = $(e.currentTarget).attr("id").split("_")[1];
+                    $('#image_' + id).parent().children('.k-loading-mask').hide();
+                    hoverFunction(id, function(id) {
+                        $('#image_' + id).attr("src", $('#image_' + id).attr("data-orig-src"));
+                    });
                 });
             }
             properties.Initialize = function() {
