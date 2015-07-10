@@ -116,7 +116,7 @@
            function onAjaxSuccess(data) {
                $('#image_' + data.patternId).parent().removeAjaxLoadingAnimation();
                $('#image_' + data.patternId).attr("data-bw-src", "data:image/png;base64," + data.blackWhiteFile);
-               if ($('#image_' + data.patternId).is(":hover")) {
+               if ($('#img-holder_' + data.patternId).is(":hover")) {
                    $('#image_' + data.patternId).attr("src",  $('#image_' + data.patternId).attr("data-bw-src"));
                }
            }
