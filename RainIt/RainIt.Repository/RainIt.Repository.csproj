@@ -151,9 +151,9 @@
       <DependentUpon>201507050837410_ConversionParameterMigration.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\201507062215483_ThresholdPercentageMigration.cs" />
-    <Compile Include="Migrations\201507062215483_ThresholdPercentageMigration.Designer.cs">
+    <EmbeddedResource Include="Migrations\201507062215483_ThresholdPercentageMigration.Designer.cs">
       <DependentUpon>201507062215483_ThresholdPercentageMigration.cs</DependentUpon>
-    </Compile>
+    </EmbeddedResource>
     <Compile Include="Migrations\201507071439058_SamplePatternMigration.cs" />
     <Compile Include="Migrations\201507071439058_SamplePatternMigration.Designer.cs">
       <DependentUpon>201507071439058_SamplePatternMigration.cs</DependentUpon>
