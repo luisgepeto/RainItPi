@@ -3,42 +3,36 @@
 }
 @using Newtonsoft.Json
 @model RainIt.Domain.DTO.RoutineDTO
-<link href="~/Content/bootstrap-multiselect.css" rel="stylesheet" />
-<script src="~/Scripts/bootstrap-multiselect.js"></script>
-<script src="~/Scripts/jquery.touch-punch.min.js"></script>
-<style>
-    #routineBuilder {
-        position: relative;
-        width: 880px;
-        height: 500px;
-    }
-
-        #routineBuilder .image-holder {
-            height: 200px;
-            width: 200px;
-            position: absolute;
-        }
-
-    #gallery .delete-button {
-        display: none;
-    }
-</style>
-<div class="container" style="margin-top: 200px">
-    <div id="routineBuilder">
-        <img id="addImage2" src="/Content/icons/addimageicon.png" alt="Add an image" class="image-holder">
+<div class="container">
+    <div id="routine-builder" class="row shapeshift-gallery">
+        <div class="shapeshift-element">
+            <div id="img-add" class="limit-view img-holder img-adder img-thumbnail pointer">
+                <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"/>
+            </div>
+        </div>
     </div>
-    @if (Model== null || Model.RoutineId == 0)
-    {
-        <input type="button" value="Add" name="Add" id="addRoutine" />
-    }
-    else
-    {
-        <input type="button" value="Update" name="Update" id="addRoutine" />
-    }
+    <div class=" row">
+        <div class="col-md-2">
+            @if (Model == null || Model.RoutineId == 0)
+            {
+                <input type="button" value="Add" name="Add" id="addRoutine" class="btn btn-success"/>
+            }
+            else
+            {
+                <input type="button" value="Update" name="Update" id="addRoutine" class="btn btn-success"/>
+            }
+            
+        </div>
+        <div class="col-md-3">
+            @Html.Action("Multiselect", "Device", new { area = "Configuration" })
+        </div>
+    </div>
 </div>
 
-@Html.Action("Multiselect", "Device", new { area = "Configuration" })
+
+
 @Html.Action("Index", "Pattern", new {area ="Configuration"})
+
 <script type="text/javascript">
     (function () {
         this.RoutineAddProperties = this.RoutineAddProperties || {};
@@ -83,15 +77,15 @@
                 });
             }
             function addDropEventListener() {
-                $('#routineBuilder').on('ss-drop-complete', function () {
-                    deleteButton.Initialize();
+                $('#routine-builder').on('ss-drop-complete', function () {
+                    //deleteButton.Initialize();
                 });
             }
             properties.Initialize = function () {
                 if (passedImages != '') {
                     initializeUserImages(JSON.parse(passedImages));
                 }
-                $('#routineBuilder').shapeshift({
+                $('#routine-builder').shapeshift({
                     enableDrag: true,
                     enableCrossDrop: true
                 });
@@ -112,6 +106,9 @@
                 $.extend(oldParameters, newParameters);
                 PatternIndexProperties.Gallery.Update(oldParameters);
                 PatternIndexProperties.Gallery.DeleteImageAdder();
+                PatternIndexProperties.Gallery.DeleteImageDeleter();
+                PatternIndexProperties.Gallery.RemovePatternClickListener();
+                PatternIndexProperties.Gallery.ChangeHoverCursor();
             }
             return properties;
         }());
@@ -186,8 +183,8 @@
             routineBuilder.Initialize();
             galleryExtender.Initialize();
             addRoutine.AddClickListener();
-            deleteButton.Initialize();
-            multiselectExtender.Initialize();
+            //deleteButton.Initialize();
+            //multiselectExtender.Initialize();
         }
     }());
     $(document).ready(function () {

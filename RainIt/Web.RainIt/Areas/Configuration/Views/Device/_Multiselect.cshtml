@@ -5,8 +5,6 @@
         <option value="@device.Identifier">@device.Identifier</option>
     }
 </select>
-<script src="~/Scripts/bootstrap-multiselect.js"></script>
-<link href="~/Content/bootstrap-multiselect.css" rel="stylesheet" />
 <script type="text/javascript">
     (function() {
         this.DeviceMultiselectProperties = this.DeviceMultiselectProperties || {};
@@ -46,7 +44,7 @@
             multiselect.Initialize();
         }
     }());
-    $(document).ready(function() {
+    $(document).ready(function () {
         DeviceMultiselectProperties.SetupPage();
     });
 </script>

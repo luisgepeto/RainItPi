@@ -46,9 +46,6 @@
 @using (Html.BeginForm("Edit", "Pattern", new { area = "Configuration"}, FormMethod.Get, new { id = "editPatternForm" }))
 {
 }
-<script src="~/Scripts/custom-ajaxLoadingAnimation.js"></script>
-
-<script src="~/Scripts/jquery.shapeshift.js"></script>
 <script type="text/javascript">
     (function() {
         this.PatternIndexProperties = this.PatternIndexProperties || {};
@@ -70,7 +67,7 @@
             }
             function initializeUserImages() {
                 $.each(passedImages, function(index, imageData) {
-                    var imageAdder = $('#img-add').parent();
+                    var imageAdder = $('#pattern-gallery #img-add').parent();
                     var image = createImage(imageData);
                     image.insertBefore(imageAdder);
                 });
@@ -92,7 +89,17 @@
                 $('#pattern-gallery').shapeshift(newParameters);
             }
             properties.DeleteImageAdder = function() {
-                $('#img-add').remove();
+                $('#pattern-gallery #img-add').remove();
+            }
+            properties.DeleteImageDeleter = function() {
+                $('#pattern-gallery .delete-button').remove();
+            }
+            properties.RemovePatternClickListener = function() {
+                $('#pattern-gallery .img-element').off('click');
+            }
+            properties.ChangeHoverCursor = function() {
+                $('#pattern-gallery .img-holder').removeClass("pointer").addClass("move");
+                $('#pattern-gallery .img-element').removeClass("pointer").addClass("move");
             }
             return properties;
         }());
@@ -100,7 +107,7 @@
         var addButton = (function() {
             var properties = {};
             function addClickListener() {
-                $('#img-add').click(function() {
+                $('#pattern-gallery #img-add').click(function() {
                     $('#addPatternForm').submit();
                 });
             }
@@ -120,21 +127,21 @@
                 $('#editPatternForm').submit();
             }
            function addClickListener() {
-                $('.img-element').click(function(e) {
+               $('#pattern-gallery .img-element').click(function(e) {
                     var id = $(e.currentTarget).attr("id").split("_")[1];
                     submitForm(id);
                 });
            }
            function onAjaxSuccess(data) {
-               $('#image_' + data.patternId).parent().removeAjaxLoadingAnimation();
-               $('#image_' + data.patternId).attr("data-bw-src", "data:image/png;base64," + data.blackWhiteFile);
-               if ($('#img-holder_' + data.patternId).is(":hover")) {
-                   $('#image_' + data.patternId).attr("src",  $('#image_' + data.patternId).attr("data-bw-src"));
+               $('#pattern-gallery #image_' + data.patternId).parent().removeAjaxLoadingAnimation();
+               $('#pattern-gallery #image_' + data.patternId).attr("data-bw-src", "data:image/png;base64," + data.blackWhiteFile);
+               if ($('#pattern-gallery #img-holder_' + data.patternId).is(":hover")) {
+                   $('#pattern-gallery #image_' + data.patternId).attr("src",  $('#pattern-gallery #image_' + data.patternId).attr("data-bw-src"));
                }
            }
            function makeHoverAjaxCall(patternId) {
                hasAjaxRunFor.push(patternId);
-               $('#image_' + patternId).parent().setAjaxLoadingAnimation();
+               $('#pattern-gallery #image_' + patternId).parent().setAjaxLoadingAnimation();
                 var url = '@Url.Action("GetBlackWhiteFor", "Pattern", new { area = "Configuration", patternId = -1})';
                 url = url.replace("-1", patternId);
                $.ajax({
@@ -153,21 +160,21 @@
                 }
             }
             function addHoverListener() {
-                $('.img-holder').hover(function(e) {
+                $('#pattern-gallery .img-holder').hover(function(e) {
                     var id = $(e.currentTarget).attr("id").split("_")[1];
-                    $('#image_' + id).parent().children('.k-loading-mask').show();
-                    if ($('#image_' + id).attr("data-bw-src") == undefined && hasAjaxRunFor.indexOf(id) == -1) {
+                    $('#pattern-gallery #image_' + id).parent().children('.k-loading-mask').show();
+                    if ($('#pattern-gallery #image_' + id).attr("data-bw-src") == undefined && hasAjaxRunFor.indexOf(id) == -1) {
                         makeHoverAjaxCall(id);
                     }
-                        $('#img-title_' + id).show();
+                        $('#pattern-gallery #img-title_' + id).show();
                     },
                 function(e) {
                     var id = $(e.currentTarget).attr("id").split("_")[1];
-                    $('#image_' + id).parent().children('.k-loading-mask').hide();
-                    $('#img-title_' + id).hide();
+                    $('#pattern-gallery #image_' + id).parent().children('.k-loading-mask').hide();
+                    $('#pattern-gallery #img-title_' + id).hide();
                 });
 
-                $('.img-element').hover(function(e) {
+                $('#pattern-gallery .img-element').hover(function(e) {
                     var imgCopyClass = $(e.currentTarget).hasClass('img-copy') ? ".img-copy" : "";
                     var id = $(e.currentTarget).attr("id").split("_")[1];
                     hoverFunction(id, imgCopyClass, function(id, imgCopyClass) {
@@ -203,12 +210,12 @@
             }
 
             function addClickListener () {
-                $('.delete-button').click(function(e) {
+                $('#pattern-gallery .delete-button').click(function(e) {
                     var patternToDelete = $(e.target).attr("id").split("_")[1];
                     var parameters = {
                         ButtonName: "Delete",
                         Message: "Are you sure you want to delete this item?<br />This action cannot be undone.",
-                        ModalContent: $('#image_'+patternToDelete).clone(true).off('click').addClass("img-responsive img-thumbnail img-copy").removeClass("pointer")
+                        ModalContent: $('#pattern-gallery #image_'+patternToDelete).clone(true).off('click').addClass("img-responsive img-thumbnail img-copy").removeClass("pointer")
                     };
                     ModalDeleteProperties.Initialize(parameters, makeDeleteAjaxCall, patternToDelete);
                     ModalDeleteProperties.Show();

@@ -172,3 +172,6 @@ k-loading-mask, .k-loading-image, .k-loading-text {
      .pointer {
          cursor: pointer;
      }
+     .move {
+         cursor: move;
+     }
