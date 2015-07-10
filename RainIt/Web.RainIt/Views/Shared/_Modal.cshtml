@@ -35,7 +35,7 @@
                 $('#button').html(parameters.ButtonName);
                 $('#message').html(parameters.Message);
                 $('#modalContent').html("");
-                parameters.ModalContent.clone().appendTo($('#modalContent'));
+                parameters.ModalContent.appendTo($('#modalContent'));
                 addClickListener(functionToExecute, functionParameter);
             }
             return properties;

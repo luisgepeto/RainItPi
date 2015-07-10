@@ -14,9 +14,6 @@
         top: -15px;
         z-index: 2;
     }
-    .img-element {
-        cursor: pointer;
-    }
 </style>
 
 <div class="container">
@@ -47,9 +44,9 @@
         PatternIndexProperties.Gallery = (function() {
             var properties = {};
             function createImage(image) {
-                var imageToPlace = $('<img>').attr("id", "image_" + image.PatternId).attr("src", image.Path).attr("class", "img-element").attr("data-orig-src", image.Path);
+                var imageToPlace = $('<img>').attr("id", "image_" + image.PatternId).attr("src", image.Path).attr("class", "img-element pointer").attr("data-orig-src", image.Path);
                 var column = $('<div>').attr("class", "shapeshift-element");
-                var imageHolder = $('<div>').attr("class", "limit-view img-holder img-thumbnail").attr("id", "img-holder_" + image.PatternId);
+                var imageHolder = $('<div>').attr("class", "limit-view img-holder img-thumbnail pointer").attr("id", "img-holder_" + image.PatternId);
                 var deleteButton = $('<div>').attr("class", "delete-button pointer").attr("id", "delete_" + image.PatternId);
                 deleteButton.appendTo(imageHolder);
                 imageToPlace.appendTo(imageHolder);
@@ -133,11 +130,11 @@
                });
             }
             
-            function hoverFunction(id, mouseChangeFunction) {
-                var originalSource = $('#image_' + id).attr("data-orig-src");
-                var bwSource = $('#image_' + id).attr("data-bw-src");
+            function hoverFunction(id,imgCopyClass,  mouseChangeFunction) {
+                var originalSource = $(imgCopyClass+'#image_' + id).attr("data-orig-src");
+                var bwSource = $(imgCopyClass+'#image_' + id).attr("data-bw-src");
                 if (originalSource && bwSource) {
-                    mouseChangeFunction(id);
+                    mouseChangeFunction(id, imgCopyClass);
                 }
             }
             function addHoverListener() {
@@ -147,15 +144,23 @@
                     if ($('#image_' + id).attr("data-bw-src") == undefined && hasAjaxRunFor.indexOf(id) == -1) {
                         makeHoverAjaxCall(id);
                     }
-                    hoverFunction(id, function(id) {
-                        $('#image_' + id).attr("src",  $('#image_' + id).attr("data-bw-src"));
-                    });
                 },
                 function(e) {
                     var id = $(e.currentTarget).attr("id").split("_")[1];
                     $('#image_' + id).parent().children('.k-loading-mask').hide();
-                    hoverFunction(id, function(id) {
-                        $('#image_' + id).attr("src", $('#image_' + id).attr("data-orig-src"));
+                });
+
+                $('.img-element').hover(function(e) {
+                    var imgCopyClass = $(e.currentTarget).hasClass('img-copy') ? ".img-copy" : "";
+                    var id = $(e.currentTarget).attr("id").split("_")[1];
+                    hoverFunction(id, imgCopyClass, function(id, imgCopyClass) {
+                        $(imgCopyClass+'#image_' + id).attr("src",  $(imgCopyClass+'#image_' + id).attr("data-bw-src"));
+                    });
+                }, function(e) {
+                    var imgCopyClass = $(e.currentTarget).hasClass('img-copy') ? ".img-copy" : "";
+                    var id = $(e.currentTarget).attr("id").split("_")[1];
+                    hoverFunction(id, imgCopyClass, function(id, imgCopyClass) {
+                        $(imgCopyClass+'#image_' + id).attr("src",  $(imgCopyClass+'#image_' + id).attr("data-orig-src"));
                     });
                 });
             }
@@ -186,7 +191,7 @@
                     var parameters = {
                         ButtonName: "Delete",
                         Message: "Are you sure you want to delete this item?<br />This action cannot be undone.",
-                        ModalContent: $('#image_'+patternToDelete).addClass("img-responsive")
+                        ModalContent: $('#image_'+patternToDelete).clone(true).off('click').addClass("img-responsive img-thumbnail img-copy").removeClass("pointer")
                     };
                     ModalDeleteProperties.Initialize(parameters, makeDeleteAjaxCall, patternToDelete);
                     ModalDeleteProperties.Show();
