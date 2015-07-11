@@ -68,3 +68,4 @@
 /RainIt/Web.Infrastructure/obj
 *.config
 *.config
+*.db
