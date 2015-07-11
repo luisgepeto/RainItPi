@@ -43,9 +43,6 @@
         </div>
     </div>
 </div>
-
-
-
 @Html.Action("Index", "Pattern", new {area ="Configuration"})
 
 <script type="text/javascript">
@@ -64,10 +61,9 @@
             }
 
             function addButtonTo(element) {
-                var id = $(element).children('.img-holder').attr("id").split("_")[1];
-                var deleteButton = $('<div>').attr("class", "delete-button pointer").attr("id", "delete_" + id);
+                var deleteButton = $('<div>').attr("class", "delete-button pointer");
                 addClickListenerTo(deleteButton);
-                deleteButton.appendTo($(element).children('.img-holder'));
+                deleteButton.appendTo(element.find('.img-holder'));
             }
 
             properties.Initialize = function (element) {
@@ -93,15 +89,27 @@
                     image.insertBefore(imageAdder);
                 });
             }
+            function revertHoverStatus(originalElement, clonedElement) {
+                clonedElement.find('.img-element').attr('src', originalElement.find('.img-element').attr('data-orig-src'));
+                clonedElement.find('.k-loading-mask').hide();
+                clonedElement.find('.img-title').hide();
+            }
+            function swap(a, b) {
+                var tmp = $('<span>').hide();
+                a.before(tmp);
+                b.before(a);
+                tmp.replaceWith(b);
+            };
+
             function addAddEventListener() {
                 $('#routine-builder').on('ss-added', function (e, element) {
-                    deleteButton.Initialize(element);
-                    $(element).addClass("img-copy");
-                    var imageHolderId = $(element).children('.img-holder').attr("id");
-                    var originalImageHolder = $('.img-holder').parent().not('.img-copy').children('#' + imageHolderId);
-                    originalImageHolder.children('.img-element').attr('src', originalImageHolder.children('.img-element').attr('data-orig-src'));
-                    originalImageHolder.children('.k-loading-mask').hide();
-                    originalImageHolder.siblings('.img-title').hide();
+                    var originalShapeshift = $(element);
+                    var clonedShapeshift = $('.img-copy').children('#' + originalShapeshift.children('.img-holder').attr("id")).parent();
+                    revertHoverStatus(originalShapeshift, clonedShapeshift);
+                    swap(originalShapeshift, clonedShapeshift);
+                    deleteButton.Initialize(clonedShapeshift);
+                    $('#routine-builder').trigger('ss-rearrange');
+                    $('#pattern-gallery').trigger('ss-rearrange');
                 });
             }
             properties.Initialize = function () {
@@ -113,7 +121,8 @@
                     enableCrossDrop: true,
                     selector: '.shapeshift-element',
                     gutterY: 30,
-                    gutterX: 30
+                    gutterX: 30,
+                    cloneClass: "img-copy"
                 });
                 addAddEventListener();
             }
@@ -125,7 +134,8 @@
             var oldParameters = PatternIndexProperties.Gallery.Parameters;
             var newParameters = {
                 enableDrag: true,
-                dragClone: true
+                dragClone: true,
+                cloneClass: "img-copy"
             }
 
             properties.Initialize = function () {
@@ -209,7 +219,6 @@
             routineBuilder.Initialize();
             galleryExtender.Initialize();
             addRoutine.AddClickListener();
-            //deleteButton.Initialize();
             //multiselectExtender.Initialize();
         }
     }());

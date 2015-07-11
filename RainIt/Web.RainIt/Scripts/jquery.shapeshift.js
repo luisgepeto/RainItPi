@@ -455,7 +455,8 @@
                   $clone.remove();
                   $("." + current_container_class).trigger("ss-rearrange");
                 } else {
-                    $clone.removeClass(clone_class);
+                    // removed deleting the clone class of the element
+                    //$clone.removeClass(clone_class);
                     $original_container.shapeshift($original_container.data("plugin_shapeshift").options);
                     $current_container.shapeshift($current_container.data("plugin_shapeshift").options);
                 }
