@@ -420,7 +420,8 @@
               _this.globals.dragging = true;
               $selected = $(e.target);
               if (drag_clone) {
-                $clone = $selected.clone(false, false).insertBefore($selected).addClass(clone_class);
+                  //changed clone type to add data and events
+                  $clone = $selected.clone(true).insertBefore($selected).addClass(clone_class);
               }
               $selected.addClass(dragged_class);
               selected_tag = $selected.prop("tagName");

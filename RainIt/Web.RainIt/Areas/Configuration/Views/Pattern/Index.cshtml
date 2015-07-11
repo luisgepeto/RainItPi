@@ -163,7 +163,7 @@
                 }
             }
             function addHoverListener() {
-                $('#pattern-gallery .img-holder').hover(function(e) {
+                $('#pattern-gallery .img-holder:not(.img-adder)').hover(function(e) {
                     var currentImageHolder = $(e.currentTarget);
                     currentImageHolder.children('.k-loading-mask').show();
                     if (currentImageHolder.children('.img-element').attr("data-bw-src") == undefined) {
@@ -212,13 +212,14 @@
 
             function addClickListener () {
                 $('#pattern-gallery .delete-button').click(function(e) {
-                    var patternToDelete = $(e.target).attr("id").split("_")[1];
+                    var currentDeleteButton = $(e.currentTarget); 
+                    var id = currentDeleteButton.attr("id").split("_")[1];
                     var parameters = {
                         ButtonName: "Delete",
                         Message: "Are you sure you want to delete this item?<br />This action cannot be undone.",
-                        ModalContent: $('#pattern-gallery #image_'+patternToDelete).clone(true).off('click').addClass("img-responsive img-thumbnail img-copy").removeClass("pointer")
+                        ModalContent: currentDeleteButton.siblings('.img-element').clone(true).off('click').addClass("img-responsive img-thumbnail").removeClass("pointer")
                     };
-                    ModalDeleteProperties.Initialize(parameters, makeDeleteAjaxCall, patternToDelete);
+                    ModalDeleteProperties.Initialize(parameters, makeDeleteAjaxCall, id);
                     ModalDeleteProperties.Show();
                 });
             }

@@ -14,6 +14,9 @@
         top: -15px;
         z-index: 2;
     }
+    .ss-cloned-child {
+        border: 5px solid red;
+    }
 </style>
 <div class="container">
     <div id="routine-builder" class="row shapeshift-gallery">
@@ -56,7 +59,6 @@
             function addClickListenerTo(button) {
                 return button.click(function (e) {
                     $(e.currentTarget).closest('.shapeshift-element').detach();
-                    debugger;
                     $('#routine-builder').trigger('ss-rearrange');
                 });
             }
@@ -94,6 +96,12 @@
             function addAddEventListener() {
                 $('#routine-builder').on('ss-added', function (e, element) {
                     deleteButton.Initialize(element);
+                    $(element).addClass("img-copy");
+                    var imageHolderId = $(element).children('.img-holder').attr("id");
+                    var originalImageHolder = $('.img-holder').parent().not('.img-copy').children('#' + imageHolderId);
+                    originalImageHolder.children('.img-element').attr('src', originalImageHolder.children('.img-element').attr('data-orig-src'));
+                    originalImageHolder.children('.k-loading-mask').hide();
+                    originalImageHolder.siblings('.img-title').hide();
                 });
             }
             properties.Initialize = function () {
