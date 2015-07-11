@@ -132,59 +132,60 @@
                     submitForm(id);
                 });
            }
-           function onAjaxSuccess(data) {
-               $('#pattern-gallery #image_' + data.patternId).parent().removeAjaxLoadingAnimation();
-               $('#pattern-gallery #image_' + data.patternId).attr("data-bw-src", "data:image/png;base64," + data.blackWhiteFile);
-               if ($('#pattern-gallery #img-holder_' + data.patternId).is(":hover")) {
-                   $('#pattern-gallery #image_' + data.patternId).attr("src",  $('#pattern-gallery #image_' + data.patternId).attr("data-bw-src"));
+           
+           function makeHoverAjaxCall(currentImageHolder) {
+               var id = currentImageHolder.attr("id").split("_")[1];
+               if (hasAjaxRunFor.indexOf(id) == -1) {
+                   hasAjaxRunFor.push(id);
+                   currentImageHolder.setAjaxLoadingAnimation();
+                   var url = '@Url.Action("GetBlackWhiteFor", "Pattern", new { area = "Configuration", patternId = -1})';
+                   url = url.replace("-1", id);
+                   $.ajax({
+                       url: url,
+                       type: "GET",
+                       contentType: "application/x-www-form-urlencoded",
+                       success: function(data) {
+                           currentImageHolder.removeAjaxLoadingAnimation();
+                           currentImageHolder.children('.img-element').attr("data-bw-src", "data:image/png;base64," + data.blackWhiteFile);
+                           if (currentImageHolder.is(":hover")) {
+                               currentImageHolder.children('.img-element').attr("src",  currentImageHolder.children('.img-element').attr("data-bw-src"));
+                           }
+                       }
+                   });
                }
-           }
-           function makeHoverAjaxCall(patternId) {
-               hasAjaxRunFor.push(patternId);
-               $('#pattern-gallery #image_' + patternId).parent().setAjaxLoadingAnimation();
-                var url = '@Url.Action("GetBlackWhiteFor", "Pattern", new { area = "Configuration", patternId = -1})';
-                url = url.replace("-1", patternId);
-               $.ajax({
-                   url: url,
-                   type: "GET",
-                   contentType: "application/x-www-form-urlencoded",
-                   success: onAjaxSuccess
-               });
             }
             
-            function hoverFunction(id,imgCopyClass,  mouseChangeFunction) {
-                var originalSource = $(imgCopyClass+'#image_' + id).attr("data-orig-src");
-                var bwSource = $(imgCopyClass+'#image_' + id).attr("data-bw-src");
+            function hoverFunction(currentImageElement,  mouseChangeFunction) {
+                var originalSource = currentImageElement.attr("data-orig-src");
+                var bwSource = currentImageElement.attr("data-bw-src");
                 if (originalSource && bwSource) {
-                    mouseChangeFunction(id, imgCopyClass);
+                    mouseChangeFunction(currentImageElement);
                 }
             }
             function addHoverListener() {
                 $('#pattern-gallery .img-holder').hover(function(e) {
-                    var id = $(e.currentTarget).attr("id").split("_")[1];
-                    $('#pattern-gallery #image_' + id).parent().children('.k-loading-mask').show();
-                    if ($('#pattern-gallery #image_' + id).attr("data-bw-src") == undefined && hasAjaxRunFor.indexOf(id) == -1) {
-                        makeHoverAjaxCall(id);
+                    var currentImageHolder = $(e.currentTarget);
+                    currentImageHolder.children('.k-loading-mask').show();
+                    if (currentImageHolder.children('.img-element').attr("data-bw-src") == undefined) {
+                        makeHoverAjaxCall(currentImageHolder);
                     }
-                        $('#pattern-gallery #img-title_' + id).show();
-                    },
+                    currentImageHolder.siblings('.img-title').show();
+                },
                 function(e) {
-                    var id = $(e.currentTarget).attr("id").split("_")[1];
-                    $('#pattern-gallery #image_' + id).parent().children('.k-loading-mask').hide();
-                    $('#pattern-gallery #img-title_' + id).hide();
+                    var currentImageHolder = $(e.currentTarget);
+                    currentImageHolder.children('.k-loading-mask').hide();
+                    currentImageHolder.siblings('.img-title').hide();
                 });
 
                 $('#pattern-gallery .img-element').hover(function(e) {
-                    var imgCopyClass = $(e.currentTarget).hasClass('img-copy') ? ".img-copy" : "";
-                    var id = $(e.currentTarget).attr("id").split("_")[1];
-                    hoverFunction(id, imgCopyClass, function(id, imgCopyClass) {
-                        $(imgCopyClass+'#image_' + id).attr("src",  $(imgCopyClass+'#image_' + id).attr("data-bw-src"));
+                    var currentImageElement = $(e.currentTarget);
+                    hoverFunction(currentImageElement, function(currentImageElement) {
+                        currentImageElement.attr("src",  currentImageElement.attr("data-bw-src"));
                     });
                 }, function(e) {
-                    var imgCopyClass = $(e.currentTarget).hasClass('img-copy') ? ".img-copy" : "";
-                    var id = $(e.currentTarget).attr("id").split("_")[1];
-                    hoverFunction(id, imgCopyClass, function(id, imgCopyClass) {
-                        $(imgCopyClass+'#image_' + id).attr("src",  $(imgCopyClass+'#image_' + id).attr("data-orig-src"));
+                    var currentImageElement = $(e.currentTarget);
+                    hoverFunction(currentImageElement, function(currentImageElement) {
+                        currentImageElement.attr("src", currentImageElement.attr("data-orig-src"));
                     });
                 });
             }

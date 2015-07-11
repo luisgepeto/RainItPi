@@ -3,6 +3,18 @@
 }
 @using Newtonsoft.Json
 @model RainIt.Domain.DTO.RoutineDTO
+<style>
+    .delete-button {
+        width: 30px;
+        height: 30px;
+        background: url('../../../../Content/icons/delete.png') no-repeat center center;
+        background-size: contain;
+        position: absolute;
+        left: 92%;
+        top: -15px;
+        z-index: 2;
+    }
+</style>
 <div class="container">
     <div id="routine-builder" class="row shapeshift-gallery">
         <div class="shapeshift-element">
@@ -40,21 +52,24 @@
 
         var deleteButton = (function () {
             var properties = {};
-            function removeListeners() {
-                $('.delete-button').off();
-            }
-            function addClickListener() {
-                $('.delete-button').click(function (e) {
-                    $(e.currentTarget).parent().detach();
-                    $('#routineBuilder').shapeshift({
-                        enableDrag: true,
-                        enableCrossDrop: true
-                    });
+            
+            function addClickListenerTo(button) {
+                return button.click(function (e) {
+                    $(e.currentTarget).closest('.shapeshift-element').detach();
+                    debugger;
+                    $('#routine-builder').trigger('ss-rearrange');
                 });
             }
-            properties.Initialize = function () {
-                removeListeners();
-                addClickListener();
+
+            function addButtonTo(element) {
+                var id = $(element).children('.img-holder').attr("id").split("_")[1];
+                var deleteButton = $('<div>').attr("class", "delete-button pointer").attr("id", "delete_" + id);
+                addClickListenerTo(deleteButton);
+                deleteButton.appendTo($(element).children('.img-holder'));
+            }
+
+            properties.Initialize = function (element) {
+                addButtonTo(element);
             }
             return properties;
         }());
@@ -76,9 +91,9 @@
                     image.insertBefore(imageAdder);
                 });
             }
-            function addDropEventListener() {
-                $('#routine-builder').on('ss-drop-complete', function () {
-                    //deleteButton.Initialize();
+            function addAddEventListener() {
+                $('#routine-builder').on('ss-added', function (e, element) {
+                    deleteButton.Initialize(element);
                 });
             }
             properties.Initialize = function () {
@@ -87,9 +102,12 @@
                 }
                 $('#routine-builder').shapeshift({
                     enableDrag: true,
-                    enableCrossDrop: true
+                    enableCrossDrop: true,
+                    selector: '.shapeshift-element',
+                    gutterY: 30,
+                    gutterX: 30
                 });
-                addDropEventListener();
+                addAddEventListener();
             }
             return properties;
         }());
