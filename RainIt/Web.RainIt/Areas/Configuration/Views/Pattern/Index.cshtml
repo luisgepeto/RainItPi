@@ -32,7 +32,7 @@
 <div class="container">
     <div id="pattern-gallery" class="row shapeshift-gallery">
         <div class="shapeshift-element">
-            <div id="img-add" class="limit-view img-holder img-adder img-thumbnail pointer">
+            <div class="limit-view img-holder img-adder img-thumbnail pointer">
                 <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"/>
             </div>
         </div>
@@ -54,20 +54,20 @@
         PatternIndexProperties.Gallery = (function() {
             var properties = {};
             function createImage(image) {
-                var imageToPlace = $('<img>').attr("id", "image_" + image.PatternId).attr("src", image.Path).attr("class", "img-element pointer").attr("data-orig-src", image.Path);
+                var imageToPlace = $('<img>').attr("src", image.Path).attr("class", "img-element pointer").attr("data-orig-src", image.Path).attr("data-pattern-id", image.PatternId);
                 var column = $('<div>').attr("class", "shapeshift-element");
-                var imageHolder = $('<div>').attr("class", "limit-view img-holder img-thumbnail pointer").attr("id", "img-holder_" + image.PatternId);
-                var deleteButton = $('<div>').attr("class", "delete-button pointer").attr("id", "delete_" + image.PatternId);
+                var imageHolder = $('<div>').attr("class", "limit-view img-holder img-thumbnail pointer");
+                var deleteButton = $('<div>').attr("class", "delete-button pointer");
                 deleteButton.appendTo(imageHolder);
                 imageToPlace.appendTo(imageHolder);
-                var caption = $('<div>').attr("id", "img-title_" + image.PatternId).addClass("caption img-title").html("<p>" + image.Name + "</p>").css("display", "none");
+                var caption = $('<div>').addClass("caption img-title").html("<p>" + image.Name + "</p>").css("display", "none");
                 imageHolder.appendTo(column);
                 caption.appendTo(column);
                 return column;
             }
             function initializeUserImages() {
                 $.each(passedImages, function(index, imageData) {
-                    var imageAdder = $('#pattern-gallery #img-add').parent();
+                    var imageAdder = $('#pattern-gallery .img-adder').parent();
                     var image = createImage(imageData);
                     image.insertBefore(imageAdder);
                 });
@@ -89,7 +89,7 @@
                 $('#pattern-gallery').shapeshift(newParameters);
             }
             properties.DeleteImageAdder = function() {
-                $('#pattern-gallery #img-add').remove();
+                $('#pattern-gallery .img-adder').remove();
             }
             properties.DeleteImageDeleter = function() {
                 $('#pattern-gallery .delete-button').remove();
@@ -101,13 +101,16 @@
                 $('#pattern-gallery .img-holder').removeClass("pointer").addClass("move");
                 $('#pattern-gallery .img-element').removeClass("pointer").addClass("move");
             }
+            properties.ReattachHoverListeners = function() {
+                image.Initialize();
+            }
             return properties;
         }());
 
         var addButton = (function() {
             var properties = {};
             function addClickListener() {
-                $('#pattern-gallery #img-add').click(function() {
+                $('#pattern-gallery .img-adder').click(function() {
                     $('#addPatternForm').submit();
                 });
             }
@@ -128,13 +131,13 @@
             }
            function addClickListener() {
                $('#pattern-gallery .img-element').click(function(e) {
-                    var id = $(e.currentTarget).attr("id").split("_")[1];
+                    var id = $(e.currentTarget).attr("data-pattern-id");
                     submitForm(id);
                 });
            }
            
            function makeHoverAjaxCall(currentImageHolder) {
-               var id = currentImageHolder.attr("id").split("_")[1];
+               var id = currentImageHolder.find('.img-element').attr("data-pattern-id");
                if (hasAjaxRunFor.indexOf(id) == -1) {
                    hasAjaxRunFor.push(id);
                    currentImageHolder.setAjaxLoadingAnimation();
@@ -145,8 +148,9 @@
                        type: "GET",
                        contentType: "application/x-www-form-urlencoded",
                        success: function(data) {
-                           currentImageHolder.removeAjaxLoadingAnimation();
-                           currentImageHolder.children('.img-element').attr("data-bw-src", "data:image/png;base64," + data.blackWhiteFile);
+                           var allImageHolders = $('.img-holder').find('.img-element[data-pattern-id="' + currentImageHolder.find('.img-element').attr('data-pattern-id') + '"]').closest('.img-holder');
+                           allImageHolders.removeAjaxLoadingAnimation();
+                           allImageHolders.children('.img-element').attr("data-bw-src", "data:image/png;base64," + data.blackWhiteFile);
                            if (currentImageHolder.is(":hover")) {
                                currentImageHolder.children('.img-element').attr("src",  currentImageHolder.children('.img-element').attr("data-bw-src"));
                            }
@@ -212,8 +216,8 @@
 
             function addClickListener () {
                 $('#pattern-gallery .delete-button').click(function(e) {
-                    var currentDeleteButton = $(e.currentTarget); 
-                    var id = currentDeleteButton.attr("id").split("_")[1];
+                    var currentDeleteButton = $(e.currentTarget);
+                    var id = currentDeleteButton.siblings('.img-element').attr('data-pattern-id');
                     var parameters = {
                         ButtonName: "Delete",
                         Message: "Are you sure you want to delete this item?<br />This action cannot be undone.",
