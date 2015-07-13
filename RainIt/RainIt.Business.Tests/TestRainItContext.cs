@@ -79,7 +79,6 @@ namespace RainIt.Business.Tests
         public DbSet<SamplePattern> SamplePatternSet { get; set; }
 
         public DbSet<SampleRoutine> SampleRoutineSet { get; set; }
-        }
 
         public int SaveChangesCount { get; private set; }
 
