@@ -15,10 +15,6 @@ namespace RainIt.Repository.Configuration
             ToTable(schema + ".SampleRoutine");
             HasKey(sr => sr.SampleRoutineId);
             Property(sr => sr.UpdateDateTime).IsRequired();
-            HasMany(sr => sr.Patterns)
-                .WithOptional(p => p.SampleRoutine)
-                .HasForeignKey(p => p.SampleRoutineId)
-                .WillCascadeOnDelete(false);
         }
     }
 }

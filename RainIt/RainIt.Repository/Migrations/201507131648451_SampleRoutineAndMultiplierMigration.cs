@@ -3,7 +3,7 @@ namespace RainIt.Repository.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class SampleRoutineMigration : DbMigration
+    public partial class SampleRoutineAndMultiplierMigration : DbMigration
     {
         public override void Up()
         {
@@ -21,9 +21,13 @@ namespace RainIt.Repository.Migrations
                 .ForeignKey("dbo.Device", t => t.SampleRoutineId, cascadeDelete: true)
                 .Index(t => t.SampleRoutineId);
             
+            AddColumn("dbo.RoutinePattern", "Repetitions", c => c.Int(nullable: false));
+            AddColumn("dbo.RoutinePattern", "SampleRoutineId", c => c.Int());
             AddColumn("dbo.Pattern", "SampleRoutineId", c => c.Int());
+            CreateIndex("dbo.RoutinePattern", "SampleRoutineId");
             CreateIndex("dbo.Pattern", "SampleRoutineId");
             AddForeignKey("dbo.Pattern", "SampleRoutineId", "dbo.SampleRoutine", "SampleRoutineId");
+            AddForeignKey("dbo.RoutinePattern", "SampleRoutineId", "dbo.SampleRoutine", "SampleRoutineId");
             DropColumn("dbo.Pattern", "SamplePattern_SamplePatternId");
         }
         
@@ -31,10 +35,14 @@ namespace RainIt.Repository.Migrations
         {
             AddColumn("dbo.Pattern", "SamplePattern_SamplePatternId", c => c.Int());
             DropForeignKey("dbo.SampleRoutine", "SampleRoutineId", "dbo.Device");
+            DropForeignKey("dbo.RoutinePattern", "SampleRoutineId", "dbo.SampleRoutine");
             DropForeignKey("dbo.Pattern", "SampleRoutineId", "dbo.SampleRoutine");
             DropIndex("dbo.SampleRoutine", new[] { "SampleRoutineId" });
             DropIndex("dbo.Pattern", new[] { "SampleRoutineId" });
+            DropIndex("dbo.RoutinePattern", new[] { "SampleRoutineId" });
             DropColumn("dbo.Pattern", "SampleRoutineId");
+            DropColumn("dbo.RoutinePattern", "SampleRoutineId");
+            DropColumn("dbo.RoutinePattern", "Repetitions");
             DropTable("dbo.SampleRoutine");
             CreateIndex("dbo.Pattern", "SamplePattern_SamplePatternId");
             AddForeignKey("dbo.Pattern", "SamplePattern_SamplePatternId", "dbo.SamplePattern", "SamplePatternId");

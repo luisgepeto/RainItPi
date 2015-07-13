@@ -17,5 +17,8 @@ namespace RainIt.Domain.Repository
         public virtual Pattern Pattern { get; set; }
         public int UserId { get; set; }
         public virtual User User { get; set; }
+        public int Repetitions { get; set; }
+        public int? SampleRoutineId { get; set; }
+        public virtual SampleRoutine SampleRoutine { get; set; }
     }
 }

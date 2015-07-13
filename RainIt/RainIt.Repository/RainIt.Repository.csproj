@@ -151,9 +151,9 @@
     <Compile Include="Migrations\201507100605432_ConversionParameterAndSamplePatternMigration.Designer.cs">
       <DependentUpon>201507100605432_ConversionParameterAndSamplePatternMigration.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201507131605089_SampleRoutineMigration.cs" />
-    <Compile Include="Migrations\201507131605089_SampleRoutineMigration.Designer.cs">
-      <DependentUpon>201507131605089_SampleRoutineMigration.cs</DependentUpon>
+    <Compile Include="Migrations\201507131648451_SampleRoutineAndMultiplierMigration.cs" />
+    <Compile Include="Migrations\201507131648451_SampleRoutineAndMultiplierMigration.Designer.cs">
+      <DependentUpon>201507131648451_SampleRoutineAndMultiplierMigration.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -209,8 +209,8 @@
     <EmbeddedResource Include="Migrations\201507100605432_ConversionParameterAndSamplePatternMigration.resx">
       <DependentUpon>201507100605432_ConversionParameterAndSamplePatternMigration.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201507131605089_SampleRoutineMigration.resx">
-      <DependentUpon>201507131605089_SampleRoutineMigration.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201507131648451_SampleRoutineAndMultiplierMigration.resx">
+      <DependentUpon>201507131648451_SampleRoutineAndMultiplierMigration.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -9,15 +9,20 @@ namespace RainIt.Repository.Configuration
         {
             ToTable(schema + ".RoutinePattern");
             HasKey(rp => rp.RoutinePatternId);
-
+            Property(rp => rp.Repetitions);
             HasOptional(rp => rp.Pattern)
-                .WithMany(r => r.RoutinePatterns)
-                .HasForeignKey(r => r.PatternId)
+                .WithMany(p => p.RoutinePatterns)
+                .HasForeignKey(p => p.PatternId)
                 .WillCascadeOnDelete(false);
 
             HasOptional(rp => rp.Routine)
                 .WithMany(r => r.RoutinePatterns)
                 .HasForeignKey(r => r.RoutineId)
+                .WillCascadeOnDelete(false);
+
+            HasOptional(rp => rp.SampleRoutine)
+                .WithMany(sr => sr.RoutinePatterns)
+                .HasForeignKey(sr => sr.SampleRoutineId)
                 .WillCascadeOnDelete(false);
         }
     }
