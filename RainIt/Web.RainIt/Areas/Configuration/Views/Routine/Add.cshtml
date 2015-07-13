@@ -21,7 +21,7 @@
 <div class="container">
     <div id="routine-builder" class="row shapeshift-gallery">
         <div class="shapeshift-element">
-            <div id="img-add" class="limit-view img-holder img-adder img-thumbnail pointer">
+            <div id="img-add" class="limit-view img-holder img-adder img-thumbnail">
                 <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"/>
             </div>
         </div>
@@ -53,16 +53,19 @@
         var deleteButton = (function () {
             var properties = {};
             
-            function addClickListenerTo(button) {
+            properties.AddClickListenerTo = function (button) {
+                if (button == undefined)
+                    button = $('#routine-builder .delete-button');
                 return button.click(function (e) {
                     $(e.currentTarget).closest('.shapeshift-element').detach();
                     $('#routine-builder').trigger('ss-rearrange');
+                    $("#routine-builder").trigger("ss-added");
                 });
             }
 
             function addButtonTo(element) {
                 var deleteButton = $('<div>').attr("class", "delete-button pointer");
-                addClickListenerTo(deleteButton);
+                properties.AddClickListenerTo(deleteButton);
                 deleteButton.appendTo(element.find('.img-holder'));
             }
 
@@ -75,36 +78,53 @@
         var routineBuilder = (function () {
             var properties = {};
             function createImage(image) {
-                var imageToPlace = $('<img>').attr("id", "image" + image.PatternDTO.PatternId).attr("src", image.PatternDTO.Path);
-                var imageHolder = $('<div>').attr("class", "image-holder").attr("id", "image-holder_" + image.PatternDTO.PatternId);
-                var deleteButton = $('<div>').attr("class", "delete-button").attr("id", "delete_" + image.PatternDTO.PatternId);
+                var imageToPlace = $('<img>').attr("src", image.PatternDTO.Path).attr("class", "img-element move").attr("data-orig-src", image.PatternDTO.Path).attr("data-pattern-id", image.PatternDTO.PatternId);
+                var column = $('<div>').attr("class", "shapeshift-element");
+                var imageHolder = $('<div>').attr("class", "limit-view img-holder img-thumbnail move");
+                var deleteButton = $('<div>').attr("class", "delete-button pointer");
                 deleteButton.appendTo(imageHolder);
                 imageToPlace.appendTo(imageHolder);
-                return imageHolder;
+                var caption = $('<div>').addClass("caption img-title").html("<p>" + image.PatternDTO.Name + "</p>").css("display", "none");
+                imageHolder.appendTo(column);
+                caption.appendTo(column);
+                return column;
             }
-            function initializeUserImages(passedImagesArray) {
-                $.each(passedImagesArray, function (index, imageData) {
-                    var imageAdder = $('#addImage2');
+
+            function initializeUserImages(passedImages) {
+                $.each(passedImages, function (index, imageData) {
+                    var imageAdder = $('#routine-builder .img-adder').parent();
                     var image = createImage(imageData);
                     image.insertBefore(imageAdder);
                 });
             }
+
             function revertHoverStatus(originalElement, clonedElement) {
                 clonedElement.find('.img-element').attr('src', originalElement.find('.img-element').attr('data-orig-src'));
                 clonedElement.find('.k-loading-mask').hide();
                 clonedElement.find('.img-title').hide();
             }
-            
 
+            function hasElements() {
+                var allElements = $('#routine-builder .shapeshift-element').children('.img-holder').not('.img-adder').parent();
+                return allElements.length > 0;
+            }
+            function hideImageAdder() {
+                $('#routine-builder .img-adder').closest('.shapeshift-element').hide();
+            }
+            function showImageAdder() {
+                $('#routine-builder .img-adder').closest('.shapeshift-element').show();
+            }
             function addAddEventListener() {
                 $('#routine-builder').on('ss-added', function (e, element) {
-                    var originalShapeshift = $(element);
-                    var clonedShapeshift = $('.shapeshift-element').find('.img-element[data-pattern-id="' + originalShapeshift.find('.img-element').attr('data-pattern-id') + '"]').closest(".shapeshift-element").not('.img-copy');
-                    revertHoverStatus(originalShapeshift, clonedShapeshift);
-                    deleteButton.Initialize(originalShapeshift);
+                    hasElements() ? hideImageAdder() : showImageAdder();
+                    if (element) {
+                        var originalShapeshift = $(element);
+                        var clonedShapeshift = $('.shapeshift-element').find('.img-element[data-pattern-id="' + originalShapeshift.find('.img-element').attr('data-pattern-id') + '"]').closest(".shapeshift-element").not('.img-copy');
+                        revertHoverStatus(originalShapeshift, clonedShapeshift);
+                        deleteButton.Initialize(originalShapeshift);
+                        PatternIndexProperties.Gallery.ReattachHoverListeners();
+                    }
                     $('#routine-builder').trigger('ss-rearrange');
-                    PatternIndexProperties.Gallery.ReattachHoverListeners();
-
                 });
             }
             properties.Initialize = function () {
@@ -119,6 +139,76 @@
                     gutterX: 30
                 });
                 addAddEventListener();
+                deleteButton.AddClickListenerTo();
+                image.Initialize();
+                $("#routine-builder").trigger("ss-added");
+            }
+            return properties;
+        }());
+
+        var image = (function () {
+            var properties = {};
+            var hasAjaxRunFor = [];
+            
+            function makeHoverAjaxCall(currentImageHolder) {
+                var id = currentImageHolder.find('.img-element').attr("data-pattern-id");
+                if (hasAjaxRunFor.indexOf(id) == -1) {
+                    hasAjaxRunFor.push(id);
+                    currentImageHolder.setAjaxLoadingAnimation();
+                    var url = '@Url.Action("GetBlackWhiteFor", "Pattern", new { area = "Configuration", patternId = -1})';
+                    url = url.replace("-1", id);
+                    $.ajax({
+                        url: url,
+                        type: "GET",
+                        contentType: "application/x-www-form-urlencoded",
+                        success: function (data) {
+                            var allImageHolders = $('.img-holder').find('.img-element[data-pattern-id="' + currentImageHolder.find('.img-element').attr('data-pattern-id') + '"]').closest('.img-holder');
+                            allImageHolders.removeAjaxLoadingAnimation();
+                            allImageHolders.children('.img-element').attr("data-bw-src", "data:image/png;base64," + data.blackWhiteFile);
+                            if (currentImageHolder.is(":hover")) {
+                                currentImageHolder.children('.img-element').attr("src", currentImageHolder.children('.img-element').attr("data-bw-src"));
+                            }
+                        }
+                    });
+                }
+            }
+
+            function hoverFunction(currentImageElement, mouseChangeFunction) {
+                var originalSource = currentImageElement.attr("data-orig-src");
+                var bwSource = currentImageElement.attr("data-bw-src");
+                if (originalSource && bwSource) {
+                    mouseChangeFunction(currentImageElement);
+                }
+            }
+            function addHoverListener() {
+                $('#routine-builder .img-holder:not(.img-adder)').hover(function (e) {
+                    var currentImageHolder = $(e.currentTarget);
+                    currentImageHolder.children('.k-loading-mask').show();
+                    if (currentImageHolder.children('.img-element').attr("data-bw-src") == undefined) {
+                        makeHoverAjaxCall(currentImageHolder);
+                    }
+                    currentImageHolder.siblings('.img-title').show();
+                },
+                function (e) {
+                    var currentImageHolder = $(e.currentTarget);
+                    currentImageHolder.children('.k-loading-mask').hide();
+                    currentImageHolder.siblings('.img-title').hide();
+                });
+
+                $('#routine-builder .img-element').hover(function (e) {
+                    var currentImageElement = $(e.currentTarget);
+                    hoverFunction(currentImageElement, function (currentImageElement) {
+                        currentImageElement.attr("src", currentImageElement.attr("data-bw-src"));
+                    });
+                }, function (e) {
+                    var currentImageElement = $(e.currentTarget);
+                    hoverFunction(currentImageElement, function (currentImageElement) {
+                        currentImageElement.attr("src", currentImageElement.attr("data-orig-src"));
+                    });
+                });
+            }
+            properties.Initialize = function () {
+                addHoverListener();
             }
             return properties;
         }());
@@ -171,11 +261,9 @@
 
             function getPatternIdList() {
                 var patternIdArrayList = [];
-                $('#routineBuilder').children().each(function () {
-                    var currentElement = $(this);
-                    if (currentElement.attr("id").match("^image-holder_")) {
-                        patternIdArrayList.push(currentElement.attr("id").split("_")[1]);
-                    }
+                $('#routine-builder').find('.img-holder').each(function () {
+                    var currentImageHolder = $(this);
+                    patternIdArrayList.push(currentImageHolder.find(".img-element").attr("data-pattern-id"));
                 });
                 return patternIdArrayList;
             }
@@ -213,7 +301,7 @@
             routineBuilder.Initialize();
             galleryExtender.Initialize();
             addRoutine.AddClickListener();
-            //multiselectExtender.Initialize();
+            multiselectExtender.Initialize();
         }
     }());
     $(document).ready(function () {
