@@ -138,19 +138,22 @@ k-loading-mask, .k-loading-image, .k-loading-text {
 }
 
 /* This will set the border on the image containers and holders*/
-     .img-holder {
-         width: 100%;
-         background-size: 100% auto;
-     }
-     .img-container {
-         background: url("icons/image.png") no-repeat center;
-     }
-    .img-adder {
-        background: url('icons/add.png') no-repeat center;
+    .img-holder {
+        width: 100%;
+        background-size: 100% auto;
     }
-     .invisible-background {
-         background: initial;
-     }
+    .img-container {
+        background: url("icons/image.png") no-repeat center;
+    }
+.img-adder {
+    background: url('icons/add.png') no-repeat center;
+}
+.img-dropper {
+    background: url('icons/drop.png') no-repeat center;
+}
+.invisible-background {
+    background: initial;
+}
      
      /*This will limit the columns to a maximum height*/
      .limit-add{

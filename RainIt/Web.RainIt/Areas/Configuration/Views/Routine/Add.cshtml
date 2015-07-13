@@ -19,14 +19,14 @@
     }
 </style>
 <div class="container">
-    <div id="routine-builder" class="row shapeshift-gallery">
+    <div id="routine-builder" class="row shapeshift-gallery img-holder img-dropper img-thumbnail">
         <div class="shapeshift-element">
-            <div id="img-add" class="limit-view img-holder img-adder img-thumbnail">
-                <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"/>
+            <div id="img-drop" class="limit-view">
+                <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" />
             </div>
         </div>
     </div>
-    <div class=" row">
+    <div class="row">
         <div class="col-md-2">
             @if (Model == null || Model.RoutineId == 0)
             {
@@ -92,9 +92,9 @@
 
             function initializeUserImages(passedImages) {
                 $.each(passedImages, function (index, imageData) {
-                    var imageAdder = $('#routine-builder .img-adder').parent();
+                    var container = $('#routine-builder');
                     var image = createImage(imageData);
-                    image.insertBefore(imageAdder);
+                    image.appendTo(container);
                 });
             }
 
@@ -105,18 +105,20 @@
             }
 
             function hasElements() {
-                var allElements = $('#routine-builder .shapeshift-element').children('.img-holder').not('.img-adder').parent();
+                var allElements = $('#routine-builder .shapeshift-element').children('.img-holder').not('.img-dropper').parent();
                 return allElements.length > 0;
             }
-            function hideImageAdder() {
-                $('#routine-builder .img-adder').closest('.shapeshift-element').hide();
+            function hideImageDropper() {
+                $('#routine-builder #img-drop').closest('.shapeshift-element').hide();
+                $('#routine-builder').addClass("invisible-background");
             }
-            function showImageAdder() {
-                $('#routine-builder .img-adder').closest('.shapeshift-element').show();
+            function showImageDropper() {
+                $('#routine-builder  #img-drop').closest('.shapeshift-element').show();
+                $('#routine-builder').removeClass("invisible-background");
             }
             function addAddEventListener() {
                 $('#routine-builder').on('ss-added', function (e, element) {
-                    hasElements() ? hideImageAdder() : showImageAdder();
+                    hasElements() ? hideImageDropper() : showImageDropper();
                     if (element) {
                         var originalShapeshift = $(element);
                         var clonedShapeshift = $('.shapeshift-element').find('.img-element[data-pattern-id="' + originalShapeshift.find('.img-element').attr('data-pattern-id') + '"]').closest(".shapeshift-element").not('.img-copy');
@@ -181,7 +183,7 @@
                 }
             }
             function addHoverListener() {
-                $('#routine-builder .img-holder:not(.img-adder)').hover(function (e) {
+                $('#routine-builder .img-holder:not(.img-dropper)').hover(function (e) {
                     var currentImageHolder = $(e.currentTarget);
                     currentImageHolder.children('.k-loading-mask').show();
                     if (currentImageHolder.children('.img-element').attr("data-bw-src") == undefined) {
@@ -261,7 +263,7 @@
 
             function getPatternIdList() {
                 var patternIdArrayList = [];
-                $('#routine-builder').find('.img-holder').each(function () {
+                $('#routine-builder').find('.img-holder').not('.img-dropper').each(function () {
                     var currentImageHolder = $(this);
                     patternIdArrayList.push(currentImageHolder.find(".img-element").attr("data-pattern-id"));
                 });

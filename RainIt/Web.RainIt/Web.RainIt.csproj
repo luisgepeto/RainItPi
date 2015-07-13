@@ -173,6 +173,7 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\bootstrapcarousel.css" />
     <Content Include="Content\fileinput.css" />
+    <Content Include="Content\icons\drop.png" />
     <Content Include="Content\icons\add.png" />
     <Content Include="Content\icons\delete.png" />
     <Content Include="Content\icons\image.png" />
