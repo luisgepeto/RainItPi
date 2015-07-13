@@ -6,7 +6,6 @@
     ViewBag.Title = "Add Pattern";
     var constraintParameters = ViewBag.ConstraintParameters as UploadConstraintParameters ?? new UploadConstraintParameters();
 }
-<script src="~/Scripts/fileinput.js"></script>
 <link href="~/Content/fileinput.css" rel="stylesheet"/>
 <style>
     /* This will solve the problem about the file upload displaying incorrectly*/
@@ -220,6 +219,8 @@
 @Html.Hidden("originalWidth", "")
 @Html.Hidden("originalHeight", "")
 @Html.Hidden("originalImage", "")
+@section scripts{
+    <script src="~/Scripts/fileinput.js"></script>
 <script type="text/javascript">
     (function () {
         this.AddPatternProperties = this.AddPatternProperties || {};
@@ -610,7 +611,7 @@
         var filePicker = (function () {
             var properties = {};
             var allowedFileExtensions = ['jpg', 'gif', 'png'];
-            var maxFileSize = Number('@constraintParameters.MaxBytesFileSize')/1024;
+            var maxFileSize = Number('@constraintParameters.MaxBytesFileSize') / 1024;
             function addChangeListener() {
                 $("#filePicker").change(function () {
                     var thisInput = this;
@@ -631,17 +632,17 @@
                     }
                 });
             }
-             function addErrorListener() {
-                 $("#filePicker").on('fileerror', function (e, data) {
-                     var contentArray = [];
-                     if (data.file.size/1024 > maxFileSize)
-                         contentArray.push("The file size cannot exceed " + maxFileSize + "Kb");
-                     if (allowedFileExtensions.indexOf(data.file.name.split('.').pop()) == -1)
-                         contentArray.push("The file is not an accepted image type");
-                     if(contentArray.length)
-                         AlertProperties.Initialize({ Class: "alert-danger", Content: contentArray });
-                 });
-             }
+            function addErrorListener() {
+                $("#filePicker").on('fileerror', function (e, data) {
+                    var contentArray = [];
+                    if (data.file.size / 1024 > maxFileSize)
+                        contentArray.push("The file size cannot exceed " + maxFileSize + "Kb");
+                    if (allowedFileExtensions.indexOf(data.file.name.split('.').pop()) == -1)
+                        contentArray.push("The file is not an accepted image type");
+                    if (contentArray.length)
+                        AlertProperties.Initialize({ Class: "alert-danger", Content: contentArray });
+                });
+            }
 
             properties.Initialize = function () {
                 $("#filePicker").fileinput({
@@ -775,7 +776,7 @@
             }
             function validate() {
                 var contentArray = [];
-                var areSelectedDevicesValid = DeviceMultiselectProperties.GetSelectedDevices().length > 0  ? true : contentArray.push("At least one device must be selected");
+                var areSelectedDevicesValid = DeviceMultiselectProperties.GetSelectedDevices().length > 0 ? true : contentArray.push("At least one device must be selected");
                 var isImageDataValid = imageData.GetBase64String(blackWhiteImageHolder.GetRawSrc()) != "" && imageData.GetBase64String(blackWhiteImageHolder.GetRawSrc()) != imageData.GetBase64String(imageData.BlankImageString) ? true : contentArray.push("No black & white image data found");
                 var isOriginalWidthValid = originalWidth.GetValue() != "" && originalWidth.GetValue() != 0;
                 var isOriginalHeightValid = originalHeight.GetValue() != "" && originalHeight.GetValue() != 0;
@@ -801,7 +802,7 @@
                     }
                 });
             }
-            properties.Initialize = function() {
+            properties.Initialize = function () {
                 addClickListener();
             }
             return properties;
@@ -987,3 +988,6 @@
         AddPatternProperties.SetupPage();
     });
 </script>
+
+
+}

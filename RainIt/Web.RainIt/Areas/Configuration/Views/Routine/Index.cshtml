@@ -1,5 +1,4 @@
 ﻿@model List<RainIt.Domain.DTO.RoutineDTO>
-<link href="~/Content/thumbnailscroller/jquery.mThumbnailScroller.css" rel="stylesheet" />
 <script src="~/Scripts/thumbnailscroller/jquery.mThumbnailScroller.js"></script>
 <style>
     .routine-holder{
@@ -8,51 +7,54 @@
   height: auto;
 }
 </style>
-<div class="container" >
-    
-        @foreach (var routine in Model)
-        {
-            <div class="row">
-                <div id="@("routine-holder" + routine.RoutineId)" class=" col-md-12 routine-holder">
-                    <ul>
-                        @foreach (var routinePattern in routine.RoutinePatternDTOs)
-                        {
-                            <li>
-                                <a href="@Url.Action("Edit", "Routine", new {area = "Configuration", routineId = routine.RoutineId}, null)">
-                                    <img src="@(routinePattern.PatternDTO.Path)" />
-                                </a>
-                            </li>
-                        }
-                    </ul>
-                </div>
+<div class="container">
+
+    @foreach (var routine in Model)
+    {
+        <div class="row">
+            <div id="@("routine-holder" + routine.RoutineId)" class=" col-md-12 routine-holder">
+                <ul>
+                    @foreach (var routinePattern in routine.RoutinePatternDTOs)
+                    {
+                        <li>
+                            <a href="@Url.Action("Edit", "Routine", new {area = "Configuration", routineId = routine.RoutineId}, null)">
+                                <img src="@(routinePattern.PatternDTO.Path)"/>
+                            </a>
+                        </li>
+                    }
+                </ul>
             </div>
-        }
+        </div>
+    }
     <div class="row">
-        
+
     </div>
-    @using (Html.BeginForm("Add", "Routine", new {area="Configuration"}, FormMethod.Get))
+    @using (Html.BeginForm("Add", "Routine", new {area = "Configuration"}, FormMethod.Get))
     {
         <button name="addRoutine" value="addRoutine" id="addRoutineButton" class="btn btn-primary">Add Routine</button>
     }
 </div>
-<script type="text/javascript">
-    (function() {
-        this.RoutineIndexProperties = this.RoutineIndexProperties || {};
+@section scripts{
+    <link href="~/Content/thumbnailscroller/jquery.mThumbnailScroller.css" rel="stylesheet"/>
+    <script type="text/javascript">
+        (function() {
+            this.RoutineIndexProperties = this.RoutineIndexProperties || {};
 
-        var scroller = (function() {
-            var properties = {};
-            properties.Initialize = function() {
-                $('.routine-holder').mThumbnailScroller({
-                    axis: 'x'
-                });
+            var scroller = (function() {
+                var properties = {};
+                properties.Initialize = function() {
+                    $('.routine-holder').mThumbnailScroller({
+                        axis: 'x'
+                    });
+                }
+                return properties;
+            }());
+            RoutineIndexProperties.SetupPage = function() {
+                scroller.Initialize();
             }
-            return properties;
         }());
-        RoutineIndexProperties.SetupPage = function () {
-            scroller.Initialize();
-        }
-    }());
-    $(document).ready(function() {
-        RoutineIndexProperties.SetupPage();
-    });
-</script>
+        $(document).ready(function() {
+            RoutineIndexProperties.SetupPage();
+        });
+    </script>
+}

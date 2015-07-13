@@ -136,7 +136,7 @@
      * @returns {Multiselect}
      */
     function Multiselect(select, options) {
-
+        debugger;
         this.$select = $(select);
         
         // Placeholder via data attributes
