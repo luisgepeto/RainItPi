@@ -32,47 +32,29 @@ namespace Web.RainIt.Areas.Configuration.Controllers
         }
 
         [HttpPost]
-        public JsonResult Add(int routineId, List<int> patternIdList, List<Guid> deviceGuidList)
+        public JsonResult Add(RoutineUploadModel routineUploadModel)
         {
             StatusMessage canAdd = null;
-
-            var routineList = new RoutineDTO()
+            if (routineUploadModel.RoutineId == 0)
             {
-                RoutineId = routineId,
-                RoutinePatternDTOs = patternIdList.Select(p => new RoutinePatternDTO()
-                {
-                    PatternDTO = new PatternDTO(){ PatternId = p }
-                }).ToList(),
-                Description = "some description",
-                Name = "some name",
-                DeviceDTOs = deviceGuidList == null
-                    ? new List<DeviceDTO>()
-                    : deviceGuidList.Select(d => new DeviceDTO()
-                    {
-                        Identifier = d
-                    }).ToList()
-            };
-
-            if (routineId == 0)
-            {
-                canAdd = RoutineManager.AddUserRoutine(routineList);
+                canAdd = RoutineManager.AddUserRoutine(routineUploadModel);
             }
-            if (routineId > 0)
+            if (routineUploadModel.RoutineId > 0)
             {
-                canAdd = RoutineManager.UpdateUserRoutine(routineList);
+                canAdd = RoutineManager.UpdateUserRoutine(routineUploadModel);
             }
             return Json(Url.Action("Index", "Routine", new {area = "Configuration"}));
         }
 
         [System.Web.Mvc.HttpPost]
-        public JsonResult Test(List<int> patternIdList, List<Guid> deviceIdentifierList)
+        public JsonResult Test(RoutineUploadModel routineUploadModel)
         {
             StatusMessage canSet = new StatusMessage();
-            if (deviceIdentifierList == null || !deviceIdentifierList.Any())
+            if (routineUploadModel.DeviceIdentifierList == null || !routineUploadModel.DeviceIdentifierList.Any())
                 canSet = StatusMessage.WriteError("No device was selected");
             if (!canSet.IsError)
             {
-                canSet = RoutineManager.SetToTest(patternIdList, deviceIdentifierList);
+                canSet = RoutineManager.SetToTest(routineUploadModel);
             }
             return Json(new { canSet }, JsonRequestBehavior.DenyGet);
         }

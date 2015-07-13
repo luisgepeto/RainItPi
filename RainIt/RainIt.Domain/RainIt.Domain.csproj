@@ -97,6 +97,7 @@
     <Compile Include="DTO\Registration.cs" />
     <Compile Include="DTO\RoutineDTO.cs" />
     <Compile Include="DTO\RoutinePatternDTO.cs" />
+    <Compile Include="DTO\RoutineUploadModel.cs" />
     <Compile Include="DTO\StatusMessage.cs" />
     <Compile Include="DTO\UploadConstraintParameters.cs" />
     <Compile Include="DTO\User.cs" />

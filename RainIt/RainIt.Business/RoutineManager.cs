@@ -20,25 +20,26 @@ namespace RainIt.Business
 
         #region CREATE Methods
 
-        public StatusMessage AddUserRoutine(RoutineDTO routineDTO)
+        public StatusMessage AddUserRoutine(RoutineUploadModel routineUploadModel)
         {
-            if (!IsPatternCountValid(routineDTO.RoutinePatternDTOs))
+            if (!IsPatternCountValid(routineUploadModel.RoutinePatternDTOList))
                 return StatusMessage.WriteError("The number of patterns exceeds the maximum for a routine");
-            var routineToAdd = GetRoutineToAdd(routineDTO);
-            if (!TryUpdateRoutinePatterns(routineToAdd, routineDTO.RoutinePatternDTOs))
+            var routineToAdd = GetRoutineToAdd(routineUploadModel);
+            if (!TryUpdateRoutinePatterns(routineToAdd, routineUploadModel.RoutinePatternDTOList))
                 return StatusMessage.WriteError("The selected pattern does not exist for the current user");
-            if (!TryUpdateDevices(routineToAdd, routineDTO.DeviceDTOs))
+            if (!TryUpdateDevices(routineToAdd, routineUploadModel.DeviceIdentifierList))
                 return StatusMessage.WriteError("The selected devices do not exist for the current user");
             RainItContext.RoutineSet.Add(routineToAdd);
             RainItContext.SaveChanges();
             return StatusMessage.WriteMessage("The routine was created successfully");
         }
-        private Routine GetRoutineToAdd(RoutineDTO routineDTO)
+
+        private Routine GetRoutineToAdd(RoutineUploadModel routineUploadModel)
         {
             var routineToAdd = new Routine()
             {
-                Description = routineDTO.Description,
-                Name = routineDTO.Name,
+                Description = routineUploadModel.Description,
+                Name = routineUploadModel.Name,
                 UserId = RainItContext.UserSet.Single(u => u.Username == RainItContext.CurrentUser.Username).UserId,
                 RoutinePatterns =  new List<RoutinePattern>(),
                 Devices = new List<Device>()
@@ -46,21 +47,49 @@ namespace RainIt.Business
             return routineToAdd;
         }
 
-        public StatusMessage SetToTest(List<int> patternIdList, List<Guid> deviceIdentifierList)
+        public StatusMessage SetToTest(RoutineUploadModel routineUploadModel)
         {
-            foreach (var deviceIdentifier in deviceIdentifierList)
+            foreach (var deviceIdentifier in routineUploadModel.DeviceIdentifierList)
             {
-                SetToTest(patternIdList, deviceIdentifier);
+                SetToTest(routineUploadModel, deviceIdentifier);
             }
-            return StatusMessage.WriteMessage("Successfully testing routine in the selected devices");
+            return StatusMessage.WriteMessage("The selected routines are being tested on the selected devices");
         }
-        private StatusMessage SetToTest(List<int> patternIdList, Guid deviceIdentifier)
-        {
-            Device deviceOut;
-            if (!TryGetDeviceForUser(deviceIdentifier, out deviceOut))
-                return StatusMessage.WriteError("the selected device does not exist for the current user");
 
-            return StatusMessage.WriteMessage("Successfully testing in the selected device");
+        private StatusMessage SetToTest(RoutineUploadModel routineUploadModel, Guid deviceIdentifier)
+        {
+            if (!IsPatternCountValid(routineUploadModel.RoutinePatternDTOList))
+                return StatusMessage.WriteError("The number of patterns exceeds the maximum for a routine");
+            SampleRoutine sampleRoutineOut;
+            if(!TryGetSampleRoutineFor(deviceIdentifier, out sampleRoutineOut)) 
+                return StatusMessage.WriteError("The selected device does not exist");
+            if (!TryDeleteRoutinePatterns(sampleRoutineOut))
+                return StatusMessage.WriteError("The patterns for the selected routine could not be deleted");
+            if (!TryUpdateRoutinePatterns(sampleRoutineOut, routineUploadModel.RoutinePatternDTOList))
+                return StatusMessage.WriteError("The selected pattern does not exist for the current user");
+            RainItContext.SaveChanges();
+            return StatusMessage.WriteMessage("The routine was updated successfully");
+        }
+
+        private bool TryGetSampleRoutineFor(Guid deviceIdentifier, out SampleRoutine sampleRoutineOut)
+        {
+            sampleRoutineOut = null;
+            Device deviceOut;
+            if (TryGetDeviceForUser(deviceIdentifier, out deviceOut))
+            {
+                sampleRoutineOut = RainItContext.SampleRoutineSet.SingleOrDefault(r => r.Device.DeviceInfo.Identifier == deviceIdentifier);
+                if (sampleRoutineOut == null)
+                {
+                    sampleRoutineOut = new SampleRoutine()
+                    {
+                        DeviceId = deviceOut.DeviceId,
+                        UpdateDateTime = DateTime.UtcNow
+                    };
+                    RainItContext.SampleRoutineSet.Add(sampleRoutineOut);
+                    RainItContext.SaveChanges();
+                }
+            }
+            return sampleRoutineOut != null;
         }
 
         #endregion
@@ -99,33 +128,50 @@ namespace RainIt.Business
         #endregion
 
         #region UPDATE Methods
-        public StatusMessage UpdateUserRoutine(RoutineDTO routineDTO)
+        public StatusMessage UpdateUserRoutine(RoutineUploadModel routineUploadModel)
         {
-            if (!IsPatternCountValid(routineDTO.RoutinePatternDTOs))
+            if (!IsPatternCountValid(routineUploadModel.RoutinePatternDTOList))
                 return StatusMessage.WriteError("The number of patterns exceeds the maximum for a routine");
-            var routineToUpdate = GetRoutineToUpdate(routineDTO);
+            var routineToUpdate = GetRoutineToUpdate(routineUploadModel);
             if (!TryDeleteRoutinePatterns(routineToUpdate))
                 return StatusMessage.WriteError("The patterns for the selected routine could not be deleted");
-            if (!TryUpdateRoutinePatterns(routineToUpdate, routineDTO.RoutinePatternDTOs))
+            if (!TryUpdateRoutinePatterns(routineToUpdate, routineUploadModel.RoutinePatternDTOList))
                 return StatusMessage.WriteError("The selected pattern does not exist for the current user");
-            if (!TryUpdateDevices(routineToUpdate, routineDTO.DeviceDTOs))
+            if (!TryUpdateDevices(routineToUpdate, routineUploadModel.DeviceIdentifierList))
                 return StatusMessage.WriteError("The selected devices do not exist for the current user");
             RainItContext.SaveChanges();
             return StatusMessage.WriteMessage("The routine was updated successfully");
         }
 
-        private Routine GetRoutineToUpdate(RoutineDTO routineDTO)
+        private Routine GetRoutineToUpdate(RoutineUploadModel routineUploadModel)
         {
-            var routine = RainItContext.UserRoutineSet.SingleOrDefault(r => r.RoutineId == routineDTO.RoutineId);
+            var routine =
+                    RainItContext.UserRoutineSet.SingleOrDefault(r => r.RoutineId == routineUploadModel.RoutineId);
             if (routine == null) return null;
 
-            routine.Description = routineDTO.Description;
-            routine.Name = routineDTO.Name;
+            routine.Description = routineUploadModel.Description;
+            routine.Name = routineUploadModel.Name;
             routine.RoutinePatterns = new List<RoutinePattern>();
-            
             return routine;
         }
-
+        private bool TryDeleteRoutinePatterns(SampleRoutine sampleRoutineToUpdate)
+        {
+            try
+            {
+                var allRoutinePatterns = sampleRoutineToUpdate.RoutinePatterns.ToList();
+                foreach (var routinePattern in allRoutinePatterns)
+                {
+                    RainItContext.RoutinePatternSet.Attach(routinePattern);
+                    RainItContext.RoutinePatternSet.Remove(routinePattern);
+                }
+                RainItContext.SaveChanges();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
         private bool TryDeleteRoutinePatterns(Routine routineToUpdate)
         {
             try
@@ -167,39 +213,56 @@ namespace RainIt.Business
 
         #region Helper Methods
 
-        public bool IsPatternCountValid(List<RoutinePatternDTO> patternList)
+        public bool IsPatternCountValid(List<RoutinePatternDTO> routinePatternDTOList)
         {
-            return patternList.Count <= int.Parse(ConfigurationManager.AppSettings["MaxPatternCountPerRoutine"]);
+            return routinePatternDTOList.Count <= int.Parse(ConfigurationManager.AppSettings["MaxPatternCountPerRoutine"]);
         }
 
         public bool DoesPatternExistsForUser(int patternId)
         {
             return RainItContext.PatternSet.Any(p => p.PatternId == patternId);
         }
-
-        private bool TryUpdateRoutinePatterns(Routine routine, List<RoutinePatternDTO> routinePatternDTOList)
+        private bool TryUpdateRoutinePatterns(SampleRoutine sampleRoutine, List<RoutinePatternDTO> routinePatternDTOList)
         {
-            foreach (var routinePatternDTO in routinePatternDTOList)
+            foreach (var routinePattern in routinePatternDTOList)
             {
-                if (!DoesPatternExistsForUser(routinePatternDTO.PatternDTO.PatternId))
+                if (!DoesPatternExistsForUser(routinePattern.PatternDTO.PatternId))
                     return false;
                 var newRoutinePattern = new RoutinePattern()
                 {
-                    PatternId = routinePatternDTO.PatternDTO.PatternId,
+                    PatternId = routinePattern.PatternDTO.PatternId,
+                    UserId = RainItContext.UserSet.Single(u => u.Username == RainItContext.CurrentUser.Username).UserId,
+                    Repetitions = routinePattern.Repetitions,
+                    SampleRoutineId = sampleRoutine.SampleRoutineId
+                };
+                sampleRoutine.RoutinePatterns.Add(newRoutinePattern);
+            }
+            return true;
+        }
+        private bool TryUpdateRoutinePatterns(Routine routine, List<RoutinePatternDTO> routinePatternDTOList)
+        {
+            foreach (var routinePattern in routinePatternDTOList)
+            {
+                if (!DoesPatternExistsForUser(routinePattern.PatternDTO.PatternId))
+                    return false;
+                var newRoutinePattern = new RoutinePattern()
+                {
+                    PatternId = routinePattern.PatternDTO.PatternId,
                     RoutineId = routine.RoutineId,
                     UserId = RainItContext.UserSet.Single(u => u.Username == RainItContext.CurrentUser.Username).UserId,
+                    Repetitions = routinePattern.Repetitions
                 };
                 routine.RoutinePatterns.Add(newRoutinePattern);
             }
             return true;
         }
-        private bool TryUpdateDevices(Routine routine, List<DeviceDTO> deviceDTOList)
+        private bool TryUpdateDevices(Routine routine, List<Guid> deviceidentifierList)
         {
             routine.Devices = new List<Device>();
-            foreach (var device in deviceDTOList)
+            foreach (var deviceIdentifier in deviceidentifierList)
             {
                 Device deviceOut;
-                if (!TryGetDeviceForUser(device.Identifier, out deviceOut))
+                if (!TryGetDeviceForUser(deviceIdentifier, out deviceOut))
                     return false;
                 routine.Devices.Add(deviceOut);
             }
