@@ -20,8 +20,8 @@
 </style>
 <div class="container">
     <div id="routine-builder" class="row shapeshift-gallery img-holder img-dropper img-thumbnail">
-        <div class="shapeshift-element">
-            <div id="img-drop" class="limit-view">
+        <div class="shapeshift-element img-drop">
+            <div class="limit-view">
                 <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" />
             </div>
         </div>
@@ -52,6 +52,28 @@
         this.RoutineAddProperties = this.RoutineAddProperties || {};
         var passedImages = '@Html.Raw(Model != null ? JsonConvert.SerializeObject(Model.RoutinePatternDTOs) : null)';
 
+        var repetitionsInput = (function() {
+            var properties = {};
+            function addSpinnerTo(element) {
+                var spinnerHolder = $('<div>').attr("class", "caption img-repetitions");
+                var repetitionsSpinner = $('<input type="text">');
+                repetitionsSpinner.val(1);
+                repetitionsSpinner.appendTo(spinnerHolder);
+                repetitionsSpinner.spinner({
+                    max: 5,
+                    min: 1
+                });
+                spinnerHolder.appendTo(element);
+            }
+            properties.GetValue = function(shapeshiftElement) {
+                return shapeshiftElement.find('.img-repetitions input').val();
+            }
+            properties.Initialize = function(element) {
+                addSpinnerTo(element);
+            }
+            return properties;
+        }());
+
         var deleteButton = (function () {
             var properties = {};
 
@@ -79,6 +101,24 @@
 
         var routineBuilder = (function () {
             var properties = {};
+
+            properties.GetRoutinePatterns = function () {
+                var routinePatternArray = [];
+                $('#routine-builder .shapeshift-element:not(".img-drop")').each(function (index) {
+                    var element = $(this);
+                    var patternId = element.find('.img-element').attr('data-pattern-id');
+                    var spinnerValue = repetitionsInput.GetValue(element);
+                    var routinePattern = {
+                        Repetitions: spinnerValue,
+                        PatternDTO: {
+                            PatternId: patternId
+                        }
+                    };
+                    routinePatternArray.push(routinePattern);
+                });
+                return routinePatternArray;
+            }
+
             function createImage(image) {
                 var imageToPlace = $('<img>').attr("src", image.PatternDTO.Path).attr("class", "img-element move").attr("data-orig-src", image.PatternDTO.Path).attr("data-pattern-id", image.PatternDTO.PatternId);
                 var column = $('<div>').attr("class", "shapeshift-element");
@@ -89,6 +129,17 @@
                 var caption = $('<div>').addClass("caption img-title").html("<p>" + image.PatternDTO.Name + "</p>").css("display", "none");
                 imageHolder.appendTo(column);
                 caption.appendTo(column);
+
+                var spinnerHolder = $('<div>').attr("class", "caption img-repetitions");
+                var repetitionsSpinner = $('<input type="text">');
+                repetitionsSpinner.val(image.Repetitions);
+                repetitionsSpinner.appendTo(spinnerHolder);
+                repetitionsSpinner.spinner({
+                    max: 5,
+                    min: 1
+                });
+                spinnerHolder.appendTo(column);
+
                 return column;
             }
 
@@ -107,15 +158,15 @@
             }
 
             function hasElements() {
-                var allElements = $('#routine-builder .shapeshift-element').children('.img-holder').not('.img-dropper').parent();
+                var allElements = $('#routine-builder .shapeshift-element').not('.img-drop').parent();
                 return allElements.length > 0;
             }
             function hideImageDropper() {
-                $('#routine-builder #img-drop').closest('.shapeshift-element').hide();
+                $('#routine-builder .img-drop').hide();
                 $('#routine-builder').addClass("invisible-background");
             }
             function showImageDropper() {
-                $('#routine-builder  #img-drop').closest('.shapeshift-element').show();
+                $('#routine-builder  .img-drop').show();
                 $('#routine-builder').removeClass("invisible-background");
             }
             function addAddEventListener() {
@@ -126,6 +177,7 @@
                         var clonedShapeshift = $('.shapeshift-element').find('.img-element[data-pattern-id="' + originalShapeshift.find('.img-element').attr('data-pattern-id') + '"]').closest(".shapeshift-element").not('.img-copy');
                         revertHoverStatus(originalShapeshift, clonedShapeshift);
                         deleteButton.Initialize(originalShapeshift);
+                        repetitionsInput.Initialize(originalShapeshift);
                         PatternIndexProperties.Gallery.ReattachHoverListeners();
                     }
                     $('#routine-builder').trigger('ss-rearrange');
@@ -139,7 +191,7 @@
                     enableDrag: true,
                     enableCrossDrop: true,
                     selector: '.shapeshift-element',
-                    gutterY: 30,
+                    gutterY: 100,
                     gutterX: 30
                 });
                 addAddEventListener();
@@ -276,15 +328,21 @@
             function onAjaxSuccess(data) {
                 window.location.href = data;
             }
-
-            function makeAddPatternAjaxCall(patternIdList, deviceGuidList) {
+            function getData() {
+                return {
+                    RoutineUploadModel: {
+                        RoutineId: '@(Model != null ? Model.RoutineId: 0)',
+                        DeviceIdentifierList: multiselectExtender.GetSelectedDevices(),
+                        Description: "some description",
+                        Name: "some name",
+                        RoutinePatternDTOList: routineBuilder.GetRoutinePatterns()
+                    }
+                };
+            }
+            function makeAddPatternAjaxCall() {
                 $.ajax({
                     url: '@Url.Action("Add", "Routine", new {area = "Configuration"})',
-                    data: {
-                        routineId: '@Html.Raw(Model != null ? Model.RoutineId : 0)',
-                        patternIdList: patternIdList,
-                        deviceGuidList: deviceGuidList
-                    },
+                    data: getData(),
                     type: "POST",
                     contentType: "application/x-www-form-urlencoded",
                     success: onAjaxSuccess

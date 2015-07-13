@@ -232,7 +232,7 @@ namespace RainIt.Business
                 {
                     PatternId = routinePattern.PatternDTO.PatternId,
                     UserId = RainItContext.UserSet.Single(u => u.Username == RainItContext.CurrentUser.Username).UserId,
-                    Repetitions = routinePattern.Repetitions,
+                    Repetitions = (routinePattern.Repetitions == 0 ? 1 : routinePattern.Repetitions),
                     SampleRoutineId = sampleRoutine.SampleRoutineId
                 };
                 sampleRoutine.RoutinePatterns.Add(newRoutinePattern);
@@ -250,7 +250,7 @@ namespace RainIt.Business
                     PatternId = routinePattern.PatternDTO.PatternId,
                     RoutineId = routine.RoutineId,
                     UserId = RainItContext.UserSet.Single(u => u.Username == RainItContext.CurrentUser.Username).UserId,
-                    Repetitions = routinePattern.Repetitions
+                    Repetitions = (routinePattern.Repetitions == 0 ? 1 : routinePattern.Repetitions)
                 };
                 routine.RoutinePatterns.Add(newRoutinePattern);
             }
@@ -258,6 +258,7 @@ namespace RainIt.Business
         }
         private bool TryUpdateDevices(Routine routine, List<Guid> deviceidentifierList)
         {
+            if (deviceidentifierList == null) return true;
             routine.Devices = new List<Device>();
             foreach (var deviceIdentifier in deviceidentifierList)
             {
@@ -286,7 +287,8 @@ namespace RainIt.Business
                         PatternId = rp.PatternId ?? 0,
                         Name = rp.Pattern.Name,
                         Path = rp.Pattern.Path
-                    }
+                    },
+                    Repetitions = rp.Repetitions
                 }).ToList(),
                 DeviceDTOs = r.Devices.Select(d => new DeviceDTO()
                 {
