@@ -52,7 +52,7 @@
         this.RoutineAddProperties = this.RoutineAddProperties || {};
         var passedImages = '@Html.Raw(Model != null ? JsonConvert.SerializeObject(Model.RoutinePatternDTOs) : null)';
 
-        var repetitionsInput = (function() {
+        var repetitionsInput = (function () {
             var properties = {};
             function addSpinnerTo(element) {
                 var spinnerHolder = $('<div>').attr("class", "caption img-repetitions");
@@ -65,10 +65,10 @@
                 });
                 spinnerHolder.appendTo(element);
             }
-            properties.GetValue = function(shapeshiftElement) {
+            properties.GetValue = function (shapeshiftElement) {
                 return shapeshiftElement.find('.img-repetitions input').val();
             }
-            properties.Initialize = function(element) {
+            properties.Initialize = function (element) {
                 addSpinnerTo(element);
             }
             return properties;
@@ -372,16 +372,20 @@
             }
 
             function onAjaxSuccess() {
-                
-            }
 
-            function makeAjaxCall(patternIdList, deviceGuidList) {
+            }
+            function getData() {
+                return {
+                    RoutineUploadModel: {
+                        DeviceIdentifierList: multiselectExtender.GetSelectedDevices(),
+                        RoutinePatternDTOList: routineBuilder.GetRoutinePatterns()
+                    }
+                };
+            }
+            function makeAjaxCall() {
                 $.ajax({
                     url: '@Url.Action("Test", "Routine", new {area = "Configuration"})',
-                    data: {
-                        patternIdList: patternIdList,
-                        deviceGuidList: deviceGuidList
-                    },
+                    data: getData(),
                     type: "POST",
                     contentType: "application/x-www-form-urlencoded",
                     success: onAjaxSuccess
@@ -390,12 +394,10 @@
 
             function addClickListener() {
                 $('#testButton').click(function () {
-                    var patternIdList = getPatternIdList();
-                    var deviceGuidList = multiselectExtender.GetSelectedDevices();
-                    makeAjaxCall(patternIdList, deviceGuidList);
+                    makeAjaxCall();
                 });
             }
-            properties.Initialize = function() {
+            properties.Initialize = function () {
                 addClickListener();
             }
             return properties;

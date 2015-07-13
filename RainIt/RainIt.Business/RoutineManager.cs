@@ -83,10 +83,20 @@ namespace RainIt.Business
                     sampleRoutineOut = new SampleRoutine()
                     {
                         DeviceId = deviceOut.DeviceId,
-                        UpdateDateTime = DateTime.UtcNow
+                        Device = deviceOut,
+                        UpdateDateTime = DateTime.UtcNow,
+                        RoutinePatterns = new List<RoutinePattern>()
                     };
-                    RainItContext.SampleRoutineSet.Add(sampleRoutineOut);
-                    RainItContext.SaveChanges();
+                    try
+                    {
+                        RainItContext.SampleRoutineSet.Add(sampleRoutineOut);
+                        RainItContext.SaveChanges();
+                    }
+                    catch (Exception ex)
+                    {
+                        var newException = ex;
+                        //TODO nothing
+                    }
                 }
             }
             return sampleRoutineOut != null;
@@ -159,12 +169,15 @@ namespace RainIt.Business
             try
             {
                 var allRoutinePatterns = sampleRoutineToUpdate.RoutinePatterns.ToList();
-                foreach (var routinePattern in allRoutinePatterns)
+                if (allRoutinePatterns.Any())
                 {
-                    RainItContext.RoutinePatternSet.Attach(routinePattern);
-                    RainItContext.RoutinePatternSet.Remove(routinePattern);
+                    foreach (var routinePattern in allRoutinePatterns)
+                    {
+                        RainItContext.RoutinePatternSet.Attach(routinePattern);
+                        RainItContext.RoutinePatternSet.Remove(routinePattern);
+                    }
+                    RainItContext.SaveChanges();    
                 }
-                RainItContext.SaveChanges();
                 return true;
             }
             catch (Exception ex)

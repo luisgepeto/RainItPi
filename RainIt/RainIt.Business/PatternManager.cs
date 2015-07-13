@@ -7,6 +7,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using ImageProcessing.Domain;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
@@ -33,6 +34,7 @@ namespace RainIt.Business
         {
             if (!IsFileSizeValid(pattern)) return StatusMessage.WriteError("The file size is not valid.");
             if (!AreDimensionsValid(pattern)) return StatusMessage.WriteError("The file dimensions are not valid.");
+            patternUploadModel.FileName = CleanInput(patternUploadModel.FileName);
             int patternId;
             return !DoesUserFileNameExist(patternUploadModel.FileName, out patternId)
                 ? AddPattern(pattern, patternUploadModel)
@@ -177,6 +179,7 @@ namespace RainIt.Business
         {
             if (!IsFileSizeValid(pattern)) return StatusMessage.WriteError("The file size is not valid.");
             if (!AreDimensionsValid(pattern)) return StatusMessage.WriteError("The file dimensions are not valid.");
+            patternUploadModel.FileName = CleanInput(patternUploadModel.FileName);
             Pattern patternToEdit;
             return DoesUserPatternExist(patternUploadModel.PatternId, out patternToEdit)
                 ? UpdatePattern(pattern, patternToEdit, patternUploadModel)
@@ -268,8 +271,8 @@ namespace RainIt.Business
         private bool DoesUserFileNameExist(string fileName, out int patternId)
         {
             patternId = 0;
+            if (fileName == String.Empty) return false;
             var pattern = RainItContext.UserPatternSet.SingleOrDefault(p => p.Name == fileName);
-            
             if (pattern == null) return false;
 
             patternId = pattern.PatternId;
@@ -279,6 +282,16 @@ namespace RainIt.Business
         {
             outPattern = RainItContext.UserPatternSet.SingleOrDefault(p => p.PatternId == patternId);
             return outPattern != null;
+        }
+
+        private string CleanInput(string strIn)
+        {
+            try {
+               return Regex.Replace(strIn, @"[^A-Za-z0-9_]", "", RegexOptions.None, TimeSpan.FromSeconds(1.5)); 
+            }
+            catch (RegexMatchTimeoutException) {
+               return String.Empty;   
+            }
         }
         #endregion
     }
