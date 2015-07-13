@@ -64,5 +64,18 @@ namespace Web.RainIt.Areas.Configuration.Controllers
             return Json(Url.Action("Index", "Routine", new {area = "Configuration"}));
         }
 
+        [System.Web.Mvc.HttpPost]
+        public JsonResult Test(List<int> patternIdList, List<Guid> deviceIdentifierList)
+        {
+            StatusMessage canSet = new StatusMessage();
+            if (deviceIdentifierList == null || !deviceIdentifierList.Any())
+                canSet = StatusMessage.WriteError("No device was selected");
+            if (!canSet.IsError)
+            {
+                canSet = RoutineManager.SetToTest(patternIdList, deviceIdentifierList);
+            }
+            return Json(new { canSet }, JsonRequestBehavior.DenyGet);
+        }
+
     }
 }

@@ -111,6 +111,7 @@
     <Compile Include="Configuration\RoleConfiguration.cs" />
     <Compile Include="Configuration\RoutineConfiguration.cs" />
     <Compile Include="Configuration\RoutinePatternConfiguration.cs" />
+    <Compile Include="Configuration\SampleRoutineConfiguration.cs" />
     <Compile Include="Configuration\SamplePatternConfiguration.cs" />
     <Compile Include="Configuration\UserConfiguration.cs" />
     <Compile Include="Configuration\UserInfoConfiguration.cs" />
@@ -149,6 +150,10 @@
     <Compile Include="Migrations\201507100605432_ConversionParameterAndSamplePatternMigration.cs" />
     <Compile Include="Migrations\201507100605432_ConversionParameterAndSamplePatternMigration.Designer.cs">
       <DependentUpon>201507100605432_ConversionParameterAndSamplePatternMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201507131605089_SampleRoutineMigration.cs" />
+    <Compile Include="Migrations\201507131605089_SampleRoutineMigration.Designer.cs">
+      <DependentUpon>201507131605089_SampleRoutineMigration.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -203,6 +208,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201507100605432_ConversionParameterAndSamplePatternMigration.resx">
       <DependentUpon>201507100605432_ConversionParameterAndSamplePatternMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201507131605089_SampleRoutineMigration.resx">
+      <DependentUpon>201507131605089_SampleRoutineMigration.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

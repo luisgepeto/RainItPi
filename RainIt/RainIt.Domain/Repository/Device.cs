@@ -13,5 +13,6 @@ namespace RainIt.Domain.Repository
         public virtual User User { get; set; }
         public virtual ICollection<Routine> Routines { get; set; }
         public virtual SamplePattern SamplePattern { get; set; }
+        public virtual SampleRoutine SampleRoutine { get; set; }
     }
 }

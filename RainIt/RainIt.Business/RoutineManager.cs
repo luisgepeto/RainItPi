@@ -33,7 +33,6 @@ namespace RainIt.Business
             RainItContext.SaveChanges();
             return StatusMessage.WriteMessage("The routine was created successfully");
         }
-
         private Routine GetRoutineToAdd(RoutineDTO routineDTO)
         {
             var routineToAdd = new Routine()
@@ -45,6 +44,23 @@ namespace RainIt.Business
                 Devices = new List<Device>()
             };
             return routineToAdd;
+        }
+
+        public StatusMessage SetToTest(List<int> patternIdList, List<Guid> deviceIdentifierList)
+        {
+            foreach (var deviceIdentifier in deviceIdentifierList)
+            {
+                SetToTest(patternIdList, deviceIdentifier);
+            }
+            return StatusMessage.WriteMessage("Successfully testing routine in the selected devices");
+        }
+        private StatusMessage SetToTest(List<int> patternIdList, Guid deviceIdentifier)
+        {
+            Device deviceOut;
+            if (!TryGetDeviceForUser(deviceIdentifier, out deviceOut))
+                return StatusMessage.WriteError("the selected device does not exist for the current user");
+
+            return StatusMessage.WriteMessage("Successfully testing in the selected device");
         }
 
         #endregion

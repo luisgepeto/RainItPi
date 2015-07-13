@@ -23,6 +23,9 @@ namespace RainIt.Repository.Configuration
             HasOptional(d => d.SamplePattern)
                 .WithRequired(sp=> sp.Device)
                 .WillCascadeOnDelete(true);
+            HasOptional(d => d.SampleRoutine)
+                .WithRequired(sr=> sr.Device)
+                .WillCascadeOnDelete(true);
         }
     }
 }

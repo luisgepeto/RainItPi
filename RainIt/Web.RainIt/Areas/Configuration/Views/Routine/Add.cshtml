@@ -36,10 +36,12 @@
             {
                 <input type="button" value="Update" name="Update" id="addRoutine" class="btn btn-success"/>
             }
-            
         </div>
         <div class="col-md-3">
-            @Html.Action("Multiselect", "Device", new { area = "Configuration" })
+            @Html.Action("Multiselect", "Device", new {area = "Configuration"})
+        </div>
+        <div class="col-md-3">
+            <input type="button" value="Test" name="Test" id="testButton" class="btn btn-primary" />
         </div>
     </div>
 </div>
@@ -52,7 +54,7 @@
 
         var deleteButton = (function () {
             var properties = {};
-            
+
             properties.AddClickListenerTo = function (button) {
                 if (button == undefined)
                     button = $('#routine-builder .delete-button');
@@ -151,7 +153,7 @@
         var image = (function () {
             var properties = {};
             var hasAjaxRunFor = [];
-            
+
             function makeHoverAjaxCall(currentImageHolder) {
                 var id = currentImageHolder.find('.img-element').attr("data-pattern-id");
                 if (hasAjaxRunFor.indexOf(id) == -1) {
@@ -236,6 +238,7 @@
         }());
 
 
+
         var multiselectExtender = (function () {
             var properties = {};
             var devices = '@Html.Raw(Model != null ? JsonConvert.SerializeObject(Model.DeviceDTOs) : null)';
@@ -298,12 +301,53 @@
             return properties;
         }());
 
+        var testButton = (function() {
+            var properties = {};
 
+            function getPatternIdList() {
+                var patternIdArrayList = [];
+                $('#routine-builder').find('.img-holder').not('.img-dropper').each(function () {
+                    var currentImageHolder = $(this);
+                    patternIdArrayList.push(currentImageHolder.find(".img-element").attr("data-pattern-id"));
+                });
+                return patternIdArrayList;
+            }
+
+            function onAjaxSuccess() {
+                
+            }
+
+            function makeAjaxCall(patternIdList, deviceGuidList) {
+                $.ajax({
+                    url: '@Url.Action("Test", "Routine", new {area = "Configuration"})',
+                    data: {
+                        patternIdList: patternIdList,
+                        deviceGuidList: deviceGuidList
+                    },
+                    type: "POST",
+                    contentType: "application/x-www-form-urlencoded",
+                    success: onAjaxSuccess
+                });
+            }
+
+            function addClickListener() {
+                $('#testButton').click(function () {
+                    var patternIdList = getPatternIdList();
+                    var deviceGuidList = multiselectExtender.GetSelectedDevices();
+                    makeAjaxCall(patternIdList, deviceGuidList);
+                });
+            }
+            properties.Initialize = function() {
+                addClickListener();
+            }
+            return properties;
+        }());
         RoutineAddProperties.SetupPage = function () {
             routineBuilder.Initialize();
             galleryExtender.Initialize();
             addRoutine.AddClickListener();
             multiselectExtender.Initialize();
+            testButton.Initialize();
         }
     }());
     $(document).ready(function () {
