@@ -178,3 +178,26 @@ k-loading-mask, .k-loading-image, .k-loading-text {
      .move {
          cursor: move;
      }
+
+     /* Added the circle styles*/
+     .img-circle-primary {
+         background: url("circle_primary.png") no-repeat center;
+         background-size: 100% auto;
+         /*width: 100%;
+         box-sizing: border-box;
+         position: relative;*/
+     }
+     .img-circle-default {
+         background: url("circle_default.png") no-repeat center;
+         background-size: 100% auto;
+         /*width: 100%;
+         box-sizing: border-box;
+         position: relative;*/
+     }
+     .img-circle-info {
+         background: url("circle_info.png") no-repeat center;
+         background-size: 100% auto;
+         /*width: 100%;
+         box-sizing: border-box;
+         position: relative;*/
+     }
