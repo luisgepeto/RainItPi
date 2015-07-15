@@ -1,8 +1,11 @@
 ﻿@{
     ViewBag.Title = "Add Routine";
+    var constraintParameters = ViewBag.ConstraintParameters as UploadConstraintParameters ?? new UploadConstraintParameters();
 }
 @using Newtonsoft.Json
+@using RainIt.Domain.DTO
 @model RainIt.Domain.DTO.RoutineDTO
+
 <style>
     .delete-button {
         width: 30px;
@@ -18,6 +21,7 @@
         border: 5px solid red;
     }
 </style>
+@Html.Partial("_Alert")
 <div class="container">
     <div id="routine-builder" class="row shapeshift-gallery img-holder img-dropper img-thumbnail">
         <div class="shapeshift-element img-drop">
@@ -51,384 +55,428 @@
 
 
     <script type="text/javascript">
-        (function() {
-            this.RoutineAddProperties = this.RoutineAddProperties || {};
-            var passedImages = '@Html.Raw(Model != null ? JsonConvert.SerializeObject(Model.RoutinePatternDTOs) : null)';
+    (function () {
+        this.RoutineAddProperties = this.RoutineAddProperties || {};
+        var passedImages = '@Html.Raw(Model != null ? JsonConvert.SerializeObject(Model.RoutinePatternDTOs) : null)';
 
-            var repetitionsInput = (function() {
-                var properties = {};
+        var repetitionsInput = (function () {
+            var properties = {};
 
-                function addSpinnerTo(element) {
-                    var spinnerHolder = $('<div>').attr("class", "caption img-repetitions");
-                    var repetitionsSpinner = $('<input type="text">');
-                    repetitionsSpinner.val(1);
-                    repetitionsSpinner.appendTo(spinnerHolder);
-                    repetitionsSpinner.spinner({
-                        max: 5,
-                        min: 1
-                    });
-                    spinnerHolder.appendTo(element);
-                }
-
-                properties.GetValue = function(shapeshiftElement) {
-                    return shapeshiftElement.find('.img-repetitions input').val();
-                }
-                properties.Initialize = function(element) {
-                    addSpinnerTo(element);
-                }
-                return properties;
-            }());
-
-            var deleteButton = (function() {
-                var properties = {};
-
-                properties.AddClickListenerTo = function(button) {
-                    if (button == undefined)
-                        button = $('#routine-builder .delete-button');
-                    return button.click(function(e) {
-                        $(e.currentTarget).closest('.shapeshift-element').detach();
-                        $('#routine-builder').trigger('ss-rearrange');
-                        $("#routine-builder").trigger("ss-added");
-                    });
-                }
-
-                function addButtonTo(element) {
-                    var deleteButton = $('<div>').attr("class", "delete-button pointer");
-                    properties.AddClickListenerTo(deleteButton);
-                    deleteButton.appendTo(element.find('.img-holder'));
-                }
-
-                properties.Initialize = function(element) {
-                    addButtonTo(element);
-                }
-                return properties;
-            }());
-
-            var routineBuilder = (function() {
-                var properties = {};
-
-                properties.GetRoutinePatterns = function() {
-                    var routinePatternArray = [];
-                    $('#routine-builder .shapeshift-element:not(".img-drop")').each(function(index) {
-                        var element = $(this);
-                        var patternId = element.find('.img-element').attr('data-pattern-id');
-                        var spinnerValue = repetitionsInput.GetValue(element);
-                        var routinePattern = {
-                            Repetitions: spinnerValue,
-                            PatternDTO: {
-                                PatternId: patternId
-                            }
-                        };
-                        routinePatternArray.push(routinePattern);
-                    });
-                    return routinePatternArray;
-                }
-
-                function createImage(image) {
-                    var imageToPlace = $('<img>').attr("src", image.PatternDTO.Path).attr("class", "img-element move").attr("data-orig-src", image.PatternDTO.Path).attr("data-pattern-id", image.PatternDTO.PatternId);
-                    var column = $('<div>').attr("class", "shapeshift-element");
-                    var imageHolder = $('<div>').attr("class", "limit-view img-holder img-thumbnail move");
-                    var deleteButton = $('<div>').attr("class", "delete-button pointer");
-                    deleteButton.appendTo(imageHolder);
-                    imageToPlace.appendTo(imageHolder);
-                    var caption = $('<div>').addClass("caption img-title").html("<p>" + image.PatternDTO.Name + "</p>").css("display", "none");
-                    imageHolder.appendTo(column);
-                    caption.appendTo(column);
-
-                    var spinnerHolder = $('<div>').attr("class", "caption img-repetitions");
-                    var repetitionsSpinner = $('<input type="text">');
-                    repetitionsSpinner.val(image.Repetitions);
-                    repetitionsSpinner.appendTo(spinnerHolder);
-                    repetitionsSpinner.spinner({
-                        max: 5,
-                        min: 1
-                    });
-                    spinnerHolder.appendTo(column);
-
-                    return column;
-                }
-
-                function initializeUserImages(passedImages) {
-                    $.each(passedImages, function(index, imageData) {
-                        var container = $('#routine-builder');
-                        var image = createImage(imageData);
-                        image.appendTo(container);
-                    });
-                }
-
-                function revertHoverStatus(originalElement, clonedElement) {
-                    clonedElement.find('.img-element').attr('src', originalElement.find('.img-element').attr('data-orig-src'));
-                    clonedElement.find('.k-loading-mask').hide();
-                    clonedElement.find('.img-title').hide();
-                }
-
-                function hasElements() {
-                    var allElements = $('#routine-builder .shapeshift-element').not('.img-drop').parent();
-                    return allElements.length > 0;
-                }
-
-                function hideImageDropper() {
-                    $('#routine-builder .img-drop').hide();
-                    $('#routine-builder').addClass("invisible-background");
-                }
-
-                function showImageDropper() {
-                    $('#routine-builder  .img-drop').show();
-                    $('#routine-builder').removeClass("invisible-background");
-                }
-
-                function addAddEventListener() {
-                    $('#routine-builder').on('ss-added', function(e, element) {
-                        hasElements() ? hideImageDropper() : showImageDropper();
-                        if (element) {
-                            var originalShapeshift = $(element);
-                            var clonedShapeshift = $('.shapeshift-element').find('.img-element[data-pattern-id="' + originalShapeshift.find('.img-element').attr('data-pattern-id') + '"]').closest(".shapeshift-element").not('.img-copy');
-                            revertHoverStatus(originalShapeshift, clonedShapeshift);
-                            deleteButton.Initialize(originalShapeshift);
-                            repetitionsInput.Initialize(originalShapeshift);
-                            PatternIndexProperties.Gallery.ReattachHoverListeners();
-                        }
-                        $('#routine-builder').trigger('ss-rearrange');
-                    });
-                }
-
-                properties.Initialize = function() {
-                    if (passedImages != '') {
-                        initializeUserImages(JSON.parse(passedImages));
-                    }
-                    $('#routine-builder').shapeshift({
-                        enableDrag: true,
-                        enableCrossDrop: true,
-                        selector: '.shapeshift-element',
-                        gutterY: 100,
-                        gutterX: 30
-                    });
-                    addAddEventListener();
-                    deleteButton.AddClickListenerTo();
-                    image.Initialize();
-                    $("#routine-builder").trigger("ss-added");
-                }
-                return properties;
-            }());
-
-            var image = (function() {
-                var properties = {};
-                var hasAjaxRunFor = [];
-
-                function makeHoverAjaxCall(currentImageHolder) {
-                    var id = currentImageHolder.find('.img-element').attr("data-pattern-id");
-                    if (hasAjaxRunFor.indexOf(id) == -1) {
-                        hasAjaxRunFor.push(id);
-                        currentImageHolder.setAjaxLoadingAnimation();
-                        var url = '@Url.Action("GetBlackWhiteFor", "Pattern", new {area = "Configuration", patternId = -1})';
-                        url = url.replace("-1", id);
-                        $.ajax({
-                            url: url,
-                            type: "GET",
-                            contentType: "application/x-www-form-urlencoded",
-                            success: function(data) {
-                                var allImageHolders = $('.img-holder').find('.img-element[data-pattern-id="' + currentImageHolder.find('.img-element').attr('data-pattern-id') + '"]').closest('.img-holder');
-                                allImageHolders.removeAjaxLoadingAnimation();
-                                allImageHolders.children('.img-element').attr("data-bw-src", "data:image/png;base64," + data.blackWhiteFile);
-                                if (currentImageHolder.is(":hover")) {
-                                    currentImageHolder.children('.img-element').attr("src", currentImageHolder.children('.img-element').attr("data-bw-src"));
-                                }
-                            }
-                        });
-                    }
-                }
-
-                function hoverFunction(currentImageElement, mouseChangeFunction) {
-                    var originalSource = currentImageElement.attr("data-orig-src");
-                    var bwSource = currentImageElement.attr("data-bw-src");
-                    if (originalSource && bwSource) {
-                        mouseChangeFunction(currentImageElement);
-                    }
-                }
-
-                function addHoverListener() {
-                    $('#routine-builder .img-holder:not(.img-dropper)').hover(function(e) {
-                            var currentImageHolder = $(e.currentTarget);
-                            currentImageHolder.children('.k-loading-mask').show();
-                            if (currentImageHolder.children('.img-element').attr("data-bw-src") == undefined) {
-                                makeHoverAjaxCall(currentImageHolder);
-                            }
-                            currentImageHolder.siblings('.img-title').show();
-                        },
-                        function(e) {
-                            var currentImageHolder = $(e.currentTarget);
-                            currentImageHolder.children('.k-loading-mask').hide();
-                            currentImageHolder.siblings('.img-title').hide();
-                        });
-
-                    $('#routine-builder .img-element').hover(function(e) {
-                        var currentImageElement = $(e.currentTarget);
-                        hoverFunction(currentImageElement, function(currentImageElement) {
-                            currentImageElement.attr("src", currentImageElement.attr("data-bw-src"));
-                        });
-                    }, function(e) {
-                        var currentImageElement = $(e.currentTarget);
-                        hoverFunction(currentImageElement, function(currentImageElement) {
-                            currentImageElement.attr("src", currentImageElement.attr("data-orig-src"));
-                        });
-                    });
-                }
-
-                properties.Initialize = function() {
-                    addHoverListener();
-                }
-                return properties;
-            }());
-
-            var galleryExtender = (function() {
-                var properties = {};
-                var oldParameters = PatternIndexProperties.Gallery.Parameters;
-                var newParameters = {
-                    enableDrag: true,
-                    dragClone: true,
-                    cloneClass: "img-copy"
-                }
-
-                properties.Initialize = function() {
-                    $.extend(oldParameters, newParameters);
-                    PatternIndexProperties.Gallery.Update(oldParameters);
-                    PatternIndexProperties.Gallery.DeleteImageAdder();
-                    PatternIndexProperties.Gallery.DeleteImageDeleter();
-                    PatternIndexProperties.Gallery.RemovePatternClickListener();
-                    PatternIndexProperties.Gallery.ChangeHoverCursor();
-                }
-                return properties;
-            }());
-
-
-            var multiselectExtender = (function() {
-                var properties = {};
-                var devices = '@Html.Raw(Model != null ? JsonConvert.SerializeObject(Model.DeviceDTOs) : null)';
-
-                function getAssignedDeviceGuids(allDevices) {
-                    var selectedDeviceGuids = [];
-                    $.each(allDevices, function(index, deviceData) {
-                        selectedDeviceGuids.push(deviceData.Identifier);
-                    });
-                    return selectedDeviceGuids;
-                }
-
-                properties.Initialize = function() {
-                    if (devices != "") {
-                        var selectedDeviceGuids = getAssignedDeviceGuids(JSON.parse(devices));
-                        DeviceMultiselectProperties.SelectDevices(selectedDeviceGuids);
-                    }
-                }
-                properties.GetSelectedDevices = function() {
-                    return DeviceMultiselectProperties.GetSelectedDevices();
-                }
-                return properties;
-            }());
-
-            var addRoutine = (function() {
-                var properties = {};
-
-                function getPatternIdList() {
-                    var patternIdArrayList = [];
-                    $('#routine-builder').find('.img-holder').not('.img-dropper').each(function() {
-                        var currentImageHolder = $(this);
-                        patternIdArrayList.push(currentImageHolder.find(".img-element").attr("data-pattern-id"));
-                    });
-                    return patternIdArrayList;
-                }
-
-                function onAjaxSuccess(data) {
-                    window.location.href = data;
-                }
-
-                function getData() {
-                    return {
-                        RoutineUploadModel: {
-                            RoutineId: '@(Model != null ? Model.RoutineId : 0)',
-                            DeviceIdentifierList: multiselectExtender.GetSelectedDevices(),
-                            Description: "some description",
-                            Name: "some name",
-                            RoutinePatternDTOList: routineBuilder.GetRoutinePatterns()
-                        }
-                    };
-                }
-
-                function makeAddPatternAjaxCall() {
-                    $.ajax({
-                        url: '@Url.Action("Add", "Routine", new {area = "Configuration"})',
-                        data: getData(),
-                        type: "POST",
-                        contentType: "application/x-www-form-urlencoded",
-                        success: onAjaxSuccess
-                    });
-                }
-
-                properties.AddClickListener = function() {
-                    $('#addRoutine').click(function() {
-                        var patternIdList = getPatternIdList();
-                        var deviceGuidList = multiselectExtender.GetSelectedDevices();
-                        makeAddPatternAjaxCall(patternIdList, deviceGuidList);
-                    });
-                }
-                return properties;
-            }());
-
-            var testButton = (function() {
-                var properties = {};
-
-                function getPatternIdList() {
-                    var patternIdArrayList = [];
-                    $('#routine-builder').find('.img-holder').not('.img-dropper').each(function() {
-                        var currentImageHolder = $(this);
-                        patternIdArrayList.push(currentImageHolder.find(".img-element").attr("data-pattern-id"));
-                    });
-                    return patternIdArrayList;
-                }
-
-                function onAjaxSuccess() {
-
-                }
-
-                function getData() {
-                    return {
-                        RoutineUploadModel: {
-                            DeviceIdentifierList: multiselectExtender.GetSelectedDevices(),
-                            RoutinePatternDTOList: routineBuilder.GetRoutinePatterns()
-                        }
-                    };
-                }
-
-                function makeAjaxCall() {
-                    $.ajax({
-                        url: '@Url.Action("Test", "Routine", new {area = "Configuration"})',
-                        data: getData(),
-                        type: "POST",
-                        contentType: "application/x-www-form-urlencoded",
-                        success: onAjaxSuccess
-                    });
-                }
-
-                function addClickListener() {
-                    $('#testButton').click(function() {
-                        makeAjaxCall();
-                    });
-                }
-
-                properties.Initialize = function() {
-                    addClickListener();
-                }
-                return properties;
-            }());
-            RoutineAddProperties.SetupPage = function() {
-                routineBuilder.Initialize();
-                galleryExtender.Initialize();
-                addRoutine.AddClickListener();
-                multiselectExtender.Initialize();
-                testButton.Initialize();
+            function addSpinnerTo(element) {
+                var spinnerHolder = $('<div>').attr("class", "caption img-repetitions");
+                var repetitionsSpinner = $('<input type="text">');
+                repetitionsSpinner.val(1);
+                repetitionsSpinner.appendTo(spinnerHolder);
+                repetitionsSpinner.spinner({
+                    max: 5,
+                    min: 1
+                });
+                spinnerHolder.appendTo(element);
             }
+
+            properties.GetValue = function (shapeshiftElement) {
+                return shapeshiftElement.find('.img-repetitions input').val();
+            }
+            properties.Initialize = function (element) {
+                addSpinnerTo(element);
+            }
+            return properties;
         }());
-        $(document).ready(function() {
-            RoutineAddProperties.SetupPage();
-        });
-    </script>
+
+        var deleteButton = (function () {
+            var properties = {};
+
+            properties.AddClickListenerTo = function (button) {
+                if (button == undefined)
+                    button = $('#routine-builder .delete-button');
+                return button.click(function (e) {
+                    $(e.currentTarget).closest('.shapeshift-element').detach();
+                    $("#routine-builder").trigger("ss-added");
+                    $('#routine-builder').trigger('ss-rearrange');
+                });
+            }
+
+            function addButtonTo(element) {
+                var deleteButton = $('<div>').attr("class", "delete-button pointer");
+                properties.AddClickListenerTo(deleteButton);
+                deleteButton.appendTo(element.find('.img-holder'));
+            }
+
+            properties.Initialize = function (element) {
+                addButtonTo(element);
+            }
+            return properties;
+        }());
+
+        var routineBuilder = (function () {
+            var properties = {};
+
+            properties.GetRoutinePatterns = function () {
+                var routinePatternArray = [];
+                $('#routine-builder .shapeshift-element:not(".img-drop")').each(function (index) {
+                    var element = $(this);
+                    var patternId = element.find('.img-element').attr('data-pattern-id');
+                    var spinnerValue = repetitionsInput.GetValue(element);
+                    var routinePattern = {
+                        Repetitions: spinnerValue,
+                        PatternDTO: {
+                            PatternId: patternId
+                        }
+                    };
+                    routinePatternArray.push(routinePattern);
+                });
+                return routinePatternArray;
+            }
+
+            function createImage(image) {
+                var imageToPlace = $('<img>').attr("src", image.PatternDTO.Path).attr("class", "img-element move").attr("data-orig-src", image.PatternDTO.Path).attr("data-pattern-id", image.PatternDTO.PatternId);
+                var column = $('<div>').attr("class", "shapeshift-element");
+                var imageHolder = $('<div>').attr("class", "limit-view img-holder img-thumbnail move");
+                var deleteButton = $('<div>').attr("class", "delete-button pointer");
+                deleteButton.appendTo(imageHolder);
+                imageToPlace.appendTo(imageHolder);
+                var caption = $('<div>').addClass("caption img-title").html("<p>" + image.PatternDTO.Name + "</p>").css("display", "none");
+                imageHolder.appendTo(column);
+                caption.appendTo(column);
+
+                var spinnerHolder = $('<div>').attr("class", "caption img-repetitions");
+                var repetitionsSpinner = $('<input type="text">');
+                repetitionsSpinner.val(image.Repetitions);
+                repetitionsSpinner.appendTo(spinnerHolder);
+                repetitionsSpinner.spinner({
+                    max: 5,
+                    min: 1
+                });
+                spinnerHolder.appendTo(column);
+
+                return column;
+            }
+
+            function initializeUserImages(passedImages) {
+                $.each(passedImages, function (index, imageData) {
+                    var container = $('#routine-builder');
+                    var image = createImage(imageData);
+                    image.appendTo(container);
+                });
+            }
+
+            function revertHoverStatus(originalElement, clonedElement) {
+                clonedElement.find('.img-element').attr('src', originalElement.find('.img-element').attr('data-orig-src'));
+                clonedElement.find('.k-loading-mask').hide();
+                clonedElement.find('.img-title').hide();
+            }
+
+            function hasElements() {
+                var allElements = $('#routine-builder .shapeshift-element').not('.img-drop').parent();
+                return allElements.length > 0;
+            }
+
+            function hideImageDropper() {
+                $('#routine-builder').addClass("invisible-background");
+                $('#routine-builder .img-drop').hide();
+            }
+
+            function showImageDropper() {
+                $('#routine-builder').removeClass("invisible-background");
+                $('#routine-builder  .img-drop').show();
+            }
+
+            function addAddEventListener() {
+                $('#routine-builder').on('ss-added', function (e, element) {
+                    hasElements() ? hideImageDropper() : showImageDropper();
+                    if (element) {
+                        var originalShapeshift = $(element);
+                        var clonedShapeshift = $('.shapeshift-element').find('.img-element[data-pattern-id="' + originalShapeshift.find('.img-element').attr('data-pattern-id') + '"]').closest(".shapeshift-element").not('.img-copy');
+                        revertHoverStatus(originalShapeshift, clonedShapeshift);
+                        deleteButton.Initialize(originalShapeshift);
+                        repetitionsInput.Initialize(originalShapeshift);
+                        PatternIndexProperties.Gallery.ReattachHoverListeners();
+                    }
+                    $('#routine-builder').trigger('ss-rearrange');
+                });
+            }
+
+            properties.Initialize = function () {
+                if (passedImages != '') {
+                    initializeUserImages(JSON.parse(passedImages));
+                }
+                $('#routine-builder').shapeshift({
+                    enableDrag: true,
+                    enableCrossDrop: true,
+                    selector: '.shapeshift-element',
+                    gutterY: 100,
+                    gutterX: 30
+                });
+                addAddEventListener();
+                deleteButton.AddClickListenerTo();
+                image.Initialize();
+                $("#routine-builder").trigger("ss-added");
+            }
+            return properties;
+        }());
+
+        var image = (function () {
+            var properties = {};
+            var hasAjaxRunFor = [];
+
+            function makeHoverAjaxCall(currentImageHolder) {
+                var id = currentImageHolder.find('.img-element').attr("data-pattern-id");
+                if (hasAjaxRunFor.indexOf(id) == -1) {
+                    hasAjaxRunFor.push(id);
+                    currentImageHolder.setAjaxLoadingAnimation();
+                    var url = '@Url.Action("GetBlackWhiteFor", "Pattern", new {area = "Configuration", patternId = -1})';
+                    url = url.replace("-1", id);
+                    $.ajax({
+                        url: url,
+                        type: "GET",
+                        contentType: "application/x-www-form-urlencoded",
+                        success: function (data) {
+                            var allImageHolders = $('.img-holder').find('.img-element[data-pattern-id="' + currentImageHolder.find('.img-element').attr('data-pattern-id') + '"]').closest('.img-holder');
+                            allImageHolders.removeAjaxLoadingAnimation();
+                            allImageHolders.children('.img-element').attr("data-bw-src", "data:image/png;base64," + data.blackWhiteFile);
+                            if (currentImageHolder.is(":hover")) {
+                                currentImageHolder.children('.img-element').attr("src", currentImageHolder.children('.img-element').attr("data-bw-src"));
+                            }
+                        }
+                    });
+                }
+            }
+
+            function hoverFunction(currentImageElement, mouseChangeFunction) {
+                var originalSource = currentImageElement.attr("data-orig-src");
+                var bwSource = currentImageElement.attr("data-bw-src");
+                if (originalSource && bwSource) {
+                    mouseChangeFunction(currentImageElement);
+                }
+            }
+
+            function addHoverListener() {
+                $('#routine-builder .img-holder:not(.img-dropper)').hover(function (e) {
+                    var currentImageHolder = $(e.currentTarget);
+                    currentImageHolder.children('.k-loading-mask').show();
+                    if (currentImageHolder.children('.img-element').attr("data-bw-src") == undefined) {
+                        makeHoverAjaxCall(currentImageHolder);
+                    }
+                    currentImageHolder.siblings('.img-title').show();
+                },
+                    function (e) {
+                        var currentImageHolder = $(e.currentTarget);
+                        currentImageHolder.children('.k-loading-mask').hide();
+                        currentImageHolder.siblings('.img-title').hide();
+                    });
+
+                $('#routine-builder .img-element').hover(function (e) {
+                    var currentImageElement = $(e.currentTarget);
+                    hoverFunction(currentImageElement, function (currentImageElement) {
+                        currentImageElement.attr("src", currentImageElement.attr("data-bw-src"));
+                    });
+                }, function (e) {
+                    var currentImageElement = $(e.currentTarget);
+                    hoverFunction(currentImageElement, function (currentImageElement) {
+                        currentImageElement.attr("src", currentImageElement.attr("data-orig-src"));
+                    });
+                });
+            }
+
+            properties.Initialize = function () {
+                addHoverListener();
+            }
+            return properties;
+        }());
+
+        var galleryExtender = (function () {
+            var properties = {};
+            var oldParameters = PatternIndexProperties.Gallery.Parameters;
+            var newParameters = {
+                enableDrag: true,
+                dragClone: true,
+                cloneClass: "img-copy"
+            }
+
+            properties.Initialize = function () {
+                $.extend(oldParameters, newParameters);
+                PatternIndexProperties.Gallery.Update(oldParameters);
+                PatternIndexProperties.Gallery.DeleteImageAdder();
+                PatternIndexProperties.Gallery.DeleteImageDeleter();
+                PatternIndexProperties.Gallery.RemovePatternClickListener();
+                PatternIndexProperties.Gallery.ChangeHoverCursor();
+            }
+            return properties;
+        }());
+
+
+        var multiselectExtender = (function () {
+            var properties = {};
+            var devices = '@Html.Raw(Model != null ? JsonConvert.SerializeObject(Model.DeviceDTOs) : null)';
+
+            function getAssignedDeviceGuids(allDevices) {
+                var selectedDeviceGuids = [];
+                $.each(allDevices, function (index, deviceData) {
+                    selectedDeviceGuids.push(deviceData.Identifier);
+                });
+                return selectedDeviceGuids;
+            }
+
+            properties.Initialize = function () {
+                if (devices != "") {
+                    var selectedDeviceGuids = getAssignedDeviceGuids(JSON.parse(devices));
+                    DeviceMultiselectProperties.SelectDevices(selectedDeviceGuids);
+                }
+            }
+            return properties;
+        }());
+
+        var addRoutine = (function () {
+            var properties = {};
+
+            function getPatternIdList() {
+                var patternIdArrayList = [];
+                $('#routine-builder').find('.img-holder').not('.img-dropper').each(function () {
+                    var currentImageHolder = $(this);
+                    patternIdArrayList.push(currentImageHolder.find(".img-element").attr("data-pattern-id"));
+                });
+                return patternIdArrayList;
+            }
+
+            function onAjaxSuccess(data) {
+                window.location.href = data;
+            }
+
+            function getData() {
+                return {
+                    RoutineUploadModel: {
+                        RoutineId: '@(Model != null ? Model.RoutineId : 0)',
+                        DeviceIdentifierList: DeviceMultiselectProperties.GetSelectedDevices(),
+                        Description: "some description",
+                        Name: "some name",
+                        RoutinePatternDTOList: routineBuilder.GetRoutinePatterns()
+                    }
+                };
+            }
+
+            function makeAddPatternAjaxCall() {
+                $.ajax({
+                    url: '@Url.Action("Add", "Routine", new {area = "Configuration"})',
+                    data: getData(),
+                    type: "POST",
+                    contentType: "application/x-www-form-urlencoded",
+                    success: onAjaxSuccess
+                });
+            }
+
+            properties.AddClickListener = function () {
+                $('#addRoutine').click(function () {
+                    AlertProperties.Hide();
+                    if (validator.Validate(false)) {
+                        makeAddPatternAjaxCall();
+                    }
+                });
+            }
+            return properties;
+        }());
+
+        var validator = (function () {
+            var properties = {};
+
+            function validateNumberOfPatterns(contentArray) {
+                var allRoutinePatterns = routineBuilder.GetRoutinePatterns();
+                return allRoutinePatterns.length > 0 && allRoutinePatterns.length <= Number('@constraintParameters.MaxPatternCountPerRoutine') ? true : contentArray.push("The number of different patterns per routine must be between 1 and " + '@constraintParameters.MaxPatternCountPerRoutine');
+            }
+
+            function validateNumberOfRepetitions(contentArray) {
+                var allRoutinePatterns = routineBuilder.GetRoutinePatterns();
+                var isErrorFound = false;
+                allRoutinePatterns.forEach(function (routinePattern) {
+                    if (!isErrorFound) {
+                        if (routinePattern.Repetitions < 1 || routinePattern.Repetitions > Number('@constraintParameters.MaxNumberOfRepetitionsPerPattern')) {
+                            isErrorFound = true;
+                        }
+                    }
+                });
+                return !isErrorFound ? true : contentArray.push("The number of repetitions per pattern must between 1 and " + '@constraintParameters.MaxNumberOfRepetitionsPerPattern');
+            }
+
+            function validateDeviceSelection(contentArray) {
+                var allDevices = DeviceMultiselectProperties.GetSelectedDevices();
+                return allDevices.length > 0 ? true : contentArray.push("At least one device must be selected.");
+            }
+
+            properties.Validate = function (considerDeviceValidation) {
+                var contentArray = [];
+                var isNumberOfPatternsValid = validateNumberOfPatterns(contentArray);
+                var isNumberOfRepetitionsValid = validateNumberOfRepetitions(contentArray);
+                var isDeviceSelectionValid = !considerDeviceValidation || validateDeviceSelection(contentArray);
+
+                if (contentArray.length > 0) {
+                    AlertProperties.Initialize({ Class: "alert-danger", Content: contentArray });
+                }
+                return isNumberOfPatternsValid === true
+                    && isNumberOfRepetitionsValid === true
+                    && isDeviceSelectionValid === true;
+            }
+
+            return properties;
+        }());
+
+        var testButton = (function () {
+            var properties = {};
+
+            function getPatternIdList() {
+                var patternIdArrayList = [];
+                $('#routine-builder').find('.img-holder').not('.img-dropper').each(function () {
+                    var currentImageHolder = $(this);
+                    patternIdArrayList.push(currentImageHolder.find(".img-element").attr("data-pattern-id"));
+                });
+                return patternIdArrayList;
+            }
+
+            function onAjaxSuccess() {
+
+            }
+
+            function getData() {
+                return {
+                    RoutineUploadModel: {
+                        DeviceIdentifierList: DeviceMultiselectProperties.GetSelectedDevices(),
+                        RoutinePatternDTOList: routineBuilder.GetRoutinePatterns()
+                    }
+                };
+            }
+
+            function makeAjaxCall() {
+                $.ajax({
+                    url: '@Url.Action("Test", "Routine", new {area = "Configuration"})',
+                    data: getData(),
+                    type: "POST",
+                    contentType: "application/x-www-form-urlencoded",
+                    success: onAjaxSuccess
+                });
+            }
+
+            function addClickListener() {
+                $('#testButton').click(function () {
+                    AlertProperties.Hide();
+                    if (validator.Validate(true)) {
+                        makeAjaxCall();
+                    }
+                });
+            }
+
+            properties.Initialize = function () {
+                addClickListener();
+            }
+            return properties;
+        }());
+        RoutineAddProperties.SetupPage = function () {
+            routineBuilder.Initialize();
+            galleryExtender.Initialize();
+            addRoutine.AddClickListener();
+           // multiselectExtender.Initialize();
+            testButton.Initialize();
+        }
+    }());
+    $(document).ready(function () {
+        RoutineAddProperties.SetupPage();
+    });
+</script>
 }

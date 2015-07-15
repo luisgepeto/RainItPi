@@ -8,6 +8,7 @@ namespace RainIt.Interfaces.Business
     {
         StatusMessage AddUserRoutine(RoutineUploadModel routineUploadModel);
         StatusMessage SetToTest(RoutineUploadModel routineUploadModel);
+        UploadConstraintParameters GetUploadConstraintParameters();
         List<RoutineDTO> GetUserRoutines();
         RoutineDTO GetUserRoutine(int routineId);
         List<RoutineDTO> GetActiveRoutines();

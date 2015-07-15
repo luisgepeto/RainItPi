@@ -106,6 +106,15 @@ namespace RainIt.Business
 
         #region READ Methods
 
+        public UploadConstraintParameters GetUploadConstraintParameters()
+        {
+            return new UploadConstraintParameters()
+            {
+                MaxPatternCountPerRoutine = int.Parse(ConfigurationManager.AppSettings["MaxPatternCountPerRoutine"]),
+                MaxNumberOfRepetitionsPerPattern =
+                    int.Parse(ConfigurationManager.AppSettings["MaxNumberOfRepetitionsPerPattern"]),
+            };
+        }
         public List<RoutineDTO> GetUserRoutines()
         {
             var allUserRoutines = RainItContext.UserRoutineSet;

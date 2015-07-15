@@ -23,11 +23,13 @@ namespace Web.RainIt.Areas.Configuration.Controllers
         public ActionResult Edit(int routineId)
         {
             var routine = RoutineManager.GetUserRoutine(routineId);
+            ViewBag.ConstraintParameters = RoutineManager.GetUploadConstraintParameters();
             return View("Add",routine);
         }
         
         public ActionResult Add()
         {
+            ViewBag.ConstraintParameters = RoutineManager.GetUploadConstraintParameters();
             return View();
         }
 
