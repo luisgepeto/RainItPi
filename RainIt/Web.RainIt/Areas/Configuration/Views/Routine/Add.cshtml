@@ -187,7 +187,7 @@
                     if (element) {
                         var originalShapeshift = $(element);
                         var clonedShapeshift = $('.shapeshift-element').find('.img-element[data-pattern-id="' + originalShapeshift.find('.img-element').attr('data-pattern-id') + '"]').closest(".shapeshift-element").not('.img-copy');
-                        revertHoverStatus(originalShapeshift, clonedShapeshift);
+                        revertHoverStatus(multioriginalShapeshift, clonedShapeshift);
                         deleteButton.Initialize(originalShapeshift);
                         repetitionsInput.Initialize(originalShapeshift);
                         PatternIndexProperties.Gallery.ReattachHoverListeners();
@@ -322,6 +322,9 @@
                     var selectedDeviceGuids = getAssignedDeviceGuids(JSON.parse(devices));
                     DeviceMultiselectProperties.SelectDevices(selectedDeviceGuids);
                 }
+                $('#device-multiselect').siblings('.btn-group').find('button').click(function() {
+                    $(this).parent().toggleClass('open');
+                });
             }
             return properties;
         }());
@@ -471,7 +474,7 @@
             routineBuilder.Initialize();
             galleryExtender.Initialize();
             addRoutine.AddClickListener();
-           // multiselectExtender.Initialize();
+            multiselectExtender.Initialize();
             testButton.Initialize();
         }
     }());
