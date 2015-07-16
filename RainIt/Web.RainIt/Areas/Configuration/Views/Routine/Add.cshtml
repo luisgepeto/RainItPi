@@ -6,21 +6,7 @@
 @using RainIt.Domain.DTO
 @model RainIt.Domain.DTO.RoutineDTO
 
-<style>
-    .delete-button {
-        width: 30px;
-        height: 30px;
-        background: url('../../../../Content/icons/delete.png') no-repeat center center;
-        background-size: contain;
-        position: absolute;
-        left: 92%;
-        top: -15px;
-        z-index: 2;
-    }
-    .ss-cloned-child {
-        border: 5px solid red;
-    }
-</style>
+
 @Html.Partial("_Alert")
 <div class="container">
     <div id="routine-builder" class="row shapeshift-gallery img-holder img-dropper img-thumbnail">
@@ -187,7 +173,7 @@
                     if (element) {
                         var originalShapeshift = $(element);
                         var clonedShapeshift = $('.shapeshift-element').find('.img-element[data-pattern-id="' + originalShapeshift.find('.img-element').attr('data-pattern-id') + '"]').closest(".shapeshift-element").not('.img-copy');
-                        revertHoverStatus(multioriginalShapeshift, clonedShapeshift);
+                        revertHoverStatus(originalShapeshift, clonedShapeshift);
                         deleteButton.Initialize(originalShapeshift);
                         repetitionsInput.Initialize(originalShapeshift);
                         PatternIndexProperties.Gallery.ReattachHoverListeners();

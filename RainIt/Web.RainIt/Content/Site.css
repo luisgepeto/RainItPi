@@ -164,7 +164,8 @@ k-loading-mask, .k-loading-image, .k-loading-text {
      .limit-view{
         height: 200px;
         max-height:200px;
-        overflow:hidden;  
+        overflow:hidden;
+         width: 200px; 
     }
      .img-holder img {
          max-width: 100%;
@@ -201,3 +202,15 @@ k-loading-mask, .k-loading-image, .k-loading-text {
          box-sizing: border-box;
          position: relative;*/
      }
+
+     /* This will set the styles for the delete button thumb*/
+     .delete-button {
+        width: 30px;
+        height: 30px;
+        background: url('../../../../Content/icons/delete.png') no-repeat center center;
+        background-size: contain;
+        position: absolute;
+        left: 92%;
+        top: -15px;
+        z-index: 2;
+    }
