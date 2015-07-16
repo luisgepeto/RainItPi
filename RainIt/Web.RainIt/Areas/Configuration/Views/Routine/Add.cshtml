@@ -433,8 +433,12 @@
                 return patternIdArrayList;
             }
 
-            function onAjaxSuccess() {
-
+            function onAjaxSuccess(data) {
+                if (!data.canSet.IsError) {
+                    AlertProperties.Initialize({ Class: "alert-success", Content: [data.canSet.Message] });
+                } else {
+                    AlertProperties.Initialize({ Class: "alert-danger", Content: [data.canSet.Message] });
+                }
             }
 
             function getData() {
