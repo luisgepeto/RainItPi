@@ -169,6 +169,7 @@
 
             function addAddEventListener() {
                 $('#routine-builder').on('ss-added', function (e, element) {
+                    debugger;
                     hasElements() ? hideImageDropper() : showImageDropper();
                     if (element) {
                         var originalShapeshift = $(element);

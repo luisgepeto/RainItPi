@@ -95,7 +95,7 @@
                     $('#pattern-gallery .img-element').removeClass("pointer").addClass("move");
                 }
                 properties.ReattachHoverListeners = function() {
-                    image.Initialize();
+                    image.Initialize(true);
                 }
                 return properties;
             }());
@@ -128,6 +128,7 @@
 
                 function addClickListener() {
                     $('#pattern-gallery .img-element').click(function(e) {
+                        debugger;
                         var id = $(e.currentTarget).attr("data-pattern-id");
                         submitForm(id);
                     });
@@ -192,8 +193,10 @@
                     });
                 }
 
-                properties.Initialize = function() {
-                    addClickListener();
+                properties.Initialize = function(excludeClickListener) {
+                    if(!excludeClickListener){
+                        addClickListener();
+                    }
                     addHoverListener();
                 }
                 return properties;
