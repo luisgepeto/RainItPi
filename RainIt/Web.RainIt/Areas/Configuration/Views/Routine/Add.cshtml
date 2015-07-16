@@ -27,6 +27,12 @@
                 <input type="button" value="Update" name="Update" id="addRoutine" class="btn btn-success"/>
             }
         </div>
+        <div class="col-md-2">
+            @using (Html.BeginForm("Index", "Routine", new { area = "Configuration" }, FormMethod.Get, new {@id = "cancelForm" }))
+            {
+            }
+            <input type="button" value="Cancel" name="Cancel" id="Cancel" class="btn btn-danger" />
+        </div>
         <div class="col-md-3">
             @Html.Action("Multiselect", "Device", new {area = "Configuration"})
         </div>
@@ -169,7 +175,6 @@
 
             function addAddEventListener() {
                 $('#routine-builder').on('ss-added', function (e, element) {
-                    debugger;
                     hasElements() ? hideImageDropper() : showImageDropper();
                     if (element) {
                         var originalShapeshift = $(element);
@@ -457,12 +462,27 @@
             }
             return properties;
         }());
+
+        var cancelButton = (function () {
+            var properties = {};
+            function addClickListener() {
+                $('#Cancel').click(function () {
+                    $('#cancelForm').submit();
+                });
+            }
+            properties.Initialize = function () {
+                addClickListener();
+            }
+            return properties;
+        }());
+
         RoutineAddProperties.SetupPage = function () {
             routineBuilder.Initialize();
             galleryExtender.Initialize();
             addRoutine.AddClickListener();
             multiselectExtender.Initialize();
             testButton.Initialize();
+            cancelButton.Initialize();
         }
     }());
     $(document).ready(function () {
