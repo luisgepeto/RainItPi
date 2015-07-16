@@ -33,8 +33,7 @@ namespace Web.RainIt
                       "~/Content/bootstrap.css",
                       "~/Content/site.css"));
             bundles.Add(new StyleBundle("~/Content/themes/base/css").Include(
-                    "~/Content/themes/base/core.css",
-                    "~/Content/themes/base/theme.css")); 
+                    "~/Content/themes/base/all.css")); 
 
             bundles.IgnoreList.Clear();
         }
