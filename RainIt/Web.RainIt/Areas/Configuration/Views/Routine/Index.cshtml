@@ -1,5 +1,6 @@
 ﻿@model List<RainIt.Domain.DTO.RoutineDTO>
-<link href="~/Content/thumbnailscroller/jquery.mThumbnailScroller.css" rel="stylesheet" />
+
+
 <style>
     .img-repetitions {
         position: relative;
@@ -65,7 +66,6 @@
     }
 </div>
 @section scripts{
-    <script src="~/Scripts/thumbnailscroller/jquery.mThumbnailScroller.js"></script>
     <script type="text/javascript">
     (function() {
         this.RoutineIndexProperties = this.RoutineIndexProperties || {};
@@ -181,26 +181,30 @@
                     );
                 }
 
+                
                 function addClickListener() {
                     $('.delete-button').click(function (e) {
                         var currentDeleteButton = $(e.currentTarget);
                         var id = currentDeleteButton.parent().attr('data-routine-id');
-                        debugger;
                         var longModalContent = currentDeleteButton.siblings('div').find('ul').clone(true).off('click').removeClass().removeAttr("id").removeAttr("style");
-                        var myDiv = $('<div>').css("overflow", "auto").css("width", "100%").css("height", "auto");
-                        longModalContent.appendTo(myDiv);
-                        myDiv.mThumbnailScroller({
-                            axis: 'x',
-                            type: 'hover-90',
-                            speed: 30
+                        longModalContent.children().each(function () {
+                            $(this).removeClass().addClass("limit-view routine-element");
                         });
+                        var myDiv = $('<div>').css("overflow", "auto").css("width", "100%").css("height", "auto").addClass("routine-holder");
+                        longModalContent.appendTo(myDiv);
                         var parameters = {
                             ButtonName: "Delete",
                             Message: "Are you sure you want to delete this item?<br />This action cannot be undone.",
                             LongModalContent: myDiv
                         };
                         ModalDeleteProperties.Initialize(parameters, makeDeleteAjaxCall, id);
-                        ModalDeleteProperties.Show();
+                        ModalDeleteProperties.Show(function () {
+                            $('#longModalContent').find('.routine-holder').mThumbnailScroller({
+                                axis: 'x',
+                                type: 'hover-90',
+                                speed: 30
+                            });
+                        });
                     });
                 }
                 properties.Initialize = function() {

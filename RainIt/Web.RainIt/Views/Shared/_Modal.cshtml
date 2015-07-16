@@ -29,8 +29,11 @@
 <script type="text/javascript">
     (function() {
         this.ModalDeleteProperties = this.ModalDeleteProperties || {};
-        ModalDeleteProperties.Show = function () {
+        ModalDeleteProperties.Show = function (onShowAction) {
             $('#myModal').modal('show');
+            if (onShowAction) {
+                onShowAction();
+            }
         }
        
         var button = (function() {

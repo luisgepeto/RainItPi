@@ -74,7 +74,7 @@
 
             properties.AddClickListenerTo = function (button) {
                 if (button == undefined)
-                    button = $('#routine-builder .delete-button');
+                    button = $('#routine-builder .sdelete-button');
                 return button.click(function (e) {
                     $(e.currentTarget).closest('.shapeshift-element').detach();
                     $("#routine-builder").trigger("ss-added");
