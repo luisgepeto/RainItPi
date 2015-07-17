@@ -21,7 +21,7 @@ namespace RainIt.Business
             Device outDevice;
             if (!TryGetDevice(device.Identifier, out outDevice)) return StatusMessage.WriteError("The selected device does not exist");
             if (!IsDeviceAvailable(device.Identifier)) return StatusMessage.WriteError("The selected device is already in use");
-            return AssignToUser(outDevice);
+            return AssignToUser(outDevice, device.Name);
         }
 
         private bool TryGetDevice(Guid identifier, out Device outDevice)
@@ -30,12 +30,13 @@ namespace RainIt.Business
             return outDevice != null;
         }
 
-        private StatusMessage AssignToUser(Device device)
+        private StatusMessage AssignToUser(Device device, string name)
         {
             try
             {
                 var user = RainItContext.UserSet.Single(u => u.Username == RainItContext.CurrentUser.Username);
                 device.User = user;
+                device.Name = name;
                 device.DeviceInfo.ActivatedUTCDate = DateTime.UtcNow;
                 RainItContext.SaveChanges();
                 return StatusMessage.WriteMessage("The device was successfully assigned to the current user");

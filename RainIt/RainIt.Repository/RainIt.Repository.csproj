@@ -155,6 +155,10 @@
     <Compile Include="Migrations\201507131648451_SampleRoutineAndMultiplierMigration.Designer.cs">
       <DependentUpon>201507131648451_SampleRoutineAndMultiplierMigration.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201507171745142_DeviceNameMigration.cs" />
+    <Compile Include="Migrations\201507171745142_DeviceNameMigration.Designer.cs">
+      <DependentUpon>201507171745142_DeviceNameMigration.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RainItContext.cs" />
@@ -211,6 +215,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201507131648451_SampleRoutineAndMultiplierMigration.resx">
       <DependentUpon>201507131648451_SampleRoutineAndMultiplierMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201507171745142_DeviceNameMigration.resx">
+      <DependentUpon>201507171745142_DeviceNameMigration.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

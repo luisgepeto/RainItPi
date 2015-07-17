@@ -26,6 +26,7 @@ namespace RainIt.Repository.Configuration
             HasOptional(d => d.SampleRoutine)
                 .WithRequired(sr=> sr.Device)
                 .WillCascadeOnDelete(true);
+            Property(d => d.Name).HasMaxLength(50);
         }
     }
 }

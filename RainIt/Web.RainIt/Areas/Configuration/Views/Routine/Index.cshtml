@@ -100,11 +100,15 @@
                 });
             }
 
+            
             properties.Initialize = function() {
                 $('.routine-holder').mThumbnailScroller({
                     axis: 'x',
                     type: 'hover-90',
-                    speed: 30
+                    speed: 30,
+                    callbacks: { 
+                        whileScrolling: scrollingCallback
+                    }
                 });
                 addClickListener();
             }
