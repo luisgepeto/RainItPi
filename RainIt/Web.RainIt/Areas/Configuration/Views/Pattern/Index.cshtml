@@ -20,16 +20,18 @@
 </style>
 
 <div class="container">
-    <div id="pattern-gallery" class="row shapeshift-gallery">
+    <div id="pattern-gallery" class="row shapeshift-gallery img-thumbnail">
         <div class="shapeshift-element">
-            <div class="limit-view img-holder img-adder img-thumbnail pointer">
+            <div class="limit-view img-holder img-adder pointer">
                 <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"/>
             </div>
         </div>
     </div>
+    
 </div>
 
 @Html.Partial("_Modal")
+
 @using (Html.BeginForm("Add", "Pattern", new {area = "Configuration"}, FormMethod.Get, new {id = "addPatternForm"}))
 {
 }
@@ -91,7 +93,7 @@
                     $('#pattern-gallery .img-element').off('click');
                 }
                 properties.ChangeHoverCursor = function() {
-                    $('#pattern-gallery .img-holder').removeClass("pointer").addClass("move");
+                    $('#pattern-gallery .img-holder:not(.img-adder)').removeClass("pointer").addClass("move");
                     $('#pattern-gallery .img-element').removeClass("pointer").addClass("move");
                 }
                 properties.ReattachHoverListeners = function() {
