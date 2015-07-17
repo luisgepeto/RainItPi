@@ -5,46 +5,78 @@
 @using Newtonsoft.Json
 @using RainIt.Domain.DTO
 @model RainIt.Domain.DTO.RoutineDTO
-
-
 @Html.Partial("_Alert")
 <div class="container">
-    <div id="routine-builder" class="row shapeshift-gallery img-holder img-thumbnail">
-        <div class="shapeshift-element img-drop img-dropper">
-            <div class="limit-view">
-                <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"/>
-            </div>
-        </div>
-    </div>
     <div class="row">
         <div class="col-md-2">
-            @if (Model == null || Model.RoutineId == 0)
-            {
-                <input type="button" value="Add" name="Add" id="addRoutine" class="btn btn-success"/>
-            }
-            else
-            {
-                <input type="button" value="Update" name="Update" id="addRoutine" class="btn btn-success"/>
-            }
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="input-group">
+                        <label for="threshold" class="input-group-addon">
+                            <span class="glyphicon glyphicon-font" aria-hidden="true"></span>
+                            <span class="sr-only">Name:</span>
+                        </label>
+                        <input type="text" class="form-control" id="routineName" placeholder="Name" value="@Model.Name"/>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                &nbsp;
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    @if (Model == null || Model.RoutineId == 0)
+                    {
+                        <input type="button" value="Add" name="Add" id="addRoutine" class="btn btn-success"/>
+                    }
+                    else
+                    {
+                        <input type="button" value="Update" name="Update" id="addRoutine" class="btn btn-success"/>
+                    }
+                </div>
+            </div>
+            <div class="row">
+                &nbsp;
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    @using (Html.BeginForm("Index", "Routine", new {area = "Configuration"}, FormMethod.Get, new {@id = "cancelForm"}))
+                    {
+                    }
+                    <input type="button" value="Cancel" name="Cancel" id="Cancel" class="btn btn-danger"/>
+                </div>
+            </div>
+            <div class="row">
+                &nbsp;
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    @Html.Action("Multiselect", "Device", new {area = "Configuration"})
+                </div>
+            </div>
+            <div class="row">
+                &nbsp;
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <input type="button" value="Test" name="Test" id="testButton" class="btn btn-primary"/>
+                </div>
+            </div>
         </div>
-        <div class="col-md-2">
-            @using (Html.BeginForm("Index", "Routine", new { area = "Configuration" }, FormMethod.Get, new {@id = "cancelForm" }))
-            {
-            }
-            <input type="button" value="Cancel" name="Cancel" id="Cancel" class="btn btn-danger" />
+        <div class="col-md-5">
+            <div id="routine-builder" class="row shapeshift-gallery img-holder img-thumbnail">
+                <div class="shapeshift-element img-drop img-dropper">
+                    <div class="limit-view">
+                        <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"/>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="col-md-3">
-            @Html.Action("Multiselect", "Device", new {area = "Configuration"})
-        </div>
-        <div class="col-md-3">
-            <input type="button" value="Test" name="Test" id="testButton" class="btn btn-primary"/>
+        <div class="col-md-5">
+            @Html.Action("Library", "Pattern", new { area = "Configuration" })
         </div>
     </div>
 </div>
-@Html.Action("Index", "Pattern", new { area = "Configuration" })
-
-@section scripts{
-
 
     <script type="text/javascript">
     (function () {
@@ -164,7 +196,7 @@
                 imageDropper.appendTo($shapeshiftContainer);
                 $shapeshiftContainer.trigger('ss-rearrange');
             }
-           
+
             function addRearrangeEventListener() {
                 $('#routine-builder').on('ss-rearranged', function (e, element) {
                     var container = $(e.currentTarget);
@@ -280,7 +312,7 @@
 
         var galleryExtender = (function () {
             var properties = {};
-            var oldParameters = PatternIndexProperties.Gallery.Parameters;
+
             var newParameters = {
                 enableDrag: true,
                 dragClone: true,
@@ -288,6 +320,7 @@
             }
 
             properties.Initialize = function () {
+                var oldParameters = PatternIndexProperties.Gallery.Parameters;
                 $.extend(oldParameters, newParameters);
                 PatternIndexProperties.Gallery.Update(oldParameters);
                 PatternIndexProperties.Gallery.DeleteImageAdder();
@@ -316,7 +349,7 @@
                     var selectedDeviceGuids = getAssignedDeviceGuids(JSON.parse(devices));
                     DeviceMultiselectProperties.SelectDevices(selectedDeviceGuids);
                 }
-                $('#device-multiselect').siblings('.btn-group').find('button').click(function() {
+                $('#device-multiselect').siblings('.btn-group').find('button').click(function () {
                     $(this).parent().toggleClass('open');
                 });
             }
@@ -344,8 +377,7 @@
                     RoutineUploadModel: {
                         RoutineId: '@(Model != null ? Model.RoutineId : 0)',
                         DeviceIdentifierList: DeviceMultiselectProperties.GetSelectedDevices(),
-                        Description: "some description",
-                        Name: "some name",
+                        Name: $('#routineName').val(),
                         RoutinePatternDTOList: routineBuilder.GetRoutinePatterns()
                     }
                 };
@@ -363,6 +395,7 @@
 
             properties.AddClickListener = function () {
                 $('#addRoutine').click(function () {
+                    debugger;
                     AlertProperties.Hide();
                     if (validator.Validate(false)) {
                         makeAddPatternAjaxCall();
@@ -375,6 +408,9 @@
         var validator = (function () {
             var properties = {};
 
+            function validateRoutineName(contentArray) {
+                return  $('#routineName').val().trim() != "" && $('#routineName').val().trim().length <= Number('@constraintParameters.MaxNameLength') ? true : contentArray.push("A routine name must be specified with length less than " + '@constraintParameters.MaxNameLength' + " characters");
+            }
             function validateNumberOfPatterns(contentArray) {
                 var allRoutinePatterns = routineBuilder.GetRoutinePatterns();
                 return allRoutinePatterns.length > 0 && allRoutinePatterns.length <= Number('@constraintParameters.MaxPatternCountPerRoutine') ? true : contentArray.push("The number of different patterns per routine must be between 1 and " + '@constraintParameters.MaxPatternCountPerRoutine');
@@ -403,13 +439,15 @@
                 var isNumberOfPatternsValid = validateNumberOfPatterns(contentArray);
                 var isNumberOfRepetitionsValid = validateNumberOfRepetitions(contentArray);
                 var isDeviceSelectionValid = !considerDeviceValidation || validateDeviceSelection(contentArray);
+                var isRoutineNameValid = validateRoutineName(contentArray);
 
                 if (contentArray.length > 0) {
                     AlertProperties.Initialize({ Class: "alert-danger", Content: contentArray });
                 }
                 return isNumberOfPatternsValid === true
                     && isNumberOfRepetitionsValid === true
-                    && isDeviceSelectionValid === true;
+                    && isDeviceSelectionValid === true
+                    && isRoutineNameValid === true;
             }
 
             return properties;
@@ -495,4 +533,3 @@
         RoutineAddProperties.SetupPage();
     });
 </script>
-}

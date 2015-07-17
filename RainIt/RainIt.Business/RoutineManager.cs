@@ -113,6 +113,7 @@ namespace RainIt.Business
                 MaxPatternCountPerRoutine = int.Parse(ConfigurationManager.AppSettings["MaxPatternCountPerRoutine"]),
                 MaxNumberOfRepetitionsPerPattern =
                     int.Parse(ConfigurationManager.AppSettings["MaxNumberOfRepetitionsPerPattern"]),
+                MaxNameLength = 50
             };
         }
         public List<RoutineDTO> GetUserRoutines()

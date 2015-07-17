@@ -32,6 +32,12 @@ namespace Web.RainIt.Areas.Configuration.Controllers
             return View(patterns);
         }
 
+        public ActionResult Library()
+        {
+            var patterns = PatternManager.GetUserPatterns();
+            return PartialView("Index", patterns);
+        }
+
         public ActionResult Add()
         {
             ViewBag.ConstraintParameters = PatternManager.GetUploadConstraintParameters();

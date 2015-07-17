@@ -28,11 +28,13 @@
         border-bottom-right-radius: 0;
         border-bottom: none;
     }
-
-    /* This will disable the spinner buttons that break the layout*/
-    .ui-spinner a.ui-spinner-button {
-        display: none;
-    }
+    /*This will remove the spinner buttons*/
+   .ui-spinner-button {
+       display: none;
+   }
+   .ui-spinner {
+       width: 100%;
+   }
 
     /* This will set the slider background color*/
     div[data-jqui-slider-names='RWeight'] .ui-slider-range {
@@ -149,9 +151,7 @@
                                 <span class="glyphicon glyphicon-resize-vertical" aria-hidden="true"></span>
                                 <span class="sr-only">New Height:</span>
                             </label>
-                            <div class="form-control">
-                                @Html.JQueryUI().Spinner("Height")
-                            </div>
+                            <input type="text" id="Height" class="form-control" placeholder="Height" />
                             <span class="input-group-addon">px</span>
                         </div>
                         <div class="input-group" style="border-bottom: 1px solid #cccccc;">
@@ -159,9 +159,7 @@
                                 <span class="glyphicon glyphicon-resize-horizontal" aria-hidden="true"></span>
                                 <span class="sr-only">New Width:</span>
                             </label>
-                            <div class="form-control">
-                                @Html.JQueryUI().Spinner("Width")
-                            </div>
+                            <input type="text" id="Width" class="form-control" placeholder="Width" />
                             <span class="input-group-addon">px</span>
                         </div>
                         <div class="input-group">
@@ -169,9 +167,7 @@
                                 <span class="glyphicon glyphicon-font" aria-hidden="true"></span>
                                 <span class="sr-only">Name:</span>
                             </label>
-                            <div class="form-control">
-                                <input type="text" id="fileName"/>
-                            </div>
+                            <input type="text" id="fileName" class="form-control" placeholder="Name"/>
                         </div>
                         <div class="btn-group btn-block" data-toggle="buttons" style="max-height: 20px; width: 100%;">
                             <label class="btn btn-default btn-block">
@@ -390,12 +386,16 @@
             }
             function addChangeListener() {
                 $('#Height').parent().on('spinchange', function () {
+                    if (height.GetValue() == "") {
+                        height.SetValue(originalHeight.GetValue());
+                    }
                     if (originalImage.GetValue() != "") {
                         resize.ResizeTo(null, height.GetValue());
                     }
                 });
             }
             properties.Initialize = function () {
+                $('#Height').spinner();
                 if ('@Model.Height' != "0") {
                     properties.SetValue('@Model.Height');
                 }
@@ -420,12 +420,16 @@
             }
             function addChangeListener() {
                 $('#Width').parent().on('spinchange', function () {
+                    if (width.GetValue() == "") {
+                        width.SetValue(originalWidth.GetValue());
+                    }
                     if (originalImage.GetValue() != "") {
                         resize.ResizeTo(width.GetValue(), null);
                     }
                 });
             }
             properties.Initialize = function () {
+                $('#Width').spinner();
                 if ('@Model.Width' != "0") {
                     properties.SetValue('@Model.Width');
                 }

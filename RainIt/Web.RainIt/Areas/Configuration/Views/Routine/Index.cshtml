@@ -24,9 +24,25 @@
     }
     .delete-button {
         position: relative;
-        left: 0%;        
+        left: 0%;
+    }
+    .routine-title {
+          position: absolute;
+          bottom: 5px;
+          left: 20px;
+          background-color: skyblue;
+          padding: 5px;
+          max-width: 100%;
+          width: 20%;
+          max-height: 30px;
+          height: 30px;
+          overflow: hidden;
+          word-break: break-all;
     }
 </style>
+
+
+
 <div class="container">
 
     @foreach (var routine in Model)
@@ -49,6 +65,9 @@
                         </li>
                     }
                 </ul>
+                <div class="caption routine-title" style="display: none;">
+                    <p>@routine.Name</p>
+                </div>
             </div>
         </div>
     }
@@ -157,7 +176,13 @@
                         });
                     });
 
-
+                    $('.routine-holder ul').hover(function(e) {
+                        var currentUl = $(e.currentTarget);
+                        currentUl.closest('.routine-holder').find('.routine-title').show();
+                    }, function(e) {
+                        var currentUl = $(e.currentTarget);
+                        currentUl.closest('.routine-holder').find('.routine-title').hide();
+                    });
                 }
 
                 properties.Initialize = function() {

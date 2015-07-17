@@ -38,7 +38,7 @@
 @using (Html.BeginForm("Edit", "Pattern", new { area = "Configuration"}, FormMethod.Get, new { id = "editPatternForm" }))
 {
 }
-@section scripts{
+
     <script type="text/javascript">
         (function() {
             this.PatternIndexProperties = this.PatternIndexProperties || {};
@@ -250,4 +250,3 @@
             PatternIndexProperties.SetupPage();
         });
     </script>
-}
