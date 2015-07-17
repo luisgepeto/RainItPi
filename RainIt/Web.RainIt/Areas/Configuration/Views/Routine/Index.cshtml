@@ -1,25 +1,51 @@
 ﻿@model List<RainIt.Domain.DTO.RoutineDTO>
-<script src="~/Scripts/thumbnailscroller/jquery.mThumbnailScroller.js"></script>
+
+
 <style>
-    .routine-holder{
-  overflow: auto;
-  width: 800px;
-  height: auto;
-}
+    .img-repetitions {
+        position: relative;
+        bottom: 201px;
+        left: 5px;
+        background-color: #ffffff;
+        background-color: rgba(255, 255, 255, 0.5);
+        padding: 5px;
+        max-width: 190px;
+        width: 190px;
+        max-height: 190px;
+        height: 190px;
+        overflow: hidden;
+        word-break: break-all;
+    }
+    .img-repetitions p {
+        color: skyblue;
+        font-size: 5em;
+        text-align: center;
+        line-height: 180px;
+    }
+    .delete-button {
+        position: relative;
+        left: 0%;        
+    }
 </style>
 <div class="container">
 
     @foreach (var routine in Model)
     {
         <div class="row">
-            <div id="@("routine-holder" + routine.RoutineId)" class=" col-md-12 routine-holder">
-                <ul>
+            <div class="col-md-12 routine-holder" data-routine-id="@routine.RoutineId">
+                <div class="delete-button pointer"></div>
+                <ul class="pointer">
                     @foreach (var routinePattern in routine.RoutinePatternDTOs)
                     {
-                        <li>
-                            <a href="@Url.Action("Edit", "Routine", new {area = "Configuration", routineId = routine.RoutineId}, null)">
-                                <img src="@(routinePattern.PatternDTO.Path)"/>
-                            </a>
+                        <li class="limit-view routine-element">
+                            <div class="limit-view img-holder img-thumbnail">
+                                <img src="@routinePattern.PatternDTO.Path" class="img-element" data-orig-src="@routinePattern.PatternDTO.Path" data-pattern-id="@routinePattern.PatternDTO.PatternId">
+                            </div>
+                            <div class="caption img-repetitions" style="display: none;">
+                                <p>
+                                    <strong>@("x" + routinePattern.Repetitions)</strong>
+                                </p>
+                            </div>
                         </li>
                     }
                 </ul>
@@ -33,24 +59,164 @@
     {
         <button name="addRoutine" value="addRoutine" id="addRoutineButton" class="btn btn-primary">Add Routine</button>
     }
+    @Html.Partial("_Modal")
+    @using (Html.BeginForm("Edit", "Routine", new {area = "Configuration"}, FormMethod.Get, new {id="editRoutineForm"}))
+    {
+        @Html.Hidden("routineId", "")
+    }
 </div>
 @section scripts{
-    <link href="~/Content/thumbnailscroller/jquery.mThumbnailScroller.css" rel="stylesheet"/>
     <script type="text/javascript">
-        (function() {
-            this.RoutineIndexProperties = this.RoutineIndexProperties || {};
+    (function() {
+        this.RoutineIndexProperties = this.RoutineIndexProperties || {};
 
-            var scroller = (function() {
-                var properties = {};
-                properties.Initialize = function() {
-                    $('.routine-holder').mThumbnailScroller({
-                        axis: 'x'
+        var scroller = (function() {
+            var properties = {};
+
+            function addClickListener() {
+                $('.routine-holder ul').click(function (e) {
+                    var routineId = $(e.currentTarget).closest('.routine-holder').attr("data-routine-id");
+                    $('#routineId').val(routineId);
+                    $('#editRoutineForm').submit();
+                });
+            }
+
+            properties.Initialize = function() {
+                $('.routine-holder').mThumbnailScroller({
+                    axis: 'x',
+                    type: 'hover-90',
+                    speed: 30
+                });
+                addClickListener();
+            }
+            return properties;
+        }());
+
+        var image = (function() {
+            var properties = {};
+            var hasAjaxRunFor = [];
+
+            function makeHoverAjaxCall(currentImageHolder) {
+                var id = currentImageHolder.find('.img-element').attr("data-pattern-id");
+                if (hasAjaxRunFor.indexOf(id) == -1) {
+                    hasAjaxRunFor.push(id);
+                    currentImageHolder.setAjaxLoadingAnimation();
+                    var url = '@Url.Action("GetBlackWhiteFor", "Pattern", new {area = "Configuration", patternId = -1})';
+                        url = url.replace("-1", id);
+                        $.ajax({
+                            url: url,
+                            type: "GET",
+                            contentType: "application/x-www-form-urlencoded",
+                            success: function(data) {
+                                var allImageHolders = $('.img-holder').find('.img-element[data-pattern-id="' + currentImageHolder.find('.img-element').attr('data-pattern-id') + '"]').closest('.img-holder');
+                                allImageHolders.removeAjaxLoadingAnimation();
+                                allImageHolders.children('.img-element').attr("data-bw-src", "data:image/png;base64," + data.blackWhiteFile);
+                                if (currentImageHolder.is(":hover")) {
+                                    currentImageHolder.children('.img-element').attr("src", currentImageHolder.children('.img-element').attr("data-bw-src"));
+                                    currentImageHolder.siblings('.img-repetitions').show();
+                                }
+                            }
+                        });
+                    }
+                }
+
+                function hoverFunction(currentImageElement, mouseChangeFunction) {
+                    var originalSource = currentImageElement.attr("data-orig-src");
+                    var bwSource = currentImageElement.attr("data-bw-src");
+                    if (originalSource && bwSource) {
+                        mouseChangeFunction(currentImageElement);
+                    }
+                }
+
+                function addHoverListener() {
+                    $('.routine-element').hover(function(e) {
+                            var currentImageHolder = $(e.currentTarget).find('.img-holder');
+                            currentImageHolder.children('.k-loading-mask').show();
+                            if (currentImageHolder.children('.img-element').attr("data-bw-src") == undefined) {
+                                makeHoverAjaxCall(currentImageHolder);
+                            }
+                            currentImageHolder.siblings('.img-title').show();
+                        },
+                        function(e) {
+                            var currentImageHolder = $(e.currentTarget).find('.img-holder');
+                            currentImageHolder.children('.k-loading-mask').hide();
+                            currentImageHolder.siblings('.img-title').hide();
+                        });
+
+                    $('.routine-element').hover(function(e) {
+                        var currentImageElement = $(e.currentTarget).find('.img-element');
+                        hoverFunction(currentImageElement, function(currentImageElement) {
+                            currentImageElement.attr("src", currentImageElement.attr("data-bw-src"));
+                            currentImageElement.parent().siblings('.img-repetitions').show();
+                        });
+                    }, function(e) {
+                        var currentImageElement = $(e.currentTarget).find('.img-element');
+                        hoverFunction(currentImageElement, function(currentImageElement) {
+                            currentImageElement.attr("src", currentImageElement.attr("data-orig-src"));
+                            currentImageElement.parent().siblings('.img-repetitions').hide();
+                        });
                     });
+
+
+                }
+
+                properties.Initialize = function() {
+                    addHoverListener();
                 }
                 return properties;
             }());
+
+            var deleteButton = (function() {
+                var properties = {};
+
+                function onAjaxSuccess(data) {
+                    window.location.href = data;
+                }
+
+                function makeDeleteAjaxCall(routineToDelete) {
+                    $.post(
+                        "@Url.Action("Delete", "Routine", new {area = "Configuration"}, null)",
+                        { routineId: routineToDelete },
+                        onAjaxSuccess
+                    );
+                }
+
+                
+                function addClickListener() {
+                    $('.delete-button').click(function (e) {
+                        var currentDeleteButton = $(e.currentTarget);
+                        var id = currentDeleteButton.parent().attr('data-routine-id');
+                        var longModalContent = currentDeleteButton.siblings('div').find('ul').clone(true).off('click').removeClass().removeAttr("id").removeAttr("style");
+                        longModalContent.children().each(function () {
+                            $(this).removeClass().addClass("limit-view routine-element");
+                        });
+                        var myDiv = $('<div>').css("overflow", "auto").css("width", "100%").css("height", "auto").addClass("routine-holder");
+                        longModalContent.appendTo(myDiv);
+                        var parameters = {
+                            ButtonName: "Delete",
+                            Message: "Are you sure you want to delete this item?<br />This action cannot be undone.",
+                            LongModalContent: myDiv
+                        };
+                        ModalDeleteProperties.Initialize(parameters, makeDeleteAjaxCall, id);
+                        ModalDeleteProperties.Show(function () {
+                            $('#longModalContent').find('.routine-holder').mThumbnailScroller({
+                                axis: 'x',
+                                type: 'hover-90',
+                                speed: 30
+                            });
+                        });
+                    });
+                }
+                properties.Initialize = function() {
+                    addClickListener();
+                }
+                return properties;
+            }());
+
             RoutineIndexProperties.SetupPage = function() {
                 scroller.Initialize();
+                image.Initialize();
+                deleteButton.Initialize();
             }
         }());
         $(document).ready(function() {

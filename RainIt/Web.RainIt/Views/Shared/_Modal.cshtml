@@ -5,9 +5,19 @@
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 <h4 class="modal-title" id="myModalLabel"><strong>Confirm Action</strong></h4>
             </div>
-            <div class="row modal-body">
-                <div id="message" class="col-md-8"></div>
-                <div class="col-md-4" id="modalContent"></div>
+            <div class="modal-body">
+                <div class="row">
+                    <div id="message" class="col-md-8"></div>
+                    <div class="col-md-4" id="modalContent"></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        &nbsp;
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12" id="longModalContent"></div>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
@@ -19,8 +29,11 @@
 <script type="text/javascript">
     (function() {
         this.ModalDeleteProperties = this.ModalDeleteProperties || {};
-        ModalDeleteProperties.Show = function () {
+        ModalDeleteProperties.Show = function (onShowAction) {
             $('#myModal').modal('show');
+            if (onShowAction) {
+                onShowAction();
+            }
         }
        
         var button = (function() {
@@ -35,7 +48,13 @@
                 $('#button').html(parameters.ButtonName);
                 $('#message').html(parameters.Message);
                 $('#modalContent').html("");
-                parameters.ModalContent.appendTo($('#modalContent'));
+                $('#longModalContent').html("");
+                if (parameters.ModalContent) {
+                    parameters.ModalContent.appendTo($('#modalContent'));
+                }
+                if (parameters.LongModalContent) {
+                    parameters.LongModalContent.appendTo($('#longModalContent'));
+                }
                 addClickListener(functionToExecute, functionParameter);
             }
             return properties;

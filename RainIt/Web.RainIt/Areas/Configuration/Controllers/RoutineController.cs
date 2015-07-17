@@ -61,5 +61,13 @@ namespace Web.RainIt.Areas.Configuration.Controllers
             return Json(new { canSet }, JsonRequestBehavior.DenyGet);
         }
 
+        [System.Web.Mvc.HttpPost]
+        public JsonResult Delete(int routineId)
+        {
+            StatusMessage canDelete = RoutineManager.DeleteUserRoutine(routineId);
+            TempData["StatusMessage"] = canDelete;
+            return Json(Url.Action("Index", "Routine" , new{area = "Configuration"}));
+        }
+
     }
 }

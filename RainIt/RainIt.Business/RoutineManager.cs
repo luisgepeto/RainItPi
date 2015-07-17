@@ -221,6 +221,7 @@ namespace RainIt.Business
             try
             {
                 var routineToDelete = RainItContext.UserRoutineSet.Single(r => r.RoutineId == routineId);
+                DeleteRoutinePatterns(routineToDelete);
                 RainItContext.RoutineSet.Attach(routineToDelete);
                 RainItContext.RoutineSet.Remove(routineToDelete);
                 RainItContext.SaveChanges();
@@ -229,6 +230,20 @@ namespace RainIt.Business
             catch (Exception ex)
             {
                 return StatusMessage.WriteError("An unexpected error occurred. Please try again.");
+            }
+        }
+
+        public void DeleteRoutinePatterns(Routine routine)
+        {
+            var allRoutinePatterns = routine.RoutinePatterns.ToList();
+            if (allRoutinePatterns.Any())
+            {
+                foreach (var routinePattern in allRoutinePatterns)
+                {
+                    RainItContext.RoutinePatternSet.Attach(routinePattern);
+                    RainItContext.RoutinePatternSet.Remove(routinePattern);
+                }
+                RainItContext.SaveChanges();
             }
         }
         #endregion

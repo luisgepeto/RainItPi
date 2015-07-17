@@ -6,21 +6,7 @@
 @using RainIt.Domain.DTO
 @model RainIt.Domain.DTO.RoutineDTO
 
-<style>
-    .delete-button {
-        width: 30px;
-        height: 30px;
-        background: url('../../../../Content/icons/delete.png') no-repeat center center;
-        background-size: contain;
-        position: absolute;
-        left: 92%;
-        top: -15px;
-        z-index: 2;
-    }
-    .ss-cloned-child {
-        border: 5px solid red;
-    }
-</style>
+
 @Html.Partial("_Alert")
 <div class="container">
     <div id="routine-builder" class="row shapeshift-gallery img-holder img-dropper img-thumbnail">
@@ -40,6 +26,12 @@
             {
                 <input type="button" value="Update" name="Update" id="addRoutine" class="btn btn-success"/>
             }
+        </div>
+        <div class="col-md-2">
+            @using (Html.BeginForm("Index", "Routine", new { area = "Configuration" }, FormMethod.Get, new {@id = "cancelForm" }))
+            {
+            }
+            <input type="button" value="Cancel" name="Cancel" id="Cancel" class="btn btn-danger" />
         </div>
         <div class="col-md-3">
             @Html.Action("Multiselect", "Device", new {area = "Configuration"})
@@ -88,7 +80,7 @@
 
             properties.AddClickListenerTo = function (button) {
                 if (button == undefined)
-                    button = $('#routine-builder .delete-button');
+                    button = $('#routine-builder .sdelete-button');
                 return button.click(function (e) {
                     $(e.currentTarget).closest('.shapeshift-element').detach();
                     $("#routine-builder").trigger("ss-added");
@@ -474,12 +466,27 @@
             }
             return properties;
         }());
+
+        var cancelButton = (function () {
+            var properties = {};
+            function addClickListener() {
+                $('#Cancel').click(function () {
+                    $('#cancelForm').submit();
+                });
+            }
+            properties.Initialize = function () {
+                addClickListener();
+            }
+            return properties;
+        }());
+
         RoutineAddProperties.SetupPage = function () {
             routineBuilder.Initialize();
             galleryExtender.Initialize();
             addRoutine.AddClickListener();
             multiselectExtender.Initialize();
             testButton.Initialize();
+            cancelButton.Initialize();
         }
     }());
     $(document).ready(function () {
