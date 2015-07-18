@@ -1,48 +1,5 @@
 ﻿@model List<RainIt.Domain.DTO.RoutineDTO>
 
-
-<style>
-    .img-repetitions {
-        position: relative;
-        bottom: 201px;
-        left: 5px;
-        background-color: #ffffff;
-        background-color: rgba(255, 255, 255, 0.5);
-        padding: 5px;
-        max-width: 190px;
-        width: 190px;
-        max-height: 190px;
-        height: 190px;
-        overflow: hidden;
-        word-break: break-all;
-    }
-    .img-repetitions p {
-        color: skyblue;
-        font-size: 5em;
-        text-align: center;
-        line-height: 180px;
-    }
-    .delete-button {
-        position: relative;
-        left: 0%;
-    }
-    .routine-title {
-          position: absolute;
-          bottom: 5px;
-          left: 20px;
-          background-color: skyblue;
-          padding: 5px;
-          max-width: 100%;
-          width: 20%;
-          max-height: 30px;
-          height: 30px;
-          overflow: hidden;
-          word-break: break-all;
-    }
-</style>
-
-
-
 <div class="container">
 
     @foreach (var routine in Model)

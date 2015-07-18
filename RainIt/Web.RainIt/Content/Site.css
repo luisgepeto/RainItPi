@@ -209,8 +209,65 @@ k-loading-mask, .k-loading-image, .k-loading-text {
         height: 30px;
         background: url('../../../../Content/icons/delete.png') no-repeat center center;
         background-size: contain;
-        position: absolute;
-        left: 92%;
         top: -15px;
         z-index: 2;
     }
+     .shapeshift-gallery .delete-button  {
+         position: absolute;
+        left: 92%;
+     }
+     .routine-holder .delete-button {
+        position: relative;
+        left: 0%;
+    }
+
+     /* This will set the styles to the title which are below the images on the pattern index page*/
+     .img-title {
+        position: absolute;
+        bottom: 5px;
+        left: 5px;
+        background-color: skyblue;
+        padding: 5px;
+        max-width: 190px;
+        width: 190px;
+        max-height: 30px;
+        height: 30px;
+        overflow: hidden;
+        word-break: break-all;
+    }
+
+     /* This will set the routine title style in the routine index page*/
+     .routine-title {
+          position: absolute;
+          bottom: 5px;
+          left: 20px;
+          background-color: skyblue;
+          padding: 5px;
+          max-width: 100%;
+          width: 20%;
+          max-height: 30px;
+          height: 30px;
+          overflow: hidden;
+          word-break: break-all;
+    }
+     .routine-holder .img-repetitions {
+        position: relative;
+        bottom: 201px;
+        left: 5px;
+        background-color: #ffffff;
+        background-color: rgba(255, 255, 255, 0.5);
+        padding: 5px;
+        max-width: 190px;
+        width: 190px;
+        max-height: 190px;
+        height: 190px;
+        overflow: hidden;
+        word-break: break-all;
+    }
+    .routine-holder .img-repetitions p {
+        color: skyblue;
+        font-size: 5em;
+        text-align: center;
+        line-height: 180px;
+    }
+    
