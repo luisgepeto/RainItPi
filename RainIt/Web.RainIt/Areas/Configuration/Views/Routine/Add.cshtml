@@ -16,7 +16,7 @@
                             <span class="glyphicon glyphicon-font" aria-hidden="true"></span>
                             <span class="sr-only">Name:</span>
                         </label>
-                        <input type="text" class="form-control" id="routineName" placeholder="Name" value="@Model.Name"/>
+                        <input type="text" class="form-control" id="routineName" placeholder="Name" value="@(Model == null? "": Model.Name)"/>
                     </div>
                 </div>
             </div>
