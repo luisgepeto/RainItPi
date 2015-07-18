@@ -72,7 +72,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-5">
+        <div class="col-md-5 library">
             @Html.Action("Library", "Pattern", new { area = "Configuration" })
         </div>
     </div>
@@ -325,7 +325,9 @@
             var newParameters = {
                 enableDrag: true,
                 dragClone: true,
-                cloneClass: "img-copy"
+                cloneClass: "img-copy",
+                gutterY: 10,
+                gutterX: 10
             }
 
             properties.Initialize = function () {

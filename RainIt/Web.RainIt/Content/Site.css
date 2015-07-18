@@ -79,6 +79,14 @@ ul.nav.navbar-nav {
     height: 200px;
     width: 200px;
 }
+.library .shapeshift-element {
+    height: 100px;
+    width: 100px;
+}
+#routine-builder .shapeshift-element {
+    width: 100px;
+     height: 140px;
+}
 
 /* This is intended to work as additional space on top of the bootstrap .row*/
 .spacer {
@@ -171,7 +179,13 @@ k-loading-mask, .k-loading-image, .k-loading-text {
          max-width: 100%;
          max-height: 100%;
      }
-
+     .library .limit-view, #routine-builder .limit-view{
+        height: 100px;
+        max-height:100px;
+        overflow:hidden;
+         width: 100px; 
+    }
+    
      /* This makes the cursor a pointer*/
      .pointer {
          cursor: pointer;
@@ -235,6 +249,17 @@ k-loading-mask, .k-loading-image, .k-loading-text {
         overflow: hidden;
         word-break: break-all;
     }
+
+     .library .img-title, #routine-builder .img-title {
+        max-width: 90px;
+        width: 90px;
+        max-height: 20px;
+        height: 20px;
+        overflow: hidden;
+        word-break: break-all;
+        font-size: 0.8em;
+    }
+     
 
      /* This will set the routine title style in the routine index page*/
      .routine-title {
