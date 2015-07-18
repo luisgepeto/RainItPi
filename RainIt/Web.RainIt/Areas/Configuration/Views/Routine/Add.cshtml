@@ -1,10 +1,10 @@
-﻿@{
+﻿@using Newtonsoft.Json
+@using RainIt.Domain.DTO
+@model RoutineDTO
+@{
     ViewBag.Title = "Add Routine";
     var constraintParameters = ViewBag.ConstraintParameters as UploadConstraintParameters ?? new UploadConstraintParameters();
 }
-@using Newtonsoft.Json
-@using RainIt.Domain.DTO
-@model RainIt.Domain.DTO.RoutineDTO
 @Html.Partial("_Alert")
 <div class="container">
     <div class="row">
@@ -163,8 +163,13 @@
                 imageHolder.appendTo(column);
                 caption.appendTo(column);
 
-                var spinnerHolder = $('<div>').attr("class", "caption img-repetitions");
-                var repetitionsSpinner = $('<input type="text">');
+                var spinnerHolder = $('<div>').attr("class", "caption img-repetitions input-group");
+                var label = $('<label>').attr("for", "repetitions").addClass("input-group-addon");
+                var spanIcon = $('<span>').addClass("glyphicon glyphicon-repeat").attr("aria-hidden", true);
+                spanIcon.appendTo(label);
+                label.appendTo(spinnerHolder);
+
+                var repetitionsSpinner = $('<input type="text">').addClass("form-control");
                 repetitionsSpinner.val(image.Repetitions);
                 repetitionsSpinner.appendTo(spinnerHolder);
                 repetitionsSpinner.spinner({

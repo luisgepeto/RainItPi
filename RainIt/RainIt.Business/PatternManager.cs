@@ -35,10 +35,9 @@ namespace RainIt.Business
             if (!IsFileSizeValid(pattern)) return StatusMessage.WriteError("The file size is not valid.");
             if (!AreDimensionsValid(pattern)) return StatusMessage.WriteError("The file dimensions are not valid.");
             patternUploadModel.FileName = CleanInput(patternUploadModel.FileName);
-            int patternId;
-            return !DoesUserFileNameExist(patternUploadModel.FileName, out patternId)
-                ? AddPattern(pattern, patternUploadModel)
-                : StatusMessage.WriteError("The selected file name is already in use");
+            if(DoesUserFileNameExist(patternUploadModel.FileName))
+                return StatusMessage.WriteError("The selected file name already exists.");
+            return AddPattern(pattern, patternUploadModel);
         }
 
         public StatusMessage SetToTest(ImageDetails pattern, List<Guid> deviceIdentifierList)
@@ -180,6 +179,8 @@ namespace RainIt.Business
             if (!IsFileSizeValid(pattern)) return StatusMessage.WriteError("The file size is not valid.");
             if (!AreDimensionsValid(pattern)) return StatusMessage.WriteError("The file dimensions are not valid.");
             patternUploadModel.FileName = CleanInput(patternUploadModel.FileName);
+            if (DoesUserFileNameExist(patternUploadModel.FileName))
+                return StatusMessage.WriteError("The selected file name already exists.");
             Pattern patternToEdit;
             return DoesUserPatternExist(patternUploadModel.PatternId, out patternToEdit)
                 ? UpdatePattern(pattern, patternToEdit, patternUploadModel)
@@ -268,15 +269,11 @@ namespace RainIt.Business
             var maxWidth = int.Parse(ConfigurationManager.AppSettings["MaxPatternPixelWidth"]);
             return image.Width <= maxWidth && image.Height <= maxHeight;
         }
-        private bool DoesUserFileNameExist(string fileName, out int patternId)
+        private bool DoesUserFileNameExist(string fileName)
         {
-            patternId = 0;
-            if (fileName == String.Empty) return false;
-            var pattern = RainItContext.UserPatternSet.SingleOrDefault(p => p.Name == fileName);
-            if (pattern == null) return false;
-
-            patternId = pattern.PatternId;
-            return true;
+            if (fileName == String.Empty)
+                return true;
+            return  RainItContext.UserPatternSet.Any(p => p.Name == fileName);
         }
         private bool DoesUserPatternExist(int patternId, out Pattern outPattern)
         {

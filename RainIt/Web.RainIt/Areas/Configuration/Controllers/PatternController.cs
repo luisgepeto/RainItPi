@@ -144,8 +144,11 @@ namespace Web.RainIt.Areas.Configuration.Controllers
             StatusMessage canSet = new StatusMessage();
             ImageDetails imageDetails;
             if (deviceIdentifierList == null || !deviceIdentifierList.Any())
+            {
                 canSet = StatusMessage.WriteError("No device was selected");
-            if (!canSet.IsError && ImageManager.TryParseImage(patternUploadModel, out imageDetails))
+                return Json(new { canSet }, JsonRequestBehavior.DenyGet);
+            }
+            if (ImageManager.TryParseImage(patternUploadModel, out imageDetails))
             {
                 canSet = PatternManager.SetToTest(imageDetails, deviceIdentifierList);
             }

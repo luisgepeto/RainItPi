@@ -12,7 +12,7 @@
 <select id="device-multiselect" multiple="multiple">
     @foreach (var device in Model)
     {
-        <option value="@device.Identifier">@device.Identifier</option>
+        <option value="@device.Identifier">@device.Name</option>
     }
 </select>
 <script type="text/javascript">
@@ -36,7 +36,7 @@
                 var selectedDevices = [];
                 $('#device-multiselect option:selected').each(function () {
                     var selectedOption = this;
-                    selectedDevices.push(selectedOption.text);
+                    selectedDevices.push(selectedOption.value);
                 });
                 return selectedDevices;
             }

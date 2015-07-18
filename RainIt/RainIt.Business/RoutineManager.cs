@@ -24,6 +24,8 @@ namespace RainIt.Business
         {
             if (!IsPatternCountValid(routineUploadModel.RoutinePatternDTOList))
                 return StatusMessage.WriteError("The number of patterns exceeds the maximum for a routine");
+            if (DoesUserRoutineNameExist(routineUploadModel.Name))
+                return StatusMessage.WriteError("The specified routine name already exists");
             var routineToAdd = GetRoutineToAdd(routineUploadModel);
             if (!TryUpdateRoutinePatterns(routineToAdd, routineUploadModel.RoutinePatternDTOList))
                 return StatusMessage.WriteError("The selected pattern does not exist for the current user");
@@ -152,6 +154,8 @@ namespace RainIt.Business
         {
             if (!IsPatternCountValid(routineUploadModel.RoutinePatternDTOList))
                 return StatusMessage.WriteError("The number of patterns exceeds the maximum for a routine");
+            if(DoesUserRoutineNameExist(routineUploadModel.Name))
+                return StatusMessage.WriteError("The specified routine name already exists");
             var routineToUpdate = GetRoutineToUpdate(routineUploadModel);
             if (!TryDeleteRoutinePatterns(routineToUpdate))
                 return StatusMessage.WriteError("The patterns for the selected routine could not be deleted");
@@ -250,6 +254,10 @@ namespace RainIt.Business
         #endregion
 
         #region Helper Methods
+        private bool DoesUserRoutineNameExist(string name)
+        {
+            return RainItContext.UserRoutineSet.Any(r => r.Name == name);
+        }
 
         public bool IsPatternCountValid(List<RoutinePatternDTO> routinePatternDTOList)
         {

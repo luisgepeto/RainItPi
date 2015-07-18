@@ -103,6 +103,7 @@ namespace RainIt.Business
             {
                 DeviceId = d.DeviceId,
                 Identifier = d.DeviceInfo.Identifier,
+                Name = d.Name,
                 RoutineDTOs = d.Routines.Select(r => new RoutineDTO()
                 {
                     RoutineId = r.RoutineId
