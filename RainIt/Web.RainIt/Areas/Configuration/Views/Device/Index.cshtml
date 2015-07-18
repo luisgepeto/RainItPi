@@ -7,41 +7,58 @@
     <div class="col-md-12">
         <table class="table table-striped table-bordered">
             <thead>
-                <tr>
-                    <th>
-                        Device Name
-                    </th>
-                    <th>
-                        Active Routines
-                    </th>
-                </tr>
+            <tr>
+                <th>
+                    Device Name
+                </th>
+                <th>
+                    Active Routines
+                </th>
+            </tr>
             </thead>
             <tbody>
-                @foreach (var device in Model)
-                {
-                    <tr>
-                        <td>
-                            @device.Name
-                        </td>
-                        <td>
-                            
-                            @foreach (var routine in device.RoutineDTOs)
-                            {
-                                <div class="col-md-12" style="width: 600px;">
-                                    @Html.Action("View", "Routine", new { area = "Configuration", routineId = routine.RoutineId })
-                                    <br />
-                                </div>
-                            }
-                            &nbsp;
-                        </td>
-                    </tr>
-                }
+            @foreach (var device in Model)
+            {
+                <tr>
+                    <td>
+                        @device.Name
+                    </td>
+                    <td>
+                        @foreach (var routine in device.RoutineDTOs)
+                        {
+                            @Html.ActionLink(routine.Name, "Edit", "Routine", new {area = "Configuration", routineId = routine.RoutineId}, new {data_toggle = "tooltip", data_html="true", data_placement="bottom"})
+                        }
+                    </td>
+                </tr>
+            }
             </tbody>
         </table>
     </div>
-    
+
     @using (Html.BeginForm("Add", "Device", new {area = "Configuration"}, FormMethod.Get))
     {
-        <button type="submit" id="addDevice" name="addDeviceButton">Add Device</button>
+        <button type="submit" id="addDevice" name="addDeviceButton" class="btn btn-primary">Add Device</button>
     }
 </div>
+<script type="text/javascript">
+    (function() {
+        this.DeviceIndexProperties = this.DeviceIndexProperties || {};
+        var tooltip = (function() {
+            var properties = {};
+            function addText() {
+                $('[data-toggle="tooltip"]').attr("title", "<h1>Some Title</h1>");
+                $('[data-toggle="tooltip"]').tooltip();
+            }
+            properties.Initialize = function() {
+                addText();
+            }
+            return properties;
+        }());
+        DeviceIndexProperties.Initialize = function() {
+            tooltip.Initialize();
+        }
+    }());
+    $(document).ready(function() {
+        DeviceIndexProperties.Initialize();
+    });
+</script>
