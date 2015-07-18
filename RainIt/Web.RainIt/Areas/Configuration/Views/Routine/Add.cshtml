@@ -358,9 +358,6 @@
                     var selectedDeviceGuids = getAssignedDeviceGuids(JSON.parse(devices));
                     DeviceMultiselectProperties.SelectDevices(selectedDeviceGuids);
                 }
-                $('#device-multiselect').siblings('.btn-group').find('button').click(function () {
-                    $(this).parent().toggleClass('open');
-                });
             }
             return properties;
         }());
