@@ -154,9 +154,13 @@ namespace RainIt.Business
         {
             if (!IsPatternCountValid(routineUploadModel.RoutinePatternDTOList))
                 return StatusMessage.WriteError("The number of patterns exceeds the maximum for a routine");
-            if(DoesUserRoutineNameExist(routineUploadModel.Name))
-                return StatusMessage.WriteError("The specified routine name already exists");
             var routineToUpdate = GetRoutineToUpdate(routineUploadModel);
+            if (routineToUpdate.Name != routineUploadModel.Name)
+            {
+                if (DoesUserRoutineNameExist(routineUploadModel.Name))
+                    return StatusMessage.WriteError("The specified routine name already exists");
+                routineToUpdate.Name = routineUploadModel.Name;
+            }
             if (!TryDeleteRoutinePatterns(routineToUpdate))
                 return StatusMessage.WriteError("The patterns for the selected routine could not be deleted");
             if (!TryUpdateRoutinePatterns(routineToUpdate, routineUploadModel.RoutinePatternDTOList))
@@ -174,7 +178,6 @@ namespace RainIt.Business
             if (routine == null) return null;
 
             routine.Description = routineUploadModel.Description;
-            routine.Name = routineUploadModel.Name;
             routine.RoutinePatterns = new List<RoutinePattern>();
             return routine;
         }

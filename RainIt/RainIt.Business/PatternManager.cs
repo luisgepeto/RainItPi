@@ -179,12 +179,15 @@ namespace RainIt.Business
             if (!IsFileSizeValid(pattern)) return StatusMessage.WriteError("The file size is not valid.");
             if (!AreDimensionsValid(pattern)) return StatusMessage.WriteError("The file dimensions are not valid.");
             patternUploadModel.FileName = CleanInput(patternUploadModel.FileName);
-            if (DoesUserFileNameExist(patternUploadModel.FileName))
-                return StatusMessage.WriteError("The selected file name already exists.");
             Pattern patternToEdit;
-            return DoesUserPatternExist(patternUploadModel.PatternId, out patternToEdit)
-                ? UpdatePattern(pattern, patternToEdit, patternUploadModel)
-                : StatusMessage.WriteError("The selected file name was not found");
+            if(!DoesUserPatternExist(patternUploadModel.PatternId, out patternToEdit))
+                return StatusMessage.WriteError("The selected pattern id was not found");
+            if (patternToEdit.Name != patternUploadModel.FileName)
+            {
+                if (DoesUserFileNameExist(patternUploadModel.FileName))
+                    return StatusMessage.WriteError("The specified file name already exists");
+            }
+            return UpdatePattern(pattern, patternToEdit, patternUploadModel);
         }
         private StatusMessage UpdatePattern(ImageDetails imagePattern, Pattern pattern, PatternUploadModel patternUploadModel)
         {
