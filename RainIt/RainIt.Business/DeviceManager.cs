@@ -106,6 +106,7 @@ namespace RainIt.Business
                 Name = d.Name,
                 RoutineDTOs = d.Routines.Select(r => new RoutineDTO()
                 {
+                    Name = r.Name,
                     RoutineId = r.RoutineId
                 }).ToList()
             }).ToList();

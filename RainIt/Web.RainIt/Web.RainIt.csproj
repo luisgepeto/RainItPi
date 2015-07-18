@@ -262,6 +262,7 @@
     <Content Include="Content\fonts\gotham-medium.woff">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Areas\Configuration\Views\Routine\_View.cshtml" />
     <None Include="Properties\PublishProfiles\DevRainIt.pubxml" />
     <None Include="Scripts\jquery-2.1.4.intellisense.js" />
     <Content Include="Scripts\custom-ajaxLoadingAnimation.js" />

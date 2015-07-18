@@ -4,27 +4,7 @@
     @foreach (var routine in Model)
     {
         <div class="row">
-            <div class="col-md-12 routine-holder" data-routine-id="@routine.RoutineId">
-                <div class="delete-button pointer"></div>
-                <ul class="pointer">
-                    @foreach (var routinePattern in routine.RoutinePatternDTOs)
-                    {
-                        <li class="limit-view routine-element">
-                            <div class="limit-view img-holder img-thumbnail">
-                                <img src="@routinePattern.PatternDTO.Path" class="img-element" data-orig-src="@routinePattern.PatternDTO.Path" data-pattern-id="@routinePattern.PatternDTO.PatternId">
-                            </div>
-                            <div class="caption img-repetitions" style="display: none;">
-                                <p>
-                                    <strong>@("x" + routinePattern.Repetitions)</strong>
-                                </p>
-                            </div>
-                        </li>
-                    }
-                </ul>
-                <div class="caption routine-title" style="display: none;">
-                    <p>@routine.Name</p>
-                </div>
-            </div>
+            @Html.Action("View", "Routine", new {area = "Configuration", routineId = routine.RoutineId})
         </div>
     }
     <div class="row">

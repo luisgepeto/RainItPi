@@ -1,0 +1,36 @@
+﻿@model RainIt.Domain.DTO.RoutineDTO
+
+<div class="col-md-12 routine-holder" data-routine-id="@Model.RoutineId">
+    <div class="delete-button pointer"></div>
+    <ul class="pointer">
+        @foreach (var routinePattern in Model.RoutinePatternDTOs)
+        {
+            <li class="limit-view routine-element">
+                <div class="limit-view img-holder img-thumbnail">
+                    <img src="@routinePattern.PatternDTO.Path" class="img-element" data-orig-src="@routinePattern.PatternDTO.Path" data-pattern-id="@routinePattern.PatternDTO.PatternId">
+                </div>
+                <div class="caption img-repetitions" style="display: none;">
+                    <p>
+                        <strong>@("x" + routinePattern.Repetitions)</strong>
+                    </p>
+                </div>
+            </li>
+        }
+    </ul>
+    <div class="caption routine-title" style="display: none;">
+        <p>@Model.Name</p>
+    </div>
+</div>
+
+<script type="text/javascript">
+    (function() {
+        this.RoutineViewProperties = this.RoutineViewProperties || {};
+
+        RoutineViewProperties.Initialize = function() {
+            
+        }
+    }());
+    $(document).ready(function() {
+        RoutineViewProperties.Initialize();
+    });
+</script>

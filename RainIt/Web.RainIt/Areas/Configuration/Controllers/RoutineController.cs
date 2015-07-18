@@ -69,5 +69,10 @@ namespace Web.RainIt.Areas.Configuration.Controllers
             return Json(Url.Action("Index", "Routine" , new{area = "Configuration"}));
         }
 
+        public PartialViewResult View(int routineId)
+        {
+            var routine = RoutineManager.GetUserRoutine(routineId);
+            return PartialView("_View", routine);
+        }
     }
 }
