@@ -250,7 +250,7 @@ k-loading-mask, .k-loading-image, .k-loading-text {
         word-break: break-all;
     }
 
-     .library .img-title, #routine-builder .img-title {
+     .library .img-title {
         max-width: 90px;
         width: 90px;
         max-height: 20px;
@@ -259,7 +259,16 @@ k-loading-mask, .k-loading-image, .k-loading-text {
         word-break: break-all;
         font-size: 0.8em;
     }
-     
+     #routine-builder .img-title {
+         bottom: 45px;
+         max-width: 90px;
+        width: 90px;
+        max-height: 20px;
+        height: 20px;
+        overflow: hidden;
+        word-break: break-all;
+        font-size: 0.8em;
+     }
 
      /* This will set the routine title style in the routine index page*/
      .routine-title {
