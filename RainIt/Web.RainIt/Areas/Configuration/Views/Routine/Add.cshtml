@@ -87,8 +87,12 @@
             var properties = {};
 
             function addSpinnerTo(element) {
-                var spinnerHolder = $('<div>').attr("class", "caption img-repetitions");
-                var repetitionsSpinner = $('<input type="text">');
+                var spinnerHolder = $('<div>').attr("class", "caption img-repetitions input-group");
+                var label = $('<label>').attr("for", "repetitions").addClass("input-group-addon");
+                var spanIcon = $('<span>').addClass("glyphicon glyphicon-repeat").attr("aria-hidden", true);
+                spanIcon.appendTo(label);
+                label.appendTo(spinnerHolder);
+                var repetitionsSpinner = $('<input type="text">').addClass("form-control");
                 repetitionsSpinner.val(1);
                 repetitionsSpinner.appendTo(spinnerHolder);
                 repetitionsSpinner.spinner({
