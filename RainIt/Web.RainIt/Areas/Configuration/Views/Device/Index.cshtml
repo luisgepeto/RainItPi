@@ -26,7 +26,8 @@
                         <td>
                             @foreach (var routine in device.RoutineDTOs)
                             {
-                                @Html.ActionLink(routine.Name, "Edit", "Routine", new {area = "Configuration", routineId = routine.RoutineId}, null)
+                                @Html.Action("View", "Routine", new {area = "Configuration", routineId = routine.RoutineId})
+                                <br/>
                             }
                             &nbsp;
                         </td>

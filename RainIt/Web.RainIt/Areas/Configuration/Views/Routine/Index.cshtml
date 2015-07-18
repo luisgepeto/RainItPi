@@ -4,7 +4,9 @@
     @foreach (var routine in Model)
     {
         <div class="row">
-            @Html.Action("View", "Routine", new {area = "Configuration", routineId = routine.RoutineId})
+            <div class="col-md-12">
+                @Html.Action("View", "Routine", new { area = "Configuration", routineId = routine.RoutineId })
+            </div>
         </div>
     }
     <div class="row">
@@ -35,98 +37,11 @@
                     $('#editRoutineForm').submit();
                 });
             }
-
-            
             properties.Initialize = function() {
-                $('.routine-holder').mThumbnailScroller({
-                    axis: 'x',
-                    type: 'hover-90',
-                    speed: 30
-                });
                 addClickListener();
             }
             return properties;
         }());
-
-        var image = (function() {
-            var properties = {};
-            var hasAjaxRunFor = [];
-
-            function makeHoverAjaxCall(currentImageHolder) {
-                var id = currentImageHolder.find('.img-element').attr("data-pattern-id");
-                if (hasAjaxRunFor.indexOf(id) == -1) {
-                    hasAjaxRunFor.push(id);
-                    currentImageHolder.setAjaxLoadingAnimation();
-                    var url = '@Url.Action("GetBlackWhiteFor", "Pattern", new {area = "Configuration", patternId = -1})';
-                        url = url.replace("-1", id);
-                        $.ajax({
-                            url: url,
-                            type: "GET",
-                            contentType: "application/x-www-form-urlencoded",
-                            success: function(data) {
-                                var allImageHolders = $('.img-holder').find('.img-element[data-pattern-id="' + currentImageHolder.find('.img-element').attr('data-pattern-id') + '"]').closest('.img-holder');
-                                allImageHolders.removeAjaxLoadingAnimation();
-                                allImageHolders.children('.img-element').attr("data-bw-src", "data:image/png;base64," + data.blackWhiteFile);
-                                if (currentImageHolder.is(":hover")) {
-                                    currentImageHolder.children('.img-element').attr("src", currentImageHolder.children('.img-element').attr("data-bw-src"));
-                                    currentImageHolder.siblings('.img-repetitions').show();
-                                }
-                            }
-                        });
-                    }
-                }
-
-                function hoverFunction(currentImageElement, mouseChangeFunction) {
-                    var originalSource = currentImageElement.attr("data-orig-src");
-                    var bwSource = currentImageElement.attr("data-bw-src");
-                    if (originalSource && bwSource) {
-                        mouseChangeFunction(currentImageElement);
-                    }
-                }
-
-                function addHoverListener() {
-                    $('.routine-element').hover(function(e) {
-                            var currentImageHolder = $(e.currentTarget).find('.img-holder');
-                            currentImageHolder.children('.k-loading-mask').show();
-                            if (currentImageHolder.children('.img-element').attr("data-bw-src") == undefined) {
-                                makeHoverAjaxCall(currentImageHolder);
-                            }
-                            currentImageHolder.siblings('.img-title').show();
-                        },
-                        function(e) {
-                            var currentImageHolder = $(e.currentTarget).find('.img-holder');
-                            currentImageHolder.children('.k-loading-mask').hide();
-                            currentImageHolder.siblings('.img-title').hide();
-                        });
-
-                    $('.routine-element').hover(function(e) {
-                        var currentImageElement = $(e.currentTarget).find('.img-element');
-                        hoverFunction(currentImageElement, function(currentImageElement) {
-                            currentImageElement.attr("src", currentImageElement.attr("data-bw-src"));
-                            currentImageElement.parent().siblings('.img-repetitions').show();
-                        });
-                    }, function(e) {
-                        var currentImageElement = $(e.currentTarget).find('.img-element');
-                        hoverFunction(currentImageElement, function(currentImageElement) {
-                            currentImageElement.attr("src", currentImageElement.attr("data-orig-src"));
-                            currentImageElement.parent().siblings('.img-repetitions').hide();
-                        });
-                    });
-
-                    $('.routine-holder ul').hover(function(e) {
-                        var currentUl = $(e.currentTarget);
-                        currentUl.closest('.routine-holder').find('.routine-title').show();
-                    }, function(e) {
-                        var currentUl = $(e.currentTarget);
-                        currentUl.closest('.routine-holder').find('.routine-title').hide();
-                    });
-                }
-
-                properties.Initialize = function() {
-                    addHoverListener();
-                }
-                return properties;
-            }());
 
             var deleteButton = (function() {
                 var properties = {};
@@ -169,7 +84,12 @@
                         });
                     });
                 }
-                properties.Initialize = function() {
+                function addToRoutineHolder() {
+                    var deleteButton = $('<div>').addClass("delete-button pointer");
+                    $('.routine-holder').prepend(deleteButton);
+                }
+                properties.Initialize = function () {
+                    addToRoutineHolder();
                     addClickListener();
                 }
                 return properties;
@@ -177,7 +97,6 @@
 
             RoutineIndexProperties.SetupPage = function() {
                 scroller.Initialize();
-                image.Initialize();
                 deleteButton.Initialize();
             }
         }());
