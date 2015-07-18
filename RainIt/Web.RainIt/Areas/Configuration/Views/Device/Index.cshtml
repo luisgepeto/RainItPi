@@ -24,10 +24,13 @@
                             @device.Name
                         </td>
                         <td>
+                            
                             @foreach (var routine in device.RoutineDTOs)
                             {
-                                @Html.Action("View", "Routine", new {area = "Configuration", routineId = routine.RoutineId})
-                                <br/>
+                                <div class="col-md-12" style="width: 600px;">
+                                    @Html.Action("View", "Routine", new { area = "Configuration", routineId = routine.RoutineId })
+                                    <br />
+                                </div>
                             }
                             &nbsp;
                         </td>

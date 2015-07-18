@@ -29,8 +29,8 @@
 
         var scroller = (function() {
             var properties = {};
-
             function addClickListener() {
+                $('.routine-holder ul').addClass("pointer");
                 $('.routine-holder ul').click(function (e) {
                     var routineId = $(e.currentTarget).closest('.routine-holder').attr("data-routine-id");
                     $('#routineId').val(routineId);

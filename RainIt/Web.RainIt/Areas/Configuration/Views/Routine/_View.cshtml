@@ -1,7 +1,7 @@
 ﻿@model RainIt.Domain.DTO.RoutineDTO
 
 <div class="routine-holder" data-routine-id="@Model.RoutineId">
-    <ul class="pointer">
+    <ul>
         @foreach (var routinePattern in Model.RoutinePatternDTOs)
         {
             <li class="limit-view routine-element">
@@ -125,6 +125,5 @@
     $(document).ready(function() {
         var routineId = '@Model.RoutineId';
         RoutineViewProperties.Initialize(routineId);
-
     });
 </script>

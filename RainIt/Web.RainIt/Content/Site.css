@@ -218,6 +218,10 @@ k-loading-mask, .k-loading-image, .k-loading-text {
      }
 
      /* This will set the styles for the delete button thumb*/
+     .routine-holder {
+         width: 100%;
+         overflow: auto;
+     }
      .delete-button {
         width: 30px;
         height: 30px;
