@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
 using System.Data.Entity.ModelConfiguration.Conventions;
 using System.Diagnostics;
 using System.Linq;
@@ -76,6 +77,11 @@ namespace RainIt.Repository
         public DbSet<DeviceInfo> DeviceInfoSet { get; set; }
         public DbSet<SamplePattern> SamplePatternSet { get; set; }
         public DbSet<SampleRoutine> SampleRoutineSet { get; set; }
+        public DbEntityEntry Entry(Routine currentRoutine)
+        {
+            return base.Entry(currentRoutine);
+        }
+
 
         //public DbSet<DeviceCredential> DeviceCredentialSet { get; set; }
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Data.Entity;
 using System.Linq;
 using RainIt.Domain.DTO;
 using RainIt.Domain.Repository;
@@ -165,11 +166,16 @@ namespace RainIt.Business
                 return StatusMessage.WriteError("The patterns for the selected routine could not be deleted");
             if (!TryUpdateRoutinePatterns(routineToUpdate, routineUploadModel.RoutinePatternDTOList))
                 return StatusMessage.WriteError("The selected pattern does not exist for the current user");
+            if (!TryDeleteDevices(routineToUpdate))
+                return StatusMessage.WriteError("The devices for the selected routine could not be deleted");
             if (!TryUpdateDevices(routineToUpdate, routineUploadModel.DeviceIdentifierList))
                 return StatusMessage.WriteError("The selected devices do not exist for the current user");
             RainItContext.SaveChanges();
             return StatusMessage.WriteMessage("The routine was updated successfully");
         }
+
+        
+
 
         private Routine GetRoutineToUpdate(RoutineUploadModel routineUploadModel)
         {
@@ -305,10 +311,32 @@ namespace RainIt.Business
             }
             return true;
         }
+        private bool TryDeleteDevices(Routine routineToUpdate)
+        {
+            try
+            {
+                var allDevices = routineToUpdate.Devices.ToList();
+                if (allDevices.Any())
+                {
+                    foreach (var device in allDevices)
+                    {
+                        RainItContext.Entry(routineToUpdate).Collection("Devices").Load();
+                        routineToUpdate.Devices.Remove(device);
+                    }
+                    RainItContext.SaveChanges();
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
         private bool TryUpdateDevices(Routine routine, List<Guid> deviceidentifierList)
         {
-            if (deviceidentifierList == null) return true;
             routine.Devices = new List<Device>();
+            if (deviceidentifierList == null) return true;
             foreach (var deviceIdentifier in deviceidentifierList)
             {
                 Device deviceOut;

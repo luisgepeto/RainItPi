@@ -1,5 +1,6 @@
 ﻿
 using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
 using System.Linq;
 using RainIt.Domain.Repository;
 
@@ -26,5 +27,6 @@ namespace RainIt.Interfaces.Repository
         DbSet<SamplePattern> SamplePatternSet { get; }
         DbSet<SampleRoutine> SampleRoutineSet { get; }
         int SaveChanges();
+        DbEntityEntry Entry(Routine currentRoutine);
     }
 }
