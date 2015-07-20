@@ -428,7 +428,7 @@
                 var isNumberOfPatternsValid = validateNumberOfPatterns(contentArray);
                 var isNumberOfRepetitionsValid = validateNumberOfRepetitions(contentArray);
                 var isDeviceSelectionValid = !considerDeviceValidation || validateDeviceSelection(contentArray);
-                var isRoutineNameValid = validateRoutineName(contentArray);
+                var isRoutineNameValid = considerDeviceValidation || validateRoutineName(contentArray);
 
                 if (contentArray.length > 0) {
                     AlertProperties.Initialize({ Class: "alert-danger", Content: contentArray });
