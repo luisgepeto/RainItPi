@@ -28,23 +28,29 @@
                 <th>
                     Active Routines
                 </th>
+                <th>
+                    
+                </th>
             </tr>
             </thead>
             <tbody>
             @foreach (var device in Model)
             {
                 <tr>
-                    <td>
+                    <td class="device-name" data-device-id="@device.DeviceId">
                         @device.Name
                     </td>
                     <td>
                         @foreach (var routine in device.RoutineDTOs)
                         {
-                            @Html.ActionLink(routine.Name, "Edit", "Routine", new {area = "Configuration", routineId = routine.RoutineId}, new {data_toggle = "tooltip", data_html="true", data_placement="bottom", data_for_routine=routine.RoutineId})
+                            @Html.ActionLink(routine.Name, "Edit", "Routine", new {area = "Configuration", routineId = routine.RoutineId}, new {data_toggle = "tooltip", data_html = "true", data_placement = "bottom", data_for_routine = routine.RoutineId})
                             <div class="tooltip-html" data-tooltip-for=@routine.RoutineId>
-                                @Html.Action("View", "Routine", new { area = "Configuration", routineId = routine.RoutineId })
+                                @Html.Action("View", "Routine", new {area = "Configuration", routineId = routine.RoutineId})
                             </div>
                         }
+                    </td>
+                    <td class="edit-button-holder">
+                        <button type="submit" name="editDeviceButton" class="btn btn-primary edit-button">Edit</button>
                     </td>
                 </tr>
             }
