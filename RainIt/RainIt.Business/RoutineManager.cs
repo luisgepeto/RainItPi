@@ -236,6 +236,8 @@ namespace RainIt.Business
             {
                 var routineToDelete = RainItContext.UserRoutineSet.Single(r => r.RoutineId == routineId);
                 DeleteRoutinePatterns(routineToDelete);
+                if(!TryDeleteDevices(routineToDelete))
+                    return StatusMessage.WriteError("The devices for the selected routine could not be deleted");
                 RainItContext.RoutineSet.Attach(routineToDelete);
                 RainItContext.RoutineSet.Remove(routineToDelete);
                 RainItContext.SaveChanges();

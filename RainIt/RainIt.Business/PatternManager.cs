@@ -248,6 +248,8 @@ namespace RainIt.Business
             try
             {
                 var patternToDelete = RainItContext.UserPatternSet.Single(p => p.PatternId == patternId);
+                if(!TryDeleteRoutinePatterns(patternToDelete))
+                    return StatusMessage.WriteMessage("The routine patterns for this pattern could not be deleted");
                 RainItContext.PatternSet.Attach(patternToDelete);
                 RainItContext.PatternSet.Remove(patternToDelete);
                 RainItContext.SaveChanges();
@@ -258,6 +260,29 @@ namespace RainIt.Business
                 return StatusMessage.WriteError("An unexpected error occurred. Please try again.");
             }
         }
+
+        private bool TryDeleteRoutinePatterns(Pattern pattern)
+        {
+            try
+            {
+                var allRoutinePatterns = pattern.RoutinePatterns.ToList();
+                if (allRoutinePatterns.Any())
+                {
+                    foreach (var routinePattern in allRoutinePatterns)
+                    {
+                        RainItContext.RoutinePatternSet.Attach(routinePattern);
+                        RainItContext.RoutinePatternSet.Remove(routinePattern);
+                    }
+                    RainItContext.SaveChanges();    
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
         #endregion
 
         #region Helper Methods
