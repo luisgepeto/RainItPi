@@ -1,4 +1,5 @@
-﻿using System.Web.Mvc;
+﻿using System;
+using System.Web.Mvc;
 using RainIt.Domain.DTO;
 using RainIt.Interfaces.Business;
 
@@ -44,6 +45,21 @@ namespace Web.RainIt.Areas.Configuration.Controllers
         {
             var allDevices = DeviceManager.GetUserDevices();
             return PartialView("_Multiselect",allDevices);
+        }
+
+        [HttpPost]
+        public JsonResult Edit(int deviceId, string newDeviceName)
+        {
+            StatusMessage canEdit = new StatusMessage()
+            {
+                IsError = true,
+                Message = "Cannot assign an empty name to a device."
+            };
+            if (newDeviceName != String.Empty)
+            {
+                canEdit = DeviceManager.EditUserDevice(deviceId, newDeviceName);
+            }
+            return Json(new {canEdit}, JsonRequestBehavior.DenyGet);
         }
     }
 }

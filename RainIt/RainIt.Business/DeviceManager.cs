@@ -30,6 +30,12 @@ namespace RainIt.Business
             return outDevice != null;
         }
 
+        private bool TryGetDevice(int deviceId, out Device outDevice)
+        {
+            outDevice = RainItContext.DeviceSet.SingleOrDefault(d => d.DeviceId == deviceId);
+            return outDevice != null;
+        }
+
         private StatusMessage AssignToUser(Device device, string name)
         {
             try
@@ -128,6 +134,26 @@ namespace RainIt.Business
             if (device.UserId.HasValue) return false;
             if (device.DeviceInfo.IsAlreadyActive) return false;
             return true;
+        }
+        public StatusMessage EditUserDevice(int deviceId, string newDeviceName)
+        {
+            Device outDevice;
+            if (!TryGetDevice(deviceId, out outDevice))
+                return StatusMessage.WriteError("The selected device does not exist for the current user");
+            var currentName = outDevice.Name;
+            if (currentName != newDeviceName)
+            {
+                if(!IsNameAvailable(newDeviceName))
+                    return StatusMessage.WriteError("The selected device name is already in use");
+                outDevice.Name = newDeviceName;
+                RainItContext.SaveChanges();
+            }
+            return StatusMessage.WriteMessage("Successfully updated the current device name");
+        }
+
+        private bool IsNameAvailable(string newDeviceName)
+        {
+            return !RainItContext.UserDeviceSet.Any(d => d.Name == newDeviceName);
         }
     }
 }

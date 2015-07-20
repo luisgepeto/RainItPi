@@ -13,5 +13,6 @@ namespace RainIt.Interfaces.Business
         Guid GetDeviceGuid(string serial);
         bool ValidateDevice(string serial);
         bool IsDeviceAvailable(Guid identifier);
+        StatusMessage EditUserDevice(int deviceId, string newDeviceName);
     }
 }

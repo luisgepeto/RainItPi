@@ -16,7 +16,12 @@
         bottom: 14%;
         left: 2.7%;
     }
+    input, .input-group {
+        max-width: 150px;
+        width: 150px;
+    }
 </style>
+@Html.Partial("_Alert")
 <div class="container">
     <div class="col-md-12">
         <table class="table table-striped table-bordered">
@@ -37,8 +42,17 @@
             @foreach (var device in Model)
             {
                 <tr>
-                    <td class="device-name" data-device-id="@device.DeviceId">
-                        @device.Name
+                    <td class="device-name-holder" data-device-id="@device.DeviceId">
+                        <div class="device-name-display">
+                            @device.Name
+                        </div>
+                        <div class="input-group device-name-editor" style="display: none;">
+                            <label for="threshold" class="input-group-addon">
+                                <span class="glyphicon glyphicon-font" aria-hidden="true"></span>
+                                <span class="sr-only">Name:</span>
+                            </label>
+                            <input type="text" class="form-control" placeholder="Name" value="@device.Name"/>
+                        </div>
                     </td>
                     <td>
                         @foreach (var routine in device.RoutineDTOs)
@@ -50,7 +64,9 @@
                         }
                     </td>
                     <td class="edit-button-holder">
-                        <button type="submit" name="editDeviceButton" class="btn btn-primary edit-button">Edit</button>
+                        <button type="submit" name="editDeviceNameButton" class="btn btn-primary edit-button">Edit</button>
+                        <button type="submit" name="saveDeviceNameButton" class="btn btn-success save-button" style="display: none;">Save</button>
+                        <button type="submit" name="cancelDeviceNameButton" class="btn btn-danger cancel-button" style="display: none;">Cancel</button>
                     </td>
                 </tr>
             }
@@ -66,6 +82,120 @@
 <script type="text/javascript">
     (function() {
         this.DeviceIndexProperties = this.DeviceIndexProperties || {};
+        var nameInput = (function () {
+            var properties = {};
+            properties.GetValueById = function (id) {
+               return  $('[data-device-id="' + id + '"]').closest('tr').find('.device-name-editor input').val().trim();
+            }
+            properties.SetValueById = function (id, newValue) {
+                return $('[data-device-id="' + id + '"]').closest('tr').find('.device-name-display').text(newValue);
+            }
+            return properties;
+        }());
+        var button = (function() {
+            var properties = {};
+            properties.GetIdFor = function(button)
+            {
+                return button.closest('tr').find('.device-name-holder').attr("data-device-id");
+            }
+            return properties;
+        }());
+        var cancelButton = (function () {
+            var properties = {};
+            properties.ShowButtonFor = function(deviceId) {
+                $('[data-device-id="' + deviceId + '"]').closest('tr').find('.edit-button-holder .cancel-button').show();
+            }
+            properties.HideButtonFor = function (deviceId) {
+                $('[data-device-id="' + deviceId + '"]').closest('tr').find('.edit-button-holder .cancel-button').hide();
+            }
+            function addClickListener() {
+                $('.cancel-button').click(function(e) {
+                    var currentButton = $(e.currentTarget);
+                    currentButton.closest('tr').find('.device-name-display').show();
+                    currentButton.closest('tr').find('.device-name-editor').hide();
+                    var id = button.GetIdFor(currentButton);
+                    saveButton.HideButtonFor(id);
+                    properties.HideButtonFor(id);
+                    editButton.ShowButtonFor(id);
+                });
+            }
+            properties.TriggerClickFor = function(deviceId)
+            {
+                $('[data-device-id="' + deviceId + '"]').closest('tr').find('.edit-button-holder .cancel-button').trigger('click');
+            }
+            properties.Initialize = function () {
+                addClickListener();
+            }
+            return properties;
+        }());
+        var saveButton = (function() {
+            var properties = {};
+            properties.ShowButtonFor = function (deviceId) {
+                $('[data-device-id="' + deviceId + '"]').closest('tr').find('.edit-button-holder .save-button').show();
+            }
+            properties.HideButtonFor = function (deviceId) {
+                $('[data-device-id="' + deviceId + '"]').closest('tr').find('.edit-button-holder .save-button').hide();
+            }
+            
+            function makeAjaxCall(id, newName) {
+                $.ajax({
+                    url: '@Url.Action("Edit", "Device", new{area ="Configuration"})',
+                    data: {deviceId: id, newDeviceName: newName},
+                    type: "POST",
+                    contentType: "application/x-www-form-urlencoded",
+                    success: function(data) {
+                        if (!data.canEdit.IsError) {
+                            nameInput.SetValueById(id, newName);
+                            cancelButton.TriggerClickFor(id);
+                            AlertProperties.Initialize({ Class: "alert-success", Content: [data.canEdit.Message] });
+                        } else {
+                            AlertProperties.Initialize({ Class: "alert-danger", Content: [data.canEdit.Message] });
+                        }
+                    }
+                });
+            }
+            function addClickListener() {
+                $('.save-button').click(function (e) {
+                    AlertProperties.Hide();
+                    var currentButton = $(e.currentTarget);
+                    var id = button.GetIdFor(currentButton);
+                    var newName = nameInput.GetValueById(id);
+                    if (newName != "") {
+                        makeAjaxCall(id, newName);
+                    } else {
+                        AlertProperties.Initialize({ Class: "alert-danger", Content: ["The device name cannot be blank"] });
+                    }
+                });
+            }
+            properties.Initialize = function () {
+                addClickListener();
+            }
+            return properties;
+        }());
+        var editButton = (function() {
+            var properties = {};
+            properties.ShowButtonFor = function (deviceId) {
+                $('[data-device-id="' + deviceId + '"]').closest('tr').find('.edit-button-holder .edit-button').show();
+            }
+            properties.HideButtonFor = function (deviceId) {
+                $('[data-device-id="' + deviceId + '"]').closest('tr').find('.edit-button-holder .edit-button').hide();
+            }
+            function addClickListener() {
+                $('.edit-button').click(function(e) {
+                    var currentButton = $(e.currentTarget);
+                    currentButton.closest('tr').find('.device-name-display').hide();
+                    currentButton.closest('tr').find('.device-name-editor').show();
+                    var id = button.GetIdFor(currentButton);
+                    cancelButton.ShowButtonFor(id);
+                    saveButton.ShowButtonFor(id);
+                    properties.HideButtonFor(id);
+                });
+            }
+            properties.Initialize = function() {
+                addClickListener();
+            }
+            return properties;
+        }());
         var tooltip = (function() {
             var properties = {};
             function addText() {
@@ -97,7 +227,7 @@
                         }
                     }, 100);
                 });
-                
+
             }
             function addShownListener() {
                 $('[data-toggle="tooltip"]').on('shown.bs.tooltip', function (e) {
@@ -143,6 +273,9 @@
         DeviceIndexProperties.Initialize = function () {
             routineHolder.Initialize();
             tooltip.Initialize();
+            editButton.Initialize();
+            saveButton.Initialize();
+            cancelButton.Initialize();
         }
     }());
     $(document).ready(function() {
