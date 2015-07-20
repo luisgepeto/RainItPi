@@ -67,7 +67,7 @@ namespace RainIt.Business
                 var addressToAdd = registration.Address.ConvertTo(new Domain.Repository.Address());
                 var deviceToLink = RainItContext.DeviceSet.Single(d => d.DeviceInfo.Identifier == registration.DeviceInfo.Identifier);
                 deviceToLink.DeviceInfo.ActivatedUTCDate = DateTime.UtcNow;
-
+                deviceToLink.Name = "Initial RainIt device for "+registration.User.Username;
                 userToAdd.UserInfo = userInfoToAdd;
                 userToAdd.Password = passwordToAdd;
                 userToAdd.Addresses = new List<Domain.Repository.Address>() {addressToAdd};
