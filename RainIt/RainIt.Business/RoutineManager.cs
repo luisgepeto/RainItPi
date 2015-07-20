@@ -121,7 +121,7 @@ namespace RainIt.Business
         }
         public List<RoutineDTO> GetUserRoutines()
         {
-            var allUserRoutines = RainItContext.UserRoutineSet;
+            var allUserRoutines = RainItContext.UserRoutineSet.Where(r => r.RoutinePatterns.Any());
             return ToRoutineDTOList(allUserRoutines);
         }
 

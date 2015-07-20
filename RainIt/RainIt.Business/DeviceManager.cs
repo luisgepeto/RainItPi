@@ -110,7 +110,7 @@ namespace RainIt.Business
                 DeviceId = d.DeviceId,
                 Identifier = d.DeviceInfo.Identifier,
                 Name = d.Name,
-                RoutineDTOs = d.Routines.Select(r => new RoutineDTO()
+                RoutineDTOs = d.Routines.Where(r => r.RoutinePatterns.Any()).Select(r => new RoutineDTO()
                 {
                     Name = r.Name,
                     RoutineId = r.RoutineId
