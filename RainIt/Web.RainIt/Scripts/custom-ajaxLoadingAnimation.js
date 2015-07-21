@@ -26,8 +26,9 @@
 
         var htmlCoveringDiv = '<div class="k-loading-mask"><span class="k-loading-text">'+displayText+'</span><div class="k-loading-image"></div><div class="k-loading-color"></div></div>';
 
+        
         //please review this, as it will change the container presentation.
-        this.css('position', 'relative');
+        //th.css('position', 'relative');
         this.append(htmlCoveringDiv);
 
         this.children('.k-loading-mask')
