@@ -227,7 +227,7 @@ namespace RainIt.Business
         private StatusMessage DeleteFromDatabase(int patternId)
         {
             var patternToDelete = RainItContext.UserPatternSet.Single(p => p.PatternId == patternId);
-            if(!TryDeleteRoutinePatterns(patternToDelete))
+            if(!TryDeleteRoutinePatternsFrom(patternToDelete))
                 return StatusMessage.WriteMessage("The routine patterns for this pattern could not be deleted");
             RainItContext.PatternSet.Attach(patternToDelete);
             RainItContext.PatternSet.Remove(patternToDelete);
@@ -235,17 +235,43 @@ namespace RainIt.Business
             return StatusMessage.WriteMessage("The pattern was successfully deleted");
         }
 
-        private bool TryDeleteRoutinePatterns(Pattern pattern)
+        private bool TryDeleteRoutinePatternsFrom(Pattern pattern)
         {
             var allRoutinePatterns = pattern.RoutinePatterns.ToList();
             if (allRoutinePatterns.Any())
             {
                 foreach (var routinePattern in allRoutinePatterns)
                 {
+                    var currentRoutine = routinePattern.Routine;
                     RainItContext.RoutinePatternSet.Attach(routinePattern);
                     RainItContext.RoutinePatternSet.Remove(routinePattern);
+                    TryDeleteRoutine(currentRoutine);
                 }
-                RainItContext.SaveChanges();    
+            }
+            RainItContext.SaveChanges();  
+            return true;
+        }
+
+        private bool TryDeleteRoutine(Routine routineToDelete)
+        {
+            if (!routineToDelete.RoutinePatterns.Any())
+            {
+                TryDeleteDevicesFrom(routineToDelete);
+                RainItContext.RoutineSet.Attach(routineToDelete);
+                RainItContext.RoutineSet.Remove(routineToDelete);
+            }
+            return true;
+        }
+        private bool TryDeleteDevicesFrom(Routine routine)
+        {
+            var allDevices = routine.Devices.ToList();
+            if (allDevices.Any())
+            {
+                foreach (var device in allDevices)
+                {
+                    RainItContext.Entry(routine).Collection("Devices").Load();
+                    routine.Devices.Remove(device);
+                }
             }
             return true;
         }
