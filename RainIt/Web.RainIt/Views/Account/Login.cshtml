@@ -17,16 +17,6 @@ body {
     margin-top:-10px;
 }
 </style>
-@{
-    var message = TempData["StatusMessage"] as StatusMessage;
-    if (message != null)
-    {
-        <div id="statusMessage" class="@(message.IsError ? "error-status-message" : "valid-status-message")">
-            @message.Message
-        </div>
-    }
-}
-
 <div class="container">
     @using (Html.BeginForm("Login", "Account", new { area = "", ReturnUrl = @Request.QueryString["ReturnUrl"]}, FormMethod.Post, new { @id = "logInForm", @onsubmit = "LoginProperties.Form.Validate()" }))
     {
