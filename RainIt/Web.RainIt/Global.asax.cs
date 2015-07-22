@@ -44,20 +44,27 @@ namespace Web.RainIt
         {
             if (FormsAuthentication.CookiesSupported)
             {
-                string username =
-                    FormsAuthentication.Decrypt(Request.Cookies[FormsAuthentication.FormsCookieName].Value).Name;
-
-                List<string> roles = new List<string>();
-                using (RainItContext entities = new RainItContext())
+                try
                 {
-                    var accountManager = new AccountManager(entities);
-                    roles.Add(accountManager.GetRoleFor(username));
-                }
 
-                HttpContext.Current.User =
-                    new System.Security.Principal.GenericPrincipal(
-                        new System.Security.Principal.GenericIdentity(username, "Forms"), roles.ToArray());
-                
+                    string username =
+                        FormsAuthentication.Decrypt(Request.Cookies[FormsAuthentication.FormsCookieName].Value).Name;
+
+                    List<string> roles = new List<string>();
+                    using (RainItContext entities = new RainItContext())
+                    {
+                        var accountManager = new AccountManager(entities);
+                        roles.Add(accountManager.GetRoleFor(username));
+                    }
+
+                    HttpContext.Current.User =
+                        new System.Security.Principal.GenericPrincipal(
+                            new System.Security.Principal.GenericIdentity(username, "Forms"), roles.ToArray());
+                }
+                catch (Exception ex)
+                {
+                    //TODO log exception
+                }
             }
         }
     }
