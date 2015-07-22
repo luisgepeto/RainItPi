@@ -209,7 +209,7 @@
                         var id = currentDeleteButton.siblings('.img-element').attr('data-pattern-id');
                         var parameters = {
                             ButtonName: "Delete",
-                            Message: "Are you sure you want to delete this item?<br />This action cannot be undone.",
+                            Message: "Are you sure you want to delete this pattern?<br />This will delete the pattern from any routine where it may be present and it will no longer be shown.<br /><strong>This action cannot be undone.</strong>",
                             ModalContent: currentDeleteButton.siblings('.img-element').clone(true).off('click').addClass("img-responsive img-thumbnail").removeClass("pointer")
                         };
                         ModalDeleteProperties.Initialize(parameters, makeDeleteAjaxCall, id);
