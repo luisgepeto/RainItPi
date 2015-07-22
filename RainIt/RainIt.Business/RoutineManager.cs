@@ -90,16 +90,8 @@ namespace RainIt.Business
                         UpdateDateTime = DateTime.UtcNow,
                         RoutinePatterns = new List<RoutinePattern>()
                     };
-                    try
-                    {
-                        RainItContext.SampleRoutineSet.Add(sampleRoutineOut);
-                        RainItContext.SaveChanges();
-                    }
-                    catch (Exception ex)
-                    {
-                        var newException = ex;
-                        //TODO nothing
-                    }
+                    RainItContext.SampleRoutineSet.Add(sampleRoutineOut);
+                    RainItContext.SaveChanges();
                 }
             }
             return sampleRoutineOut != null;
@@ -189,42 +181,28 @@ namespace RainIt.Business
         }
         private bool TryDeleteRoutinePatterns(SampleRoutine sampleRoutineToUpdate)
         {
-            try
+            var allRoutinePatterns = sampleRoutineToUpdate.RoutinePatterns.ToList();
+            if (allRoutinePatterns.Any())
             {
-                var allRoutinePatterns = sampleRoutineToUpdate.RoutinePatterns.ToList();
-                if (allRoutinePatterns.Any())
-                {
-                    foreach (var routinePattern in allRoutinePatterns)
-                    {
-                        RainItContext.RoutinePatternSet.Attach(routinePattern);
-                        RainItContext.RoutinePatternSet.Remove(routinePattern);
-                    }
-                    RainItContext.SaveChanges();    
-                }
-                return true;
-            }
-            catch (Exception ex)
-            {
-                return false;
-            }
-        }
-        private bool TryDeleteRoutinePatterns(Routine routineToUpdate)
-        {
-            try
-            {
-                var allRoutinePatterns = routineToUpdate.RoutinePatterns.ToList();
                 foreach (var routinePattern in allRoutinePatterns)
                 {
                     RainItContext.RoutinePatternSet.Attach(routinePattern);
                     RainItContext.RoutinePatternSet.Remove(routinePattern);
                 }
-                RainItContext.SaveChanges();
-                return true;
+                RainItContext.SaveChanges();    
             }
-            catch (Exception ex)
+            return true;
+        }
+        private bool TryDeleteRoutinePatterns(Routine routineToUpdate)
+        {
+            var allRoutinePatterns = routineToUpdate.RoutinePatterns.ToList();
+            foreach (var routinePattern in allRoutinePatterns)
             {
-                return false;
+                RainItContext.RoutinePatternSet.Attach(routinePattern);
+                RainItContext.RoutinePatternSet.Remove(routinePattern);
             }
+            RainItContext.SaveChanges();
+            return true;
         }
 
         #endregion
@@ -232,21 +210,14 @@ namespace RainIt.Business
         #region DELETE Methods
         public StatusMessage DeleteUserRoutine(int routineId)
         {
-            try
-            {
-                var routineToDelete = RainItContext.UserRoutineSet.Single(r => r.RoutineId == routineId);
-                DeleteRoutinePatterns(routineToDelete);
-                if(!TryDeleteDevices(routineToDelete))
-                    return StatusMessage.WriteError("The devices for the selected routine could not be deleted");
-                RainItContext.RoutineSet.Attach(routineToDelete);
-                RainItContext.RoutineSet.Remove(routineToDelete);
-                RainItContext.SaveChanges();
-                return StatusMessage.WriteMessage("The routine was successfully deleted");
-            }
-            catch (Exception ex)
-            {
-                return StatusMessage.WriteError("An unexpected error occurred. Please try again.");
-            }
+            var routineToDelete = RainItContext.UserRoutineSet.Single(r => r.RoutineId == routineId);
+            DeleteRoutinePatterns(routineToDelete);
+            if(!TryDeleteDevices(routineToDelete))
+                return StatusMessage.WriteError("The devices for the selected routine could not be deleted");
+            RainItContext.RoutineSet.Attach(routineToDelete);
+            RainItContext.RoutineSet.Remove(routineToDelete);
+            RainItContext.SaveChanges();
+            return StatusMessage.WriteMessage("The routine was successfully deleted");
         }
 
         public void DeleteRoutinePatterns(Routine routine)
@@ -315,24 +286,17 @@ namespace RainIt.Business
         }
         private bool TryDeleteDevices(Routine routineToUpdate)
         {
-            try
+            var allDevices = routineToUpdate.Devices.ToList();
+            if (allDevices.Any())
             {
-                var allDevices = routineToUpdate.Devices.ToList();
-                if (allDevices.Any())
+                foreach (var device in allDevices)
                 {
-                    foreach (var device in allDevices)
-                    {
-                        RainItContext.Entry(routineToUpdate).Collection("Devices").Load();
-                        routineToUpdate.Devices.Remove(device);
-                    }
-                    RainItContext.SaveChanges();
+                    RainItContext.Entry(routineToUpdate).Collection("Devices").Load();
+                    routineToUpdate.Devices.Remove(device);
                 }
-                return true;
+                RainItContext.SaveChanges();
             }
-            catch (Exception ex)
-            {
-                return false;
-            }
+            return true;
         }
 
         private bool TryUpdateDevices(Routine routine, List<Guid> deviceidentifierList)

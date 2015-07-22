@@ -53,24 +53,18 @@ namespace RainIt.Business
 
         private StatusMessage SetToTest(string base64Image, Guid deviceIdentifier)
         {
-            try
-            {
-                var currentSamplePattern =
+            var currentSamplePattern =
                 RainItContext.SamplePatternSet
-                .SingleOrDefault(sp => sp.Device.DeviceInfo.Identifier == deviceIdentifier) ??
+                    .SingleOrDefault(sp => sp.Device.DeviceInfo.Identifier == deviceIdentifier) ??
                 new SamplePattern();
-                currentSamplePattern.Base64Image = base64Image;
-                currentSamplePattern.UpdateDateTime = DateTime.UtcNow;
-                currentSamplePattern.Device =
-                    RainItContext.UserDeviceSet.Single(d => d.DeviceInfo.Identifier == deviceIdentifier);
-                currentSamplePattern.DeviceId = currentSamplePattern.Device.DeviceId;
-                RainItContext.SamplePatternSet.AddOrUpdate(currentSamplePattern);
-                RainItContext.SaveChanges();
-            }
-            catch (Exception ex)
-            {
-                return StatusMessage.WriteError("An error occurred while trying to test the selected pattern");
-            }
+            currentSamplePattern.Base64Image = base64Image;
+            currentSamplePattern.UpdateDateTime = DateTime.UtcNow;
+            currentSamplePattern.Device =
+                RainItContext.UserDeviceSet.Single(d => d.DeviceInfo.Identifier == deviceIdentifier);
+            currentSamplePattern.DeviceId = currentSamplePattern.Device.DeviceId;
+            RainItContext.SamplePatternSet.AddOrUpdate(currentSamplePattern);
+            RainItContext.SaveChanges();
+            
             return StatusMessage.WriteMessage("Successfully testing the selected pattern");
         }
 
@@ -83,36 +77,29 @@ namespace RainIt.Business
         }
         private StatusMessage AddToDatabase(ImageDetails imageDetails, PatternUploadModel patternUploadModel, string filePath)
         {
-            try
+            var patternToAdd = new Pattern()
             {
-                var patternToAdd = new Pattern()
+                BytesFileSize = imageDetails.FileSize,
+                FileType = imageDetails.FileType,
+                Height = imageDetails.Height,
+                Name = patternUploadModel.FileName,
+                Path = filePath,
+                Width = imageDetails.Width,
+                ConversionParameter = new ConversionParameter()
                 {
-                    BytesFileSize = imageDetails.FileSize,
-                    FileType = imageDetails.FileType,
-                    Height = imageDetails.Height,
-                    Name = patternUploadModel.FileName,
-                    Path = filePath,
-                    Width = imageDetails.Width,
-                    ConversionParameter = new ConversionParameter()
-                    {
-                        RWeight = patternUploadModel.ColorRelativeWeight.RWeight,
-                        GWeight = patternUploadModel.ColorRelativeWeight.GWeight,
-                        BWeight = patternUploadModel.ColorRelativeWeight.BWeight,
-                        IsInverted = patternUploadModel.BlackWhiteConversionParameters.IsInverted,
-                        ThresholdPercentage = patternUploadModel.BlackWhiteConversionParameters.ThresholdPercentage
-                    }
-                };
-                var user = RainItContext.UserSet.Single(u => u.Username == RainItContext.CurrentUser.Username);
-                patternToAdd.UserId = user.UserId;
+                    RWeight = patternUploadModel.ColorRelativeWeight.RWeight,
+                    GWeight = patternUploadModel.ColorRelativeWeight.GWeight,
+                    BWeight = patternUploadModel.ColorRelativeWeight.BWeight,
+                    IsInverted = patternUploadModel.BlackWhiteConversionParameters.IsInverted,
+                    ThresholdPercentage = patternUploadModel.BlackWhiteConversionParameters.ThresholdPercentage
+                }
+            };
+            var user = RainItContext.UserSet.Single(u => u.Username == RainItContext.CurrentUser.Username);
+            patternToAdd.UserId = user.UserId;
 
-                RainItContext.PatternSet.Add(patternToAdd);
-                RainItContext.SaveChanges();
-                return StatusMessage.WriteMessage("The pattern was successfully added to the database");
-            }
-            catch (Exception e)
-            {
-                return StatusMessage.WriteError("An unexpected error occurred. Please try again");
-            }
+            RainItContext.PatternSet.Add(patternToAdd);
+            RainItContext.SaveChanges();
+            return StatusMessage.WriteMessage("The pattern was successfully added to the database");
         }
         #endregion
 
@@ -200,28 +187,22 @@ namespace RainIt.Business
         }
         private StatusMessage UpdateInDatabase(ImageDetails imageDetails, PatternUploadModel patternUploadModel, string generatedUri)
         {
-            try
-            {
-                var patternToUpdate = RainItContext.UserPatternSet.Single(p => p.PatternId == patternUploadModel.PatternId);
-                patternToUpdate.BytesFileSize = imageDetails.FileSize;
-                patternToUpdate.FileType = imageDetails.FileType;
-                patternToUpdate.Height = imageDetails.Height;
-                patternToUpdate.Path = generatedUri;
-                patternToUpdate.Width = imageDetails.Width;
-                patternToUpdate.Name = patternUploadModel.FileName;
-                patternToUpdate.ConversionParameter.RWeight = patternUploadModel.ColorRelativeWeight.RWeight;
-                patternToUpdate.ConversionParameter.GWeight = patternUploadModel.ColorRelativeWeight.GWeight;
-                patternToUpdate.ConversionParameter.BWeight = patternUploadModel.ColorRelativeWeight.BWeight;
-                patternToUpdate.ConversionParameter.ThresholdPercentage = patternUploadModel.BlackWhiteConversionParameters.ThresholdPercentage;
-                patternToUpdate.ConversionParameter.IsInverted = patternUploadModel.BlackWhiteConversionParameters.IsInverted;
+            var patternToUpdate = RainItContext.UserPatternSet.Single(p => p.PatternId == patternUploadModel.PatternId);
+            patternToUpdate.BytesFileSize = imageDetails.FileSize;
+            patternToUpdate.FileType = imageDetails.FileType;
+            patternToUpdate.Height = imageDetails.Height;
+            patternToUpdate.Path = generatedUri;
+            patternToUpdate.Width = imageDetails.Width;
+            patternToUpdate.Name = patternUploadModel.FileName;
+            patternToUpdate.ConversionParameter.RWeight = patternUploadModel.ColorRelativeWeight.RWeight;
+            patternToUpdate.ConversionParameter.GWeight = patternUploadModel.ColorRelativeWeight.GWeight;
+            patternToUpdate.ConversionParameter.BWeight = patternUploadModel.ColorRelativeWeight.BWeight;
+            patternToUpdate.ConversionParameter.ThresholdPercentage = patternUploadModel.BlackWhiteConversionParameters.ThresholdPercentage;
+            patternToUpdate.ConversionParameter.IsInverted = patternUploadModel.BlackWhiteConversionParameters.IsInverted;
 
-                RainItContext.SaveChanges();
-                return StatusMessage.WriteMessage("The pattern was successfully updated in the database");
-            }
-            catch (Exception e)
-            {
-                return StatusMessage.WriteError("An unexpected error occurred. Please try again");
-            }
+            RainItContext.SaveChanges();
+            return StatusMessage.WriteMessage("The pattern was successfully updated in the database");
+            
         }
         #endregion
 
@@ -245,42 +226,28 @@ namespace RainIt.Business
 
         private StatusMessage DeleteFromDatabase(int patternId)
         {
-            try
-            {
-                var patternToDelete = RainItContext.UserPatternSet.Single(p => p.PatternId == patternId);
-                if(!TryDeleteRoutinePatterns(patternToDelete))
-                    return StatusMessage.WriteMessage("The routine patterns for this pattern could not be deleted");
-                RainItContext.PatternSet.Attach(patternToDelete);
-                RainItContext.PatternSet.Remove(patternToDelete);
-                RainItContext.SaveChanges();
-                return StatusMessage.WriteMessage("The pattern was successfully deleted");
-            }
-            catch (Exception ex)
-            {
-                return StatusMessage.WriteError("An unexpected error occurred. Please try again.");
-            }
+            var patternToDelete = RainItContext.UserPatternSet.Single(p => p.PatternId == patternId);
+            if(!TryDeleteRoutinePatterns(patternToDelete))
+                return StatusMessage.WriteMessage("The routine patterns for this pattern could not be deleted");
+            RainItContext.PatternSet.Attach(patternToDelete);
+            RainItContext.PatternSet.Remove(patternToDelete);
+            RainItContext.SaveChanges();
+            return StatusMessage.WriteMessage("The pattern was successfully deleted");
         }
 
         private bool TryDeleteRoutinePatterns(Pattern pattern)
         {
-            try
+            var allRoutinePatterns = pattern.RoutinePatterns.ToList();
+            if (allRoutinePatterns.Any())
             {
-                var allRoutinePatterns = pattern.RoutinePatterns.ToList();
-                if (allRoutinePatterns.Any())
+                foreach (var routinePattern in allRoutinePatterns)
                 {
-                    foreach (var routinePattern in allRoutinePatterns)
-                    {
-                        RainItContext.RoutinePatternSet.Attach(routinePattern);
-                        RainItContext.RoutinePatternSet.Remove(routinePattern);
-                    }
-                    RainItContext.SaveChanges();    
+                    RainItContext.RoutinePatternSet.Attach(routinePattern);
+                    RainItContext.RoutinePatternSet.Remove(routinePattern);
                 }
-                return true;
+                RainItContext.SaveChanges();    
             }
-            catch (Exception ex)
-            {
-                return false;
-            }
+            return true;
         }
 
         #endregion

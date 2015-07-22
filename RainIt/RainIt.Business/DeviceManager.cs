@@ -38,19 +38,13 @@ namespace RainIt.Business
 
         private StatusMessage AssignToUser(Device device, string name)
         {
-            try
-            {
-                var user = RainItContext.UserSet.Single(u => u.Username == RainItContext.CurrentUser.Username);
-                device.User = user;
-                device.Name = name;
-                device.DeviceInfo.ActivatedUTCDate = DateTime.UtcNow;
-                RainItContext.SaveChanges();
-                return StatusMessage.WriteMessage("The device was successfully assigned to the current user");
-            }
-            catch (Exception ex)
-            {
-                return StatusMessage.WriteMessage("An unexpected error occurred while trying to save the device");
-            }
+            var user = RainItContext.UserSet.Single(u => u.Username == RainItContext.CurrentUser.Username);
+            device.User = user;
+            device.Name = name;
+            device.DeviceInfo.ActivatedUTCDate = DateTime.UtcNow;
+            RainItContext.SaveChanges();
+            return StatusMessage.WriteMessage("The device was successfully assigned to the current user");
+            
         }
 
         public StatusMessage AddDevice(DeviceDTO device)
@@ -71,24 +65,17 @@ namespace RainIt.Business
 
         private StatusMessage AddDeviceToDatabase(DeviceDTO device)
         {
-            try
+            var deviceToAdd = new Device();
+            var deviceInfoForDevice = new DeviceInfo()
             {
-                var deviceToAdd = new Device();
-                var deviceInfoForDevice = new DeviceInfo()
-                {
-                    Identifier = Guid.NewGuid(),
-                    Serial = device.Serial
-                };
-                deviceToAdd.DeviceInfo = deviceInfoForDevice;
+                Identifier = Guid.NewGuid(),
+                Serial = device.Serial
+            };
+            deviceToAdd.DeviceInfo = deviceInfoForDevice;
                 
-                RainItContext.DeviceSet.Add(deviceToAdd);
-                RainItContext.SaveChanges();
-                return StatusMessage.WriteMessage("The device was successfully saved");
-            }
-            catch (Exception e)
-            {
-                return StatusMessage.WriteMessage("An unexpected error occurred while trying to save the device");
-            }
+            RainItContext.DeviceSet.Add(deviceToAdd);
+            RainItContext.SaveChanges();
+            return StatusMessage.WriteMessage("The device was successfully saved");
         }
 
         public List<DeviceDTO> GetUserDevices()

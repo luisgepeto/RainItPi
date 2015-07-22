@@ -59,30 +59,21 @@ namespace RainIt.Business
 
         private StatusMessage SaveToDatabase(Registration registration)
         {
-            try
-            {
-                var userToAdd = registration.User.ConvertTo(new Domain.Repository.User());
-                var passwordToAdd = CreatePasswordFrom(registration.User);
-                var userInfoToAdd = registration.UserInfo.ConvertTo(new Domain.Repository.UserInfo());
-                var addressToAdd = registration.Address.ConvertTo(new Domain.Repository.Address());
-                var deviceToLink = RainItContext.DeviceSet.Single(d => d.DeviceInfo.Identifier == registration.DeviceInfo.Identifier);
-                deviceToLink.DeviceInfo.ActivatedUTCDate = DateTime.UtcNow;
-                deviceToLink.Name = "Initial RainIt device for "+registration.User.Username;
-                userToAdd.UserInfo = userInfoToAdd;
-                userToAdd.Password = passwordToAdd;
-                userToAdd.Addresses = new List<Domain.Repository.Address>() {addressToAdd};
-                userToAdd.RoleId = RainItContext.RoleSet.Single(r => r.Name == "customer").RoleId;
-                userToAdd.Devices = new List<Device> {deviceToLink};
-
-                RainItContext.UserSet.Add(userToAdd);
-
-                RainItContext.SaveChanges();
-                return StatusMessage.WriteMessage("You were successfully registered.");
-            }
-            catch (Exception ex)
-            {
-                return StatusMessage.WriteError("An unexpected error occurred. Please try again.");
-            }
+            var userToAdd = registration.User.ConvertTo(new Domain.Repository.User());
+            var passwordToAdd = CreatePasswordFrom(registration.User);
+            var userInfoToAdd = registration.UserInfo.ConvertTo(new Domain.Repository.UserInfo());
+            var addressToAdd = registration.Address.ConvertTo(new Domain.Repository.Address());
+            var deviceToLink = RainItContext.DeviceSet.Single(d => d.DeviceInfo.Identifier == registration.DeviceInfo.Identifier);
+            deviceToLink.DeviceInfo.ActivatedUTCDate = DateTime.UtcNow;
+            deviceToLink.Name = "Initial RainIt device for "+registration.User.Username;
+            userToAdd.UserInfo = userInfoToAdd;
+            userToAdd.Password = passwordToAdd;
+            userToAdd.Addresses = new List<Domain.Repository.Address>() {addressToAdd};
+            userToAdd.RoleId = RainItContext.RoleSet.Single(r => r.Name == "customer").RoleId;
+            userToAdd.Devices = new List<Device> {deviceToLink};
+            RainItContext.UserSet.Add(userToAdd);
+            RainItContext.SaveChanges();
+            return StatusMessage.WriteMessage("You were successfully registered.");
         }
 
         private Password CreatePasswordFrom(RainIt.Domain.DTO.User userToAdd)
@@ -101,23 +92,17 @@ namespace RainIt.Business
 
         public StatusMessage Authenticate(Login login)
         {
-            try
-            {
-                login.Username = login.Username.Trim();
-                var user = RainItContext.UserSet.SingleOrDefault(u => u.Username.Equals(login.Username));
-                if(user == null) return StatusMessage.WriteError("Your username and password combination is incorrect. Please review your credentials.");
+            login.Username = login.Username.Trim();
+            var user = RainItContext.UserSet.SingleOrDefault(u => u.Username.Equals(login.Username));
+            if(user == null) return StatusMessage.WriteError("Your username and password combination is incorrect. Please review your credentials.");
                 
-                var concatenatedPass = user.Password.Salt + login.Password;
-                var generatedHash = CryptoServiceManager.GetHashFrom(concatenatedPass);
-                var arePasswordsEqual = generatedHash.Equals(user.Password.Hash);
+            var concatenatedPass = user.Password.Salt + login.Password;
+            var generatedHash = CryptoServiceManager.GetHashFrom(concatenatedPass);
+            var arePasswordsEqual = generatedHash.Equals(user.Password.Hash);
                 
-                return arePasswordsEqual? StatusMessage.WriteMessage("You were successfully logged in") :
-                    StatusMessage.WriteError("Your username and password combination is incorrect. Please review your credentials.");
-            }
-            catch (Exception ex)
-            {
-               return StatusMessage.WriteError("An unexpected error has occurred. Please try again later.");
-            }
+            return arePasswordsEqual? StatusMessage.WriteMessage("You were successfully logged in") :
+                StatusMessage.WriteError("Your username and password combination is incorrect. Please review your credentials.");
+           
         }
 
         public string GetRoleFor(string username)
