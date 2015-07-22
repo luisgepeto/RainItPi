@@ -28,10 +28,7 @@
             }
         </div>
         <div class="col-md-2">
-            @using (Html.BeginForm("Index", "Routine", new {area = "Configuration"}, FormMethod.Get, new {@id = "cancelForm"}))
-            {
-            }
-            <input type="button" value="Cancel" name="Cancel" id="Cancel" class="btn btn-danger btn-block"/>
+            <input type="button" value="Cancel" name="Cancel" id="Cancel" class="btn btn-danger btn-block" onclick="history.go(-1)"/>
         </div>
         <div class="col-md-2"></div>
         <div class="col-md-2">
@@ -496,18 +493,6 @@
             return properties;
         }());
 
-        var cancelButton = (function () {
-            var properties = {};
-            function addClickListener() {
-                $('#Cancel').click(function () {
-                    $('#cancelForm').submit();
-                });
-            }
-            properties.Initialize = function () {
-                addClickListener();
-            }
-            return properties;
-        }());
 
         RoutineAddProperties.SetupPage = function () {
             routineBuilder.Initialize();
@@ -515,7 +500,6 @@
             addRoutine.AddClickListener();
             multiselectExtender.Initialize();
             testButton.Initialize();
-            cancelButton.Initialize();
         }
     }());
     $(document).ready(function () {

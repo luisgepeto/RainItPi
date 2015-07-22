@@ -182,10 +182,7 @@
             <div class="row">
                 <input type="file" id="filePicker"/>
                 <button type="submit" name="add" id="Add" value="add" class="btn btn-success">@(Model.PatternId != 0 ? "Update": "Add")</button>@Html.Raw(" ")
-                <button type="submit" name="cancel" id="Cancel" value="cancel" class="btn btn-danger">Cancel</button>
-                @using (Html.BeginForm("Index", "Pattern", new {area = "Configuration"}, FormMethod.Get, new {@style = "display:none;", @id = "cancelForm"}))
-                {
-                }
+                <button type="submit" name="cancel" id="Cancel" value="cancel" class="btn btn-danger" onclick="history.go(-1)">Cancel</button>
             </div>
         </div>
         <div class="col-md-8">
@@ -600,18 +597,6 @@
             return properties;
         }());
         //Buttons
-        var cancelButton = (function () {
-            var properties = {};
-            function addClickListener() {
-                $('#Cancel').click(function () {
-                    $('#cancelForm').submit();
-                });
-            }
-            properties.Initialize = function () {
-                addClickListener();
-            }
-            return properties;
-        }());
         var filePicker = (function () {
             var properties = {};
             var allowedFileExtensions = ['jpg', 'gif', 'png'];
@@ -978,7 +963,6 @@
             isInverted.Initialize();
             //Buttons
             addButton.Initialize();
-            cancelButton.Initialize();
             filePicker.Initialize();
             testButton.Initialize();
             //Image Holders

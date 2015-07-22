@@ -20,7 +20,7 @@
 @using (Html.BeginForm("Add", "Pattern", new {area = "Configuration"}, FormMethod.Get, new {id = "addPatternForm"}))
 {
 }
-@using (Html.BeginForm("Edit", "Pattern", new { area = "Configuration"}, FormMethod.Get, new { id = "editPatternForm" }))
+@using (Html.BeginForm("Edit", "Pattern", new { area = "Configuration", id="-1"}, FormMethod.Get, new { id = "editPatternForm" }))
 {
 }
 
@@ -108,8 +108,8 @@
 
                 function submitForm(imageId) {
                     var action = $('#editPatternForm').attr("action");
-                    action = action + "/" + imageId;
-                    $('#editPatternForm').attr("action", action);
+                    var newAction = action.replace("-1", imageId);
+                    $('#editPatternForm').attr("action", newAction);
                     $('#editPatternForm').submit();
                 }
 
