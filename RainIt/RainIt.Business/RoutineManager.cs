@@ -134,8 +134,17 @@ namespace RainIt.Business
                         PatternDTO = new PatternDTO()
                         {
                             PatternId = rp.PatternId ?? 0,
-                            Path = rp.Pattern.Path
-                        }
+                            Path = rp.Pattern.Path,
+                            ConversionParameterDTO = new ConversionParameterDTO()
+                            {
+                                BWeight = rp.Pattern.ConversionParameter.BWeight,
+                                GWeight = rp.Pattern.ConversionParameter.GWeight,
+                                RWeight = rp.Pattern.ConversionParameter.RWeight,
+                                IsInverted = rp.Pattern.ConversionParameter.IsInverted,
+                                ThresholdPercentage = rp.Pattern.ConversionParameter.ThresholdPercentage
+                            }
+                        },
+                        Repetitions = rp.Repetitions
                     }).ToList()
                 }).ToList();
         }
