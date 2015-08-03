@@ -5,9 +5,11 @@ Created on Aug 3, 2015
 '''
 from rain_it.common import adapter_util
 from rain_it import requests
+import json
 
-def get_pattern_as_matrix(pattern_id, token):
+def get_pattern_as_matrix(pattern_id, conversion_parameter, token):
     url = "http://devrainitservices.azurewebsites.net/api/Pattern/Transform?patternId="+str(pattern_id)
     authorization_header = adapter_util.get_authorization_header(token)
-    r = requests.get(url, headers= authorization_header)
+    authorization_header["content-type"]="application/json"
+    r = requests.post(url, headers= authorization_header, data=json.dumps(conversion_parameter))
     return r.json()

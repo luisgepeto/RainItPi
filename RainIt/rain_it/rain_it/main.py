@@ -20,11 +20,12 @@ def authenticate_to_service():
 def write_to_file_from_service():
     authentication_response = authenticate_to_service()
     if authentication_response.login_status == 1:
-        active_routines = routine_adapter.get_active(authentication_response.token)        
-        for routine in active_routines:            
-            routine_path = file_util.make_new_dir(file_util.get_root_path(), "Routines\\"+str(routine.routine_id))
+        active_routines = routine_adapter.get_active(authentication_response.token)
+        routines_dir = file_util.make_new_dir(file_util.get_root_path(), "Routines")
+        for routine in active_routines:
+            routine_path = file_util.make_new_dir(routines_dir, str(routine.routine_id))
             for routine_pattern in routine.routine_pattern_list:
-                pattern_as_matrix = pattern_adapter.get_pattern_as_matrix(routine_pattern.pattern.pattern_id, authentication_response.token)
+                pattern_as_matrix = pattern_adapter.get_pattern_as_matrix(routine_pattern.pattern.pattern_id,routine_pattern.pattern.conversion_parameter.get_as_dictionary(), authentication_response.token)
                 file_util.write_new_file(routine_path, str(routine_pattern.routine_pattern_id)+"_"+str(routine_pattern.repetitions), str(pattern_as_matrix))
                     
  
