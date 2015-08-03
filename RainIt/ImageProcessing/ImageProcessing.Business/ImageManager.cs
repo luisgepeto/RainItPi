@@ -74,7 +74,7 @@ namespace ImageProcessing.Business
 				for (int j = 0; j < bitmap.Width; j++) {
 					var currentPixel = bitmap.GetPixel (j, i);
 					var booleanCurrentPixel = GetBoolean (currentPixel);
-					newBooleanMatrix [i, j] = booleanCurrentPixel;
+					newBooleanMatrix [j, i] = booleanCurrentPixel;
 				}
 			}
 			return newBooleanMatrix;

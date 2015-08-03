@@ -23,9 +23,9 @@ namespace Web.Services.Controllers
             ImageManager = imageManager;
         }
 
-        [HttpGet]
+        [HttpPost]
         [WebApiOutputCache(120, 60, false)]
-        public IHttpActionResult Transform(int patternId, [FromBody] ConversionParameterDTO conversionParameterDTO)
+        public IHttpActionResult Transform([FromUri] int patternId, ConversionParameterDTO conversionParameterDTO)
         {
             var patternUrl = PatternManager.GetPatternUrl(patternId);
             var imageToTransform = ImageManager.LoadFromUrl(patternUrl);
