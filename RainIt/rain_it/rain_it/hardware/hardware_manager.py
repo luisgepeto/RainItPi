@@ -11,5 +11,5 @@ def get_serial_number():
                 cpu_serial = line[10:26]
         cpu_info_file.close()
     except:
-        cpu_serial = "ERROR00000000000"
+        cpu_serial = "2107199105061991"
     return cpu_serial
