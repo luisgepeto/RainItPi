@@ -5,6 +5,8 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using ImageProcessing.Business.Interfaces;
+using ImageProcessing.Domain;
+using RainIt.Domain.DTO;
 using RainIt.Interfaces.Business;
 using Web.Infrastructure.Attributes;
 
@@ -23,11 +25,15 @@ namespace Web.Services.Controllers
 
         [HttpGet]
         [WebApiOutputCache(120, 60, false)]
-        public IHttpActionResult Transform(int patternId)
+        public IHttpActionResult Transform(int patternId, [FromBody] ConversionParameterDTO conversionParameterDTO)
         {
             var patternUrl = PatternManager.GetPatternUrl(patternId);
             var imageToTransform = ImageManager.LoadFromUrl(patternUrl);
-            var matrixToDisplay = ImageManager.GetUpsideDownBooleanMatrix(imageToTransform);
+            var blackWhiteImage = ImageManager.GetBlackWhite(imageToTransform, conversionParameterDTO.IsInverted,
+                conversionParameterDTO.ThresholdPercentage,
+                new ColorRelativeWeight((int)conversionParameterDTO.RWeight, (int)conversionParameterDTO.GWeight,
+                    (int)conversionParameterDTO.BWeight));
+            var matrixToDisplay = ImageManager.GetUpsideDownBooleanMatrix(blackWhiteImage);
             return Ok(matrixToDisplay);
         }
 
