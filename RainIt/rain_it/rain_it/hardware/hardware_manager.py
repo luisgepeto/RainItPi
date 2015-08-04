@@ -1,6 +1,9 @@
 '''
 This will contain functions that will interact with the raspberry hardware
+CLK refers to the clock that shifts the previous memory input to the next
+LATCH refers to the clock that makes the internal state to be displayed
 '''
+
 import math
 
 def get_serial_number():
@@ -15,15 +18,33 @@ def get_serial_number():
         cpu_serial = "2607199105061990"
     return cpu_serial
 
-
-def write_line(line):
+def set_output_pin_state(bit):
+    print(bit,)
     pass
+
+def clk_positive_transition():
+    pass
+
+def latch_positive_transition():
+    pass
+
+def push_bit(bit):
+    set_output_pin_state(bit)
+    clk_positive_transition()
+    
+def write_line(line):
+    for bit in line:
+        push_bit(bit)
+        #verify if after pushing bit we need to wait a while
+    return True
 
 def flush_line():
-    pass
+    latch_positive_transition()
+    print("")
+    return True
 
-def print_matrix(matrix):
-    matrix_width = len(matrix[0])    
+def print_matrix(matrix):        
     for row in matrix:        
         write_line(row)
-        flush_line()    
+        #missing setting of wait time between each line being displayed 
+        flush_line()
