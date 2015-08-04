@@ -1,7 +1,10 @@
-from domain.conversion_parameter import ConversionParameter
-
-class Pattern(object):
-    def __init__(self, pattern_id, path, conversion_parameter):
-        self.pattern_id = pattern_id
-        self.path = path
-        self.conversion_parameter = ConversionParameter(conversion_parameter["RWeight"],conversion_parameter["GWeight"], conversion_parameter["BWeight"], conversion_parameter["IsInverted"], conversion_parameter["ThresholdPercentage"])
+'''
+This is the pattern object 
+'''
+import ast
+class Pattern(object):   
+    
+    def __init__(self, pattern_id, pattern_as_matrix):
+        self.pattern_id = int(pattern_id)
+        self.pattern_as_matrix = ast.literal_eval(pattern_as_matrix)       
+        

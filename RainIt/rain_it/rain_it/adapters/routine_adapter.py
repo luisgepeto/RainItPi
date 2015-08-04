@@ -3,7 +3,7 @@ This file will have the methods defined for calling the routine methods
 '''
 from rain_it import requests
 from rain_it.common import adapter_util
-from rain_it.domain.routine import Routine
+from rain_it.domain.routine_response import Routine
 
 def get_active(token):
     url = "http://devrainitservices.azurewebsites.net/api/Routine/AllActive"
