@@ -16,17 +16,14 @@ def get_serial_number():
     return cpu_serial
 
 
-def write_byte(byte):
+def write_line(line):
     pass
 
 def flush_line():
     pass
 
 def print_matrix(matrix):
-    matrix_width = len(matrix[0])
-    total_byte_groups = math.ceil(matrix_width/8.0)
+    matrix_width = len(matrix[0])    
     for row in matrix:        
-        for i in range(total_byte_groups):
-            current_byte = row[8*i:8*i+8]
-            write_byte(current_byte)
+        write_line(row)
         flush_line()    
