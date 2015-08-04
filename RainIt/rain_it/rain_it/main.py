@@ -10,6 +10,7 @@ from rain_it.common import file_util
 from rain_it.domain.pattern import Pattern
 from rain_it.domain.routine_pattern import RoutinePattern
 from rain_it.domain.routine import Routine
+from rain_it.domain import routine_pattern
 
     
 def authenticate_to_service():
@@ -17,17 +18,15 @@ def authenticate_to_service():
     authentication_response = login_adapter.authenticate(cpu_serial)
     return authentication_response
 
-def write_to_file_from_service():
-    authentication_response = authenticate_to_service()
-    if authentication_response.login_status == 1:
-        active_routines = routine_adapter.get_active(authentication_response.token)
-        routines_dir = file_util.make_new_dir(file_util.get_routine_root_path())
-        for routine in active_routines:
-            routine_path = file_util.make_new_dir_under(routines_dir, str(routine.routine_id))
-            for routine_pattern in routine.routine_pattern_list:
-                pattern_as_matrix = pattern_adapter.get_pattern_as_matrix(routine_pattern.pattern.pattern_id,routine_pattern.pattern.conversion_parameter.get_as_dictionary(), authentication_response.token)
-                file_util.write_new_file(routine_path, str(routine_pattern.routine_pattern_id)+"_"+str(routine_pattern.pattern.pattern_id)+"_"+str(routine_pattern.repetitions), str(pattern_as_matrix))
-                
+def write_to_file_from_service(token):    
+    active_routines = routine_adapter.get_active(token)
+    routines_dir = file_util.make_new_dir(file_util.get_routine_root_path())
+    for routine in active_routines:
+        routine_path = file_util.make_new_dir_under(routines_dir, str(routine.routine_id))
+        for routine_pattern in routine.routine_pattern_list:
+            pattern_as_matrix = pattern_adapter.get_pattern_as_matrix(routine_pattern.pattern.pattern_id,routine_pattern.pattern.conversion_parameter.get_as_dictionary(), token)
+            file_util.write_new_file(routine_path, str(routine_pattern.routine_pattern_id)+"_"+str(routine_pattern.pattern.pattern_id)+"_"+str(routine_pattern.repetitions), str(pattern_as_matrix))
+    return True
 
 def get_routine_list_from_file():
     routine_list = []
@@ -47,13 +46,22 @@ def get_routine_list_from_file():
                 routine_pattern_list.append(current_routine_pattern)
             current_routine = Routine(routine_id, routine_pattern_list)
             routine_list.append(current_routine)
-    return routine_list              
+    return routine_list
  
- 
+def output_routine_list(routine_list):
+    for routine in routine_list:
+        for routine_pattern in routine.routine_pattern_list:
+            for i in range(0, routine_pattern.repetitions):                
+                hardware_manager.print_matrix(routine_pattern.pattern.pattern_as_matrix)
+    return True
 
-def initialize():        
-    #write_to_file_from_service()
-    get_routine_list_from_file()
+def initialize():
+    authentication_response = authenticate_to_service()
+    if authentication_response.login_status == 1:        
+        write_to_file_from_service(authentication_response.token)
+    routine_list = get_routine_list_from_file()
+    if len(routine_list) > 0 : 
+        output_routine_list(routine_list)
               
     
 

@@ -13,3 +13,6 @@ def get_serial_number():
     except:
         cpu_serial = "2607199105061990"
     return cpu_serial
+
+def print_matrix(matrix):
+    print("Missing implementation of printing matrix of", len(matrix), "px x",len(matrix[0]),"px" )
