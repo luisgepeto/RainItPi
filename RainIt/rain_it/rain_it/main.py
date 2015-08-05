@@ -19,14 +19,14 @@ def authenticate_to_service():
     authentication_response = login_adapter.authenticate(cpu_serial)
     return authentication_response
 
-def write_to_file_from_service():    
+def write_to_file_from_service(service_function, dir_path):    
     authentication_response = authenticate_to_service()
     if authentication_response.login_status == 1:
-        active_routines = routine_adapter.get_active(authentication_response.token)
-        routines_dir = file_util.make_new_dir(file_util.get_routine_root_path())
-        file_util.add_timestamp_file(routines_dir)
+        active_routines = service_function(authentication_response.token)
+        resulting_dir = file_util.make_new_dir(dir_path)        
+        file_util.add_timestamp_file(resulting_dir)
         for routine in active_routines:
-            routine_path = file_util.make_new_dir_under(routines_dir, str(routine.routine_id))
+            routine_path = file_util.make_new_dir_under(resulting_dir, str(routine.routine_id))
             for routine_pattern in routine.routine_pattern_list:
                 pattern_as_matrix = pattern_adapter.get_pattern_as_matrix(routine_pattern.pattern.pattern_id,routine_pattern.pattern.conversion_parameter.get_as_dictionary(), authentication_response.token)
                 file_util.write_new_file(routine_path, str(routine_pattern.routine_pattern_id)+"_"+str(routine_pattern.pattern.pattern_id)+"_"+str(routine_pattern.repetitions), str(pattern_as_matrix))
@@ -62,20 +62,21 @@ def output_routine_list(routine_list):
                 hardware_manager.print_matrix(routine_pattern.pattern.pattern_as_matrix)
     return True
 
-def is_routine_dir_valid():
-    routine_root_dir = file_util.get_routine_root_path()
-    routine_timestamp = file_util.get_timestamp_from(routine_root_dir)
+def is_routine_dir_valid(dir_path):    
+    routine_timestamp = file_util.get_timestamp_from(dir_path)
     if routine_timestamp + timedelta(minutes = 1) < datetime.utcnow():
         return False    
     return True
 
+
 def initialize():
-    routine_from_file = []
+    active_routines_dir = file_util.get_routine_root_path()
+    active_routines = []    
     while True:
-        output_routine_list(routine_from_file)
-        if not is_routine_dir_valid():
-            write_to_file_from_service()
-            routine_from_file = get_routine_list_from_file()
+        output_routine_list(active_routines)
+        if not is_routine_dir_valid(active_routines_dir):            
+            write_to_file_from_service(routine_adapter.get_active_routines, active_routines_dir)
+            active_routines = get_routine_list_from_file()
             
             
 

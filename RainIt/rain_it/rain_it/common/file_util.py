@@ -6,6 +6,12 @@ import shutil
 def get_routine_root_path():
     return os.path.join(os.path.abspath(os.sep), "home/pi/Routines")
 
+def get_test_routine_root_path():
+    return os.path.join(os.path.abspath(os.sep), "home/pi/Test/Routines")
+
+def get_test_pattern_root_path():
+    return os.path.join(os.path.abspath(os.sep), "home/pi/Test/Pattern")
+
 def make_new_dir(new_dir_path):    
     if is_dir_existent(new_dir_path):
         shutil.rmtree(new_dir_path, ignore_errors=True)
