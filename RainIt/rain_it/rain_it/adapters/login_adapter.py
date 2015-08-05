@@ -1,7 +1,7 @@
 '''
 This adapter will contain the functions needed for the service authentication
 '''
-from rain_it import requests
+import requests
 from domain.authentication_response import Authentication_Response
 
 def authenticate(serial):

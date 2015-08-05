@@ -1,10 +1,10 @@
 
 import os, datetime, time
-from pip._vendor.distlib._backport import shutil
-from pip.utils import file_contents
+import shutil
+
 
 def get_routine_root_path():
-    return os.path.join(os.path.abspath(os.sep), "Routines")
+    return os.path.join(os.path.abspath(os.sep), "home/pi/Routines")
 
 def make_new_dir(new_dir_path):    
     if is_dir_existent(new_dir_path):
@@ -35,7 +35,7 @@ def read_file(dir_path, file_name):
         new_file = open(file_path, "r+")
         file_content = new_file.read()
         new_file.close()
-    except FileNotFoundError:
+    except (OSError, IOError):
         pass
     return file_content
 

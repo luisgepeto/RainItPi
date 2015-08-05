@@ -3,14 +3,14 @@ This is an example of a project source file.
 All other source files must be in this directory
 
 '''
-from rain_it.hardware import hardware_manager
-from rain_it.adapters import login_adapter, routine_adapter, pattern_adapter
+from hardware import hardware_manager
+from adapters import login_adapter, routine_adapter, pattern_adapter
 from datetime import datetime, timedelta
-from rain_it.common import file_util
-from rain_it.domain.pattern import Pattern
-from rain_it.domain.routine_pattern import RoutinePattern
-from rain_it.domain.routine import Routine
-from rain_it.domain import routine_pattern
+from common import file_util
+from domain.pattern import Pattern
+from domain.routine_pattern import RoutinePattern
+from domain.routine import Routine
+from domain import routine_pattern
 
     
 def authenticate_to_service():
@@ -37,7 +37,7 @@ def get_routine_list_from_file():
     if file_util.is_dir_existent(routine_root_dir):
         all_routines = file_util.get_all_dir_under(routine_root_dir)
         for routine_dir in all_routines:
-            routine_id =  routine_dir.split("\\")[len(routine_dir.split("\\"))-1]                     
+            routine_id =  routine_dir.split("/")[len(routine_dir.split("/"))-1]                     
             all_routine_patterns = file_util.get_all_files_under(routine_dir)
             routine_pattern_list = []
             for routine_pattern in all_routine_patterns:
@@ -68,7 +68,7 @@ def is_routine_dir_valid():
 
 def initialize():
     while True:
-        if not is_routine_dir_valid():
+        if not is_routine_dir_valid():            
             write_to_file_from_service()
         output_routine_list(get_routine_list_from_file())    
 

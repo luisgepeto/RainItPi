@@ -3,8 +3,8 @@ Created on Aug 3, 2015
 
 @author: luis
 '''
-from rain_it.common import adapter_util
-from rain_it import requests
+from common import adapter_util
+import requests
 import json
 
 def get_pattern_as_matrix(pattern_id, conversion_parameter, token):
