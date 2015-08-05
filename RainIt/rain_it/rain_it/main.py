@@ -19,7 +19,27 @@ def authenticate_to_service():
     authentication_response = login_adapter.authenticate(cpu_serial)
     return authentication_response
 
-def try_write_to_file_from_service(service_function, dir_path):    
+def try_write_pattern_to_file_from_service(service_function, dir_path):
+    authentication_response = authenticate_to_service()
+    if authentication_response.login_status == 1:
+        pattern_as_matrix = service_function(authentication_response.token)
+        resulting_dir = file_util.make_new_dir(dir_path)        
+        file_util.add_timestamp_file(resulting_dir)
+        if pattern_as_matrix is not None:
+            file_util.write_new_file(resulting_dir, "1_1_1", str(pattern_as_matrix))                        
+    else:
+        return False            
+    return True
+
+def get_pattern_from_file(pattern_root_dir):
+    all_patterns = file_util.get_all_files_under(pattern_root_dir)
+    all_patterns.remove("timestamp")    
+    if all_patterns:
+        return Pattern(1, file_util.read_file(pattern_root_dir, all_patterns[0]))
+    return None
+        
+
+def try_write_routine_to_file_from_service(service_function, dir_path):    
     authentication_response = authenticate_to_service()
     if authentication_response.login_status == 1:
         active_routines = service_function(authentication_response.token)
@@ -61,7 +81,7 @@ def output_routine_list(routine_list):
         for routine_pattern in routine.routine_pattern_list:
             for i in range(0, routine_pattern.repetitions):                
                 hardware_manager.print_matrix(routine_pattern.pattern.pattern_as_matrix)
-    return True
+    return True 
 
 def is_dir_valid(dir_path):    
     routine_timestamp = file_util.get_timestamp_from(dir_path)
@@ -73,20 +93,28 @@ def is_dir_valid(dir_path):
 def initialize():
     active_routines_dir = file_util.get_routine_root_path()
     active_routines = []    
-    test_routine_dir = file_util.get_test_routine_root_path()
+    test_routines_dir = file_util.get_test_routine_root_path()
     test_routines = []
+    test_patterns_dir = file_util.get_test_pattern_root_path()
+    test_pattern = None
     while True:
-        if test_routines:            
+        if test_pattern is not None:
+            hardware_manager.print_matrix(test_pattern.pattern_as_matrix)
+        elif test_routines:            
             output_routine_list(test_routines)
         elif active_routines:            
             output_routine_list(active_routines)
         if not is_dir_valid(active_routines_dir):            
-            try_write_to_file_from_service(routine_adapter.get_active_routines, active_routines_dir)
+            try_write_routine_to_file_from_service(routine_adapter.get_active_routines, active_routines_dir)
             active_routines = get_routine_list_from_file(active_routines_dir)
-        if not is_dir_valid(test_routine_dir):
+        if not is_dir_valid(test_routines_dir):
             test_routines = []
-            if try_write_to_file_from_service(routine_adapter.get_test_routine_as_list, test_routine_dir):                
-                test_routines = get_routine_list_from_file(test_routine_dir)
+            if try_write_routine_to_file_from_service(routine_adapter.get_test_routine_as_list, test_routines_dir):                
+                test_routines = get_routine_list_from_file(test_routines_dir)
+        if not is_dir_valid(test_patterns_dir):
+            test_pattern = None             
+            if try_write_pattern_to_file_from_service(pattern_adapter.get_test_pattern_as_matrix, test_patterns_dir):                
+                test_pattern = get_pattern_from_file(test_patterns_dir)
 
 if __name__ == '__main__':
     initialize()

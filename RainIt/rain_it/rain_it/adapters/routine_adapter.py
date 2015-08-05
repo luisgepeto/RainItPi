@@ -6,7 +6,7 @@ from common import adapter_util
 from domain.routine_response import Routine
 
 def get_active_routines(token):
-    json_result = adapter_util.make_get_service_call("http://localhost:8723/api/routine/allActive", token)
+    json_result = adapter_util.make_get_service_call("http://devrainitservices.azurewebsites.net/api/routine/allActive", token)
     routine_list = []
     if json_result is None:
         return routine_list
@@ -16,10 +16,10 @@ def get_active_routines(token):
     return routine_list
 
 def get_test_routine_as_list(token):    
-    json_result = adapter_util.make_get_service_call("http://localhost:8723/api/routine/test", token)
+    json_result = adapter_util.make_get_service_call("http://devrainitservices.azurewebsites.net/api/routine/test", token)
     routine_list = []
     if json_result is None:
         return routine_list
     new_routine = Routine(json_result["RoutineId"], json_result["RoutinePatternDTOs"])
     routine_list.append(new_routine)
-    return routine_list
+    return routine_list    

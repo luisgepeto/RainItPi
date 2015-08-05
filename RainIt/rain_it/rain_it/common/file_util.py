@@ -2,7 +2,6 @@
 import os, datetime, time
 import shutil
 
-
 def get_routine_root_path():
     return os.path.join(os.path.abspath(os.sep), "home/pi/Routines")
 
