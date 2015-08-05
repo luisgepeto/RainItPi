@@ -22,9 +22,10 @@ def authenticate_to_service():
 def try_write_pattern_to_file_from_service(service_function, dir_path):
     authentication_response = authenticate_to_service()
     if authentication_response.login_status == 1:
-        pattern_as_matrix = service_function(authentication_response.token)
+        json_result = service_function(authentication_response.token)
+        pattern_as_matrix = json_result["patternAsMatrix"]
         resulting_dir = file_util.make_new_dir(dir_path)        
-        file_util.add_timestamp_file(resulting_dir)
+        file_util.add_timestamp_file(resulting_dir, timestamp=json_result["SampleTimeStamp"])
         if pattern_as_matrix is not None:
             file_util.write_new_file(resulting_dir, "1_1_1", str(pattern_as_matrix))                        
     else:

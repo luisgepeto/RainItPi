@@ -53,14 +53,16 @@ def get_all_dir_under(dir_path):
 def get_all_files_under(dir_path):
     return [ file_name for file_name in os.listdir(dir_path) if os.path.isfile(os.path.join(dir_path,file_name))]
 
-def add_timestamp_file(dir_path):
-    current_utc_date = str(datetime.datetime.utcnow())
+def add_timestamp_file(dir_path, timestamp=""):
+    current_utc_date = datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S.%f")
+    if not timestamp == "":
+        current_utc_date = timestamp
     print("Adding timestamp file at", current_utc_date)
     write_new_file(dir_path, "timestamp", current_utc_date)
 
 def get_timestamp_from(dir_path):
     timestamp_from_file = read_file(dir_path, "timestamp")
     if timestamp_from_file == "" :   
-        timestamp_from_file = "1970-01-01 00:00:00.0"       
-    return datetime.datetime.fromtimestamp(time.mktime(time.strptime(timestamp_from_file, "%Y-%m-%d %H:%M:%S.%f")))
+        timestamp_from_file = "1970-01-01T00:00:00.0"       
+    return datetime.datetime.fromtimestamp(time.mktime(time.strptime(timestamp_from_file, "%Y-%m-%dT%H:%M:%S.%f")))
         
