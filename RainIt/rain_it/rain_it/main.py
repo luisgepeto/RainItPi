@@ -12,6 +12,7 @@ from domain.routine_pattern import RoutinePattern
 from domain.routine import Routine
 from domain import routine_pattern
 
+
     
 def authenticate_to_service():
     cpu_serial = hardware_manager.get_serial_number()
@@ -64,16 +65,19 @@ def output_routine_list(routine_list):
 def is_routine_dir_valid():
     routine_root_dir = file_util.get_routine_root_path()
     routine_timestamp = file_util.get_timestamp_from(routine_root_dir)
-    if routine_timestamp + timedelta(minutes = 5) < datetime.utcnow():
-        print("Replacing file at", str(datetime.utcnow()))        
+    if routine_timestamp + timedelta(minutes = 1) < datetime.utcnow():
         return False    
     return True
 
 def initialize():
+    routine_from_file = []
     while True:
-        if not is_routine_dir_valid():            
+        output_routine_list(routine_from_file)
+        if not is_routine_dir_valid():
             write_to_file_from_service()
-        output_routine_list(get_routine_list_from_file())    
+            routine_from_file = get_routine_list_from_file()
+            
+            
 
 if __name__ == '__main__':
     initialize()

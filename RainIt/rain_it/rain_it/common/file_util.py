@@ -50,6 +50,7 @@ def get_all_files_under(dir_path):
 
 def add_timestamp_file(dir_path):
     current_utc_date = str(datetime.datetime.utcnow())
+    print("Adding timestamp file at", current_utc_date)
     write_new_file(dir_path, "timestamp", current_utc_date)
 
 def get_timestamp_from(dir_path):
