@@ -4,8 +4,6 @@ CLK refers to the clock that shifts the previous memory input to the next
 LATCH refers to the clock that makes the internal state to be displayed
 '''
 
-import math
-
 def get_serial_number():
     cpu_serial = "0000000000000000"
     try:
@@ -19,7 +17,7 @@ def get_serial_number():
     return cpu_serial
 
 def set_output_pin_state(bit):
-    print(bit,)
+    print(int(bit), end="")
     pass
 
 def clk_positive_transition():

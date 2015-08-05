@@ -37,7 +37,10 @@ def get_routine_list_from_file():
     if file_util.is_dir_existent(routine_root_dir):
         all_routines = file_util.get_all_dir_under(routine_root_dir)
         for routine_dir in all_routines:
-            routine_id =  routine_dir.split("/")[len(routine_dir.split("/"))-1]                     
+            split_character = "/"
+            if "\\" in routine_dir:
+                split_character="\\"
+            routine_id =  routine_dir.split(split_character)[len(routine_dir.split(split_character))-1]                     
             all_routine_patterns = file_util.get_all_files_under(routine_dir)
             routine_pattern_list = []
             for routine_pattern in all_routine_patterns:
