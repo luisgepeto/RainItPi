@@ -169,7 +169,8 @@ namespace RainIt.Business
                 .Select(sp => new PatternDTO()
                 {
                     PatternId = sp.SamplePatternId,
-                    Base64Image = sp.Base64Image
+                    Base64Image = sp.Base64Image,
+                    SampleTimeStamp = sp.UpdateUTCDateTime
                 }).FirstOrDefault();
         }
         #endregion
