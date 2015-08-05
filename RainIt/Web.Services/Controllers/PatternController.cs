@@ -44,13 +44,13 @@ namespace Web.Services.Controllers
         public IHttpActionResult GetTest()
         {
             bool[,] patternAsMatrix = null;
-            var testPattern = PatternManager.GetTestPattern();
+            var testPattern = PatternManager.GetTestPattern() ?? new PatternDTO();
             ImageDetails outImage;
-            if (testPattern!= null && ImageManager.TryParseImage(testPattern.Base64Image, out outImage))
+            if (ImageManager.TryParseImage(testPattern.Base64Image, out outImage))
             {
                 patternAsMatrix = ImageManager.GetUpsideDownBooleanMatrix(outImage.Image);
             }
-            return Ok(patternAsMatrix);
+            return Ok(new {patternAsMatrix, testPattern.SampleTimeStamp});
         }
 
 

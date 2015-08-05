@@ -176,7 +176,8 @@ namespace RainIt.Business
                             }
                         },
                         Repetitions = rp.Repetitions
-                    }).ToList()
+                    }).ToList(),
+                    SampleTimeStamp = r.UpdateUTCDateTime
                 }).FirstOrDefault();
         }
 

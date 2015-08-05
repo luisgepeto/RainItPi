@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace RainIt.Domain.DTO
 {
@@ -8,6 +9,7 @@ namespace RainIt.Domain.DTO
         public string Description { get; set; }
         public string Name { get; set; }
         public List<RoutinePatternDTO> RoutinePatternDTOs { get; set; }
-        public List<DeviceDTO> DeviceDTOs { get; set; } 
+        public List<DeviceDTO> DeviceDTOs { get; set; }
+        public DateTime? SampleTimeStamp { get; set; }
     }
 }

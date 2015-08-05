@@ -1,4 +1,6 @@
-﻿namespace RainIt.Domain.DTO
+﻿using System;
+
+namespace RainIt.Domain.DTO
 {
     public class PatternDTO
     {
@@ -9,5 +11,6 @@
         public int Width { get; set; }
         public int Height { get; set; }
         public ConversionParameterDTO ConversionParameterDTO { get; set; }
+        public DateTime? SampleTimeStamp { get; set; }
     } 
 }
