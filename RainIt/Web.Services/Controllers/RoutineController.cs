@@ -20,8 +20,15 @@ namespace Web.Services.Controllers
         [HttpGet]
         public IHttpActionResult AllActive()
         {
-            var activeRoutine = RoutineManager.GetActiveRoutines();
-            return Ok(activeRoutine);
+            var activeRoutines = RoutineManager.GetActiveRoutines();
+            return Ok(activeRoutines);
+        }
+
+        [HttpGet]
+        public IHttpActionResult Test()
+        {
+            var testRoutine = RoutineManager.GetTestRoutine();
+            return Ok(testRoutine);
         }
     }
 }

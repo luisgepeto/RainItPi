@@ -76,7 +76,19 @@ namespace RainIt.Repository
         public DbSet<Device> DeviceSet { get; set; }
         public DbSet<DeviceInfo> DeviceInfoSet { get; set; }
         public DbSet<SamplePattern> SamplePatternSet { get; set; }
+
+        public IQueryable<SamplePattern> DeviceSamplePatternSet
+        {
+            get { return SamplePatternSet.Where(sp => sp.DeviceId == CurrentDevice.DeviceId); }
+        }
+
         public DbSet<SampleRoutine> SampleRoutineSet { get; set; }
+
+        public IQueryable<SampleRoutine> DeviceSampleRoutineSet
+        {
+            get { return SampleRoutineSet.Where(sr => sr.DeviceId == CurrentDevice.DeviceId); }
+        }
+
         public DbEntityEntry Entry(Routine currentRoutine)
         {
             return base.Entry(currentRoutine);
@@ -103,7 +115,6 @@ namespace RainIt.Repository
             get
             {
                 return RoutineSet.Where(r => r.Devices.Select(d => d.DeviceId).Contains(CurrentDevice.DeviceId));
-                //return DeviceSet.Where(d => d.DeviceId == CurrentDevice.DeviceId).Select(d => d.Routine);
             }
         }
 

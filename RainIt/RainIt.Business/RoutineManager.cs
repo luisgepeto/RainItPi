@@ -87,7 +87,7 @@ namespace RainIt.Business
                     {
                         DeviceId = deviceOut.DeviceId,
                         Device = deviceOut,
-                        UpdateDateTime = DateTime.UtcNow,
+                        UpdateUTCDateTime = DateTime.UtcNow,
                         RoutinePatterns = new List<RoutinePattern>()
                     };
                     RainItContext.SampleRoutineSet.Add(sampleRoutineOut);
@@ -147,6 +147,37 @@ namespace RainIt.Business
                         Repetitions = rp.Repetitions
                     }).ToList()
                 }).ToList();
+        }
+
+        public RoutineDTO GetTestRoutine()
+        {
+            var expireTimeInMinutes = int.Parse(ConfigurationManager.AppSettings["SampleExpireTimeInMinutes"]);
+            var maxExpireDate = DateTime.UtcNow.AddMinutes(expireTimeInMinutes);
+            return RainItContext.DeviceSampleRoutineSet
+                .Where(sr => sr.UpdateUTCDateTime.Date <= maxExpireDate.Date)
+                .OrderByDescending(sr => sr.UpdateUTCDateTime)
+                .Select(r => new RoutineDTO()
+                {
+                    RoutineId = r.SampleRoutineId,
+                    RoutinePatternDTOs = r.RoutinePatterns.Select(rp => new RoutinePatternDTO()
+                    {
+                        RoutinePatternId = rp.RoutinePatternId,
+                        PatternDTO = new PatternDTO()
+                        {
+                            PatternId = rp.PatternId ?? 0,
+                            Path = rp.Pattern.Path,
+                            ConversionParameterDTO = new ConversionParameterDTO()
+                            {
+                                BWeight = rp.Pattern.ConversionParameter.BWeight,
+                                GWeight = rp.Pattern.ConversionParameter.GWeight,
+                                RWeight = rp.Pattern.ConversionParameter.RWeight,
+                                IsInverted = rp.Pattern.ConversionParameter.IsInverted,
+                                ThresholdPercentage = rp.Pattern.ConversionParameter.ThresholdPercentage
+                            }
+                        },
+                        Repetitions = rp.Repetitions
+                    }).ToList()
+                }).FirstOrDefault();
         }
 
         #endregion

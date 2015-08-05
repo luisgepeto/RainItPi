@@ -14,7 +14,7 @@ namespace RainIt.Repository.Configuration
         {
             ToTable(schema + ".SampleRoutine");
             HasKey(sr => sr.SampleRoutineId);
-            Property(sr => sr.UpdateDateTime).IsRequired();
+            Property(sr => sr.UpdateUTCDateTime).IsRequired();
         }
     }
 }

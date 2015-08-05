@@ -11,7 +11,7 @@ namespace RainIt.Domain.Repository
         public int SampleRoutineId { get; set; }
         public int DeviceId { get; set; }
         public virtual Device Device { get; set; }
-        public DateTime UpdateDateTime { get; set; }
+        public DateTime UpdateUTCDateTime { get; set; }
         public virtual List<RoutinePattern> RoutinePatterns { get; set; }
     }
 }
