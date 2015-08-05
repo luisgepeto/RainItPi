@@ -152,9 +152,9 @@ namespace RainIt.Business
         public RoutineDTO GetTestRoutine()
         {
             var expireTimeInMinutes = int.Parse(ConfigurationManager.AppSettings["SampleExpireTimeInMinutes"]);
-            var maxExpireDate = DateTime.UtcNow.AddMinutes(expireTimeInMinutes);
+            var maxExpireDate = DateTime.UtcNow.AddMinutes(-expireTimeInMinutes);
             return RainItContext.DeviceSampleRoutineSet
-                .Where(sr => sr.UpdateUTCDateTime.Date <= maxExpireDate.Date)
+                .Where(sr => sr.UpdateUTCDateTime >= maxExpireDate)
                 .OrderByDescending(sr => sr.UpdateUTCDateTime)
                 .Select(r => new RoutineDTO()
                 {
@@ -205,9 +205,6 @@ namespace RainIt.Business
             RainItContext.SaveChanges();
             return StatusMessage.WriteMessage("The routine was updated successfully");
         }
-
-        
-
 
         private Routine GetRoutineToUpdate(RoutineUploadModel routineUploadModel)
         {

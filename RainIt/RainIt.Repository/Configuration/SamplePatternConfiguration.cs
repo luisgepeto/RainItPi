@@ -14,7 +14,7 @@ namespace RainIt.Repository.Configuration
         {
             ToTable(schema + ".SamplePattern");
             HasKey(sp => sp.SamplePatternId);
-            Property(sp => sp.UpdateDateTime).IsRequired();
+            Property(sp => sp.UpdateUTCDateTime).IsRequired();
             Property(sp => sp.Base64Image).HasMaxLength(null).IsRequired();
         }
     }

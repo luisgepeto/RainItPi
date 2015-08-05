@@ -12,6 +12,7 @@ using Web.Infrastructure.Attributes;
 
 namespace Web.Services.Controllers
 {
+    [RoutePrefix("api/pattern")]
     public class PatternController : ApiController
     {
         public IPatternManager PatternManager { get; set; }
@@ -24,6 +25,7 @@ namespace Web.Services.Controllers
         }
 
         [HttpPost]
+        [Route("transform")]
         [WebApiOutputCache(120, 60, false)]
         public IHttpActionResult Transform([FromUri] int patternId, ConversionParameterDTO conversionParameterDTO)
         {
@@ -36,6 +38,21 @@ namespace Web.Services.Controllers
             var matrixToDisplay = ImageManager.GetUpsideDownBooleanMatrix(blackWhiteImage);
             return Ok(matrixToDisplay);
         }
+
+        [HttpGet]
+        [Route("test")]
+        public IHttpActionResult GetTest()
+        {
+            bool[,] patternAsMatrix = null;
+            var testPattern = PatternManager.GetTestPattern();
+            ImageDetails outImage;
+            if (testPattern!= null && ImageManager.TryParseImage(testPattern.Base64Image, out outImage))
+            {
+                patternAsMatrix = ImageManager.GetUpsideDownBooleanMatrix(outImage.Image);
+            }
+            return Ok(patternAsMatrix);
+        }
+
 
     }
 }

@@ -8,6 +8,7 @@ using RainIt.Interfaces.Business;
 
 namespace Web.Services.Controllers
 {
+    [RoutePrefix("api/routine")]
     public class RoutineController : ApiController
     {
         public IRoutineManager RoutineManager { get; set; }
@@ -18,14 +19,16 @@ namespace Web.Services.Controllers
         }
 
         [HttpGet]
-        public IHttpActionResult AllActive()
+        [Route("allActive")]
+        public IHttpActionResult GetAllActive()
         {
             var activeRoutines = RoutineManager.GetActiveRoutines();
             return Ok(activeRoutines);
         }
 
         [HttpGet]
-        public IHttpActionResult Test()
+        [Route("test")]
+        public IHttpActionResult GetTest()
         {
             var testRoutine = RoutineManager.GetTestRoutine();
             return Ok(testRoutine);

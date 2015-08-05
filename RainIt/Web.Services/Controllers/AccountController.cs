@@ -11,6 +11,7 @@ using Web.Security.Interfaces;
 
 namespace Web.Services.Controllers
 {
+    [RoutePrefix("api/account")]
     public class AccountController : ApiController
     {
         public IDeviceManager DeviceManager { get; set; }
@@ -24,6 +25,7 @@ namespace Web.Services.Controllers
 
         [AllowAnonymous]
         [HttpPost]
+        [Route("login")]
         public IHttpActionResult Login(string serial)
         {
             var authResult = new AuthenticationResult();

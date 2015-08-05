@@ -18,6 +18,7 @@ namespace RainIt.Interfaces.Business
         PatternDTO GetUserPattern(int patternId);
         List<PatternDTO> GetAllPatterns();
         string GetPatternUrl(int patternId);
+        PatternDTO GetTestPattern();
         StatusMessage UpdateUserPattern(ImageDetails pattern, PatternUploadModel patternUploadModel);
         StatusMessage DeleteUserPattern(int patternId);
     }

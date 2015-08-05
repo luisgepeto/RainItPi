@@ -58,7 +58,7 @@ namespace RainIt.Business
                     .SingleOrDefault(sp => sp.Device.DeviceInfo.Identifier == deviceIdentifier) ??
                 new SamplePattern();
             currentSamplePattern.Base64Image = base64Image;
-            currentSamplePattern.UpdateDateTime = DateTime.UtcNow;
+            currentSamplePattern.UpdateUTCDateTime = DateTime.UtcNow;
             currentSamplePattern.Device =
                 RainItContext.UserDeviceSet.Single(d => d.DeviceInfo.Identifier == deviceIdentifier);
             currentSamplePattern.DeviceId = currentSamplePattern.Device.DeviceId;
@@ -157,6 +157,20 @@ namespace RainIt.Business
             var pattern =
                 RainItContext.PatternSet.Single(p => p.PatternId == patternId);
             return pattern.Path;
+        }
+
+        public PatternDTO GetTestPattern()
+        {
+            var expireTimeInMinutes = int.Parse(ConfigurationManager.AppSettings["SampleExpireTimeInMinutes"]);
+            var maxExpireDate = DateTime.UtcNow.AddMinutes(-expireTimeInMinutes);
+            return RainItContext.DeviceSamplePatternSet
+                .Where(sp => sp.UpdateUTCDateTime >= maxExpireDate)
+                .OrderByDescending(sp => sp.UpdateUTCDateTime)
+                .Select(sp => new PatternDTO()
+                {
+                    PatternId = sp.SamplePatternId,
+                    Base64Image = sp.Base64Image
+                }).FirstOrDefault();
         }
         #endregion
 
