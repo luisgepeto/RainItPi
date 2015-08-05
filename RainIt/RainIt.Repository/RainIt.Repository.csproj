@@ -159,6 +159,10 @@
     <Compile Include="Migrations\201507171745142_DeviceNameMigration.Designer.cs">
       <DependentUpon>201507171745142_DeviceNameMigration.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201508051654101_ChangedToUTCNameMigration.cs" />
+    <Compile Include="Migrations\201508051654101_ChangedToUTCNameMigration.Designer.cs">
+      <DependentUpon>201508051654101_ChangedToUTCNameMigration.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RainItContext.cs" />
@@ -218,6 +222,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201507171745142_DeviceNameMigration.resx">
       <DependentUpon>201507171745142_DeviceNameMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201508051654101_ChangedToUTCNameMigration.resx">
+      <DependentUpon>201508051654101_ChangedToUTCNameMigration.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
