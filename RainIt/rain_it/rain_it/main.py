@@ -1,8 +1,8 @@
 '''
 This is an example of a project source file.
 All other source files must be in this directory
-
 '''
+
 from hardware import hardware_manager
 from adapters import login_adapter, routine_adapter, pattern_adapter
 from datetime import datetime, timedelta
@@ -11,6 +11,7 @@ from domain.pattern import Pattern
 from domain.routine_pattern import RoutinePattern
 from domain.routine import Routine
 from domain import routine_pattern
+from common.file_util import get_sampletimestamp_from
 
 
     
@@ -25,7 +26,8 @@ def try_write_pattern_to_file_from_service(service_function, dir_path):
         json_result = service_function(authentication_response.token)
         pattern_as_matrix = json_result["patternAsMatrix"]
         resulting_dir = file_util.make_new_dir(dir_path)        
-        file_util.add_timestamp_file(resulting_dir, timestamp=json_result["SampleTimeStamp"])
+        file_util.add_timestamp_file(resulting_dir)
+        file_util.add_sample_timestamp_file(resulting_dir, json_result["SampleTimeStamp"])
         if pattern_as_matrix is not None:
             file_util.write_new_file(resulting_dir, "1_1_1", str(pattern_as_matrix))                        
     else:
@@ -35,6 +37,7 @@ def try_write_pattern_to_file_from_service(service_function, dir_path):
 def get_pattern_from_file(pattern_root_dir):
     all_patterns = file_util.get_all_files_under(pattern_root_dir)
     all_patterns.remove("timestamp")    
+    all_patterns.remove("sample_timestamp")    
     if all_patterns:
         return Pattern(1, file_util.read_file(pattern_root_dir, all_patterns[0]))
     return None
@@ -44,8 +47,12 @@ def try_write_routine_to_file_from_service(service_function, dir_path):
     authentication_response = authenticate_to_service()
     if authentication_response.login_status == 1:
         active_routines = service_function(authentication_response.token)
-        resulting_dir = file_util.make_new_dir(dir_path)        
+        resulting_dir = file_util.make_new_dir(dir_path)
+        sample_time_stamp = None
+        if active_routines:
+            sample_time_stamp = active_routines[0].time_stamp        
         file_util.add_timestamp_file(resulting_dir)
+        file_util.add_sample_timestamp_file(resulting_dir, sample_time_stamp)
         for routine in active_routines:
             routine_path = file_util.make_new_dir_under(resulting_dir, str(routine.routine_id))
             for routine_pattern in routine.routine_pattern_list:
@@ -90,32 +97,53 @@ def is_dir_valid(dir_path):
         return False    
     return True
 
-
-def initialize():
-    active_routines_dir = file_util.get_routine_root_path()
-    active_routines = []    
-    test_routines_dir = file_util.get_test_routine_root_path()
-    test_routines = []
-    test_patterns_dir = file_util.get_test_pattern_root_path()
-    test_pattern = None
-    while True:
-        if test_pattern is not None:
-            hardware_manager.print_matrix(test_pattern.pattern_as_matrix)
-        elif test_routines:            
-            output_routine_list(test_routines)
-        elif active_routines:            
-            output_routine_list(active_routines)
-        if not is_dir_valid(active_routines_dir):            
+def update_routine_dir(active_routines_dir, previous_active_routines):
+    if not is_dir_valid(active_routines_dir):            
             try_write_routine_to_file_from_service(routine_adapter.get_active_routines, active_routines_dir)
             active_routines = get_routine_list_from_file(active_routines_dir)
-        if not is_dir_valid(test_routines_dir):
+            return active_routines
+    return previous_active_routines
+
+def update_test_routine_dir(test_routines_dir, previous_test_routines):
+    if not is_dir_valid(test_routines_dir):
             test_routines = []
             if try_write_routine_to_file_from_service(routine_adapter.get_test_routine_as_list, test_routines_dir):                
                 test_routines = get_routine_list_from_file(test_routines_dir)
-        if not is_dir_valid(test_patterns_dir):
+            return test_routines
+    return previous_test_routines
+
+def update_test_pattern_dir(test_patterns_dir, previous_test_pattern):
+    if not is_dir_valid(test_patterns_dir):
             test_pattern = None             
             if try_write_pattern_to_file_from_service(pattern_adapter.get_test_pattern_as_matrix, test_patterns_dir):                
                 test_pattern = get_pattern_from_file(test_patterns_dir)
+            return test_pattern
+    return previous_test_pattern
+
+def print_tests(test_routines, test_routines_dir, test_pattern, test_patterns_dir):
+    test_pattern_timestamp = get_sampletimestamp_from(test_patterns_dir)
+    test_routine_timestamp = get_sampletimestamp_from(test_routines_dir)
+    if test_routine_timestamp > test_pattern_timestamp and test_routines:
+        output_routine_list(test_routines)
+    elif test_pattern is not None:
+        hardware_manager.print_matrix(test_pattern.pattern_as_matrix)
+    
+def initialize():
+    active_routines_dir = file_util.get_routine_root_path()
+    test_routines_dir = file_util.get_test_routine_root_path()
+    test_patterns_dir = file_util.get_test_pattern_root_path()
+    active_routines = []
+    test_routines = []
+    test_pattern = None
+    while True:
+        if test_pattern is not None or test_routines:
+            print_tests(test_routines, test_routines_dir, test_pattern, test_patterns_dir)        
+        elif active_routines:            
+            output_routine_list(active_routines)
+        active_routines = update_routine_dir(active_routines_dir, active_routines)
+        test_routines = update_test_routine_dir(test_routines_dir, test_routines)
+        test_pattern = update_test_pattern_dir(test_patterns_dir, test_pattern)
+        
 
 if __name__ == '__main__':
     initialize()
