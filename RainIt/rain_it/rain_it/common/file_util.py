@@ -54,7 +54,7 @@ def get_all_files_under(dir_path):
     return [ file_name for file_name in os.listdir(dir_path) if os.path.isfile(os.path.join(dir_path,file_name))]
 
 def add_sample_timestamp_file(dir_path, timestamp):
-    current_utc_date = datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S.%f")
+    current_utc_date = "1970-01-01T00:00:00.0"
     if not(timestamp == "" or timestamp == None):
         current_utc_date = timestamp
     print("Adding sample timestamp file with time", current_utc_date)
