@@ -5,7 +5,7 @@ This file will have the methods defined for calling the routine methods
 from common import adapter_util
 from domain.routine_response import Routine
 
-base_url = "http://localhost:8723/api/"
+base_url = "http://devrainit.azurewebsites.net/api/"
 
 def get_active_routines(token):
     json_result = adapter_util.make_get_service_call(base_url+"routine/allActive", token)
