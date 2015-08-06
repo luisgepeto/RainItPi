@@ -4,7 +4,7 @@ This adapter will contain the functions needed for the service authentication
 import requests
 from domain.authentication_response import Authentication_Response
 
-base_url = "http://devrainit.azurewebsites.net/api/"
+base_url = "http://devrainitservices.azurewebsites.net/api/"
 def authenticate(serial):
     r = requests.post(base_url+"account/login?serial="+serial)
     json_object = r.json()
