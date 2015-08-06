@@ -1,6 +1,7 @@
 
-import os, datetime, time
+import os, time
 import shutil
+from datetime import datetime, timedelta
 
 def get_routine_root_path():
     return os.path.join(os.path.abspath(os.sep), "home/pi/Routines")
@@ -70,6 +71,10 @@ def get_timestamp_from(dir_path):
     if timestamp_from_file == "" :   
         timestamp_from_file = "1970-01-01T00:00:00.0"       
     return datetime.datetime.fromtimestamp(time.mktime(time.strptime(timestamp_from_file, "%Y-%m-%dT%H:%M:%S.%f")))
+
+def is_dir_valid(dir_path):
+    routine_timestamp = get_timestamp_from(dir_path)
+    return  routine_timestamp + timedelta(minutes = 1) > datetime.utcnow()
 
 def get_sampletimestamp_from(dir_path):
     timestamp_from_file = read_file(dir_path, "sample_timestamp")
