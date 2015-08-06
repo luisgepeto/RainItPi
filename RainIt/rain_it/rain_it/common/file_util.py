@@ -57,6 +57,7 @@ def add_sample_timestamp_file(dir_path, timestamp):
     current_utc_date = datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S.%f")
     if not(timestamp == "" or timestamp == None):
         current_utc_date = timestamp
+    print("Adding sample timestamp file with time", current_utc_date)
     write_new_file(dir_path, "sample_timestamp", current_utc_date)
     
 def add_timestamp_file(dir_path):

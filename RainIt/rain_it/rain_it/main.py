@@ -93,7 +93,7 @@ def output_routine_list(routine_list):
 
 def is_dir_valid(dir_path):    
     routine_timestamp = file_util.get_timestamp_from(dir_path)
-    if routine_timestamp + timedelta(seconds = 10) < datetime.utcnow():
+    if routine_timestamp + timedelta(minutes = 5) < datetime.utcnow():
         return False    
     return True
 
