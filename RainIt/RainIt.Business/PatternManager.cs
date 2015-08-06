@@ -260,7 +260,8 @@ namespace RainIt.Business
                     var currentRoutine = routinePattern.Routine;
                     RainItContext.RoutinePatternSet.Attach(routinePattern);
                     RainItContext.RoutinePatternSet.Remove(routinePattern);
-                    TryDeleteRoutine(currentRoutine);
+                    if(currentRoutine != null)
+                        TryDeleteRoutine(currentRoutine);
                 }
             }
             RainItContext.SaveChanges();  
@@ -269,7 +270,7 @@ namespace RainIt.Business
 
         private bool TryDeleteRoutine(Routine routineToDelete)
         {
-            if (!routineToDelete.RoutinePatterns.Any())
+            if (routineToDelete.RoutinePatterns.Any())
             {
                 TryDeleteDevicesFrom(routineToDelete);
                 RainItContext.RoutineSet.Attach(routineToDelete);

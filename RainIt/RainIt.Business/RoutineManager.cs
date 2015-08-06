@@ -81,6 +81,8 @@ namespace RainIt.Business
             if (TryGetDeviceForUser(deviceIdentifier, out deviceOut))
             {
                 sampleRoutineOut = RainItContext.SampleRoutineSet.SingleOrDefault(r => r.Device.DeviceInfo.Identifier == deviceIdentifier);
+                if (sampleRoutineOut != null)
+                    sampleRoutineOut.UpdateUTCDateTime = DateTime.UtcNow;
                 if (sampleRoutineOut == null)
                 {
                     sampleRoutineOut = new SampleRoutine()
