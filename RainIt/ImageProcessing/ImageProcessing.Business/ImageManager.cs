@@ -154,13 +154,21 @@ namespace ImageProcessing.Business
 
 	    public bool TryParseImage(PatternUploadModel patternUploadModel, out ImageDetails imageDetails)
 	    {
-	        var image = ParseImage(patternUploadModel.Base64Image);
-            if (patternUploadModel.AbsoluteResizeParameters != null)
-            {
-                image = (Bitmap) Resize(image, patternUploadModel.AbsoluteResizeParameters);    
-            }
-            imageDetails = new ImageDetails(image);
-            imageDetails.Base64Image = ConvertToBase64(image);
+	        imageDetails = null;
+	        try
+	        {
+	            var image = ParseImage(patternUploadModel.Base64Image);
+	            if (patternUploadModel.AbsoluteResizeParameters != null)
+	            {
+	                image = (Bitmap) Resize(image, patternUploadModel.AbsoluteResizeParameters);
+	            }
+	            imageDetails = new ImageDetails(image);
+	            imageDetails.Base64Image = ConvertToBase64(image);
+	        }
+	        catch (Exception ex)
+	        {
+	            return false;
+	        }
             return true;
 	    }
 
