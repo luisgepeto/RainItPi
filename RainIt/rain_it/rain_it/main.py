@@ -13,23 +13,6 @@ from domain import routine_pattern
 from multiprocessing import pool    
 from rain_it.domain.exceptions import RequestException
 
-
-dir_key = "dir"
-value_key = "value"
-async_flag_key = "async_flag"
-refresh_key = "refresh_key"
-ar_dict = { dir_key: file_util.get_routine_root_path(),
-                              value_key: [],
-                              async_flag_key: False}
-tr_dict = { dir_key: file_util.get_test_routine_root_path(),
-                              value_key: [],
-                              async_flag_key: False}
-tp_dict = { dir_key: file_util.get_test_pattern_root_path(),
-                              value_key: None,
-                              async_flag_key: False}
-
-auth_dict = {value_key: None, async_flag_key: False, refresh_key:False}
-
 def get_routine_list_from_file(routine_root_dir):
     routine_list = []     
     try:
@@ -65,6 +48,22 @@ def get_pattern_from_file(pattern_root_dir):
     except:
         pass
     return None
+
+dir_key = "dir"
+value_key = "value"
+async_flag_key = "async_flag"
+refresh_key = "refresh_key"
+ar_dict = { dir_key: file_util.get_routine_root_path(),
+                              value_key: get_routine_list_from_file(file_util.get_routine_root_path()),
+                              async_flag_key: False}
+tr_dict = { dir_key: file_util.get_test_routine_root_path(),
+                              value_key: get_routine_list_from_file(file_util.get_test_routine_root_path()),
+                              async_flag_key: False}
+tp_dict = { dir_key: file_util.get_test_pattern_root_path(),
+                              value_key: get_pattern_from_file(file_util.get_test_pattern_root_path()),
+                              async_flag_key: False}
+
+auth_dict = {value_key: None, async_flag_key: False, refresh_key:False}
     
 ''' 
 This is the callback section
