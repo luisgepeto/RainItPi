@@ -11,6 +11,7 @@ from domain.routine_pattern import RoutinePattern
 from domain.routine import Routine
 from domain import routine_pattern
 from multiprocessing import pool    
+from rain_it.domain.exceptions import RequestException
 
 
 dir_key = "dir"
@@ -69,18 +70,22 @@ def get_pattern_from_file(pattern_root_dir):
 This is the callback section
 '''
 def authenticate_to_service_callback(authentication_response):
+    auth_dict[refresh_key] = False
     auth_dict[async_flag_key] = False
     auth_dict[value_key] = authentication_response
     
-def write_active_routine_to_file_callback(*args):    
+def write_active_routine_to_file_callback(result):
+    auth_dict[refresh_key] = not result    
     ar_dict[async_flag_key] = False
     ar_dict[value_key] = get_routine_list_from_file(ar_dict[dir_key])
     
-def write_test_routine_to_file_callback(*args):
+def write_test_routine_to_file_callback(result):
+    auth_dict[refresh_key] = not result
     tr_dict[async_flag_key] = False
     tr_dict[value_key] = get_routine_list_from_file(tr_dict[dir_key])
     
-def write_test_pattern_to_file_callback(*args):
+def write_test_pattern_to_file_callback(result):
+    auth_dict[refresh_key] = not result
     tp_dict[async_flag_key] = False
     tp_dict[value_key] = get_pattern_from_file(tp_dict[dir_key])
     
@@ -93,38 +98,49 @@ def authenticate_to_service():
     return authentication_result
 
 def write_active_routine_to_file(token):
-    active_routines = routine_adapter.get_active_routines(token)
-    resulting_dir = file_util.make_new_dir(ar_dict[dir_key])
-    for routine in active_routines:
-        routine_path = file_util.make_new_dir_under(resulting_dir, str(routine.routine_id))
-        for routine_pattern in routine.routine_pattern_list:
-            pattern_as_matrix = pattern_adapter.get_pattern_as_matrix(routine_pattern.pattern.pattern_id,routine_pattern.pattern.conversion_parameter.get_as_dictionary(), token)
-            file_util.write_new_file(routine_path, str(routine_pattern.routine_pattern_id)+"_"+str(routine_pattern.pattern.pattern_id)+"_"+str(routine_pattern.repetitions), str(pattern_as_matrix))
-    file_util.add_timestamp_file(resulting_dir)
-    
+    try:
+        active_routines = routine_adapter.get_active_routines(token)
+        resulting_dir = file_util.make_new_dir(ar_dict[dir_key])
+        for routine in active_routines:
+            routine_path = file_util.make_new_dir_under(resulting_dir, str(routine.routine_id))
+            for routine_pattern in routine.routine_pattern_list:
+                pattern_as_matrix = pattern_adapter.get_pattern_as_matrix(routine_pattern.pattern.pattern_id,routine_pattern.pattern.conversion_parameter.get_as_dictionary(), token)
+                file_util.write_new_file(routine_path, str(routine_pattern.routine_pattern_id)+"_"+str(routine_pattern.pattern.pattern_id)+"_"+str(routine_pattern.repetitions), str(pattern_as_matrix))
+        file_util.add_timestamp_file(resulting_dir)
+    except RequestException:
+        return False
+    return True
+
 def write_test_routine_to_file(token):
-    active_routines = routine_adapter.get_test_routine_as_list(token)
-    resulting_dir = file_util.make_new_dir(tr_dict[dir_key])
-    for routine in active_routines:
-        routine_path = file_util.make_new_dir_under(resulting_dir, str(routine.routine_id))
-        for routine_pattern in routine.routine_pattern_list:
-            pattern_as_matrix = pattern_adapter.get_pattern_as_matrix(routine_pattern.pattern.pattern_id,routine_pattern.pattern.conversion_parameter.get_as_dictionary(), token)
-            file_util.write_new_file(routine_path, str(routine_pattern.routine_pattern_id)+"_"+str(routine_pattern.pattern.pattern_id)+"_"+str(routine_pattern.repetitions), str(pattern_as_matrix))
-    sample_time_stamp = None
-    if active_routines:
-        sample_time_stamp = active_routines[0].time_stamp        
-    file_util.add_timestamp_file(resulting_dir)
-    file_util.add_sample_timestamp_file(resulting_dir, sample_time_stamp)
+    try:
+        active_routines = routine_adapter.get_test_routine_as_list(token)
+        resulting_dir = file_util.make_new_dir(tr_dict[dir_key])
+        for routine in active_routines:
+            routine_path = file_util.make_new_dir_under(resulting_dir, str(routine.routine_id))
+            for routine_pattern in routine.routine_pattern_list:
+                pattern_as_matrix = pattern_adapter.get_pattern_as_matrix(routine_pattern.pattern.pattern_id,routine_pattern.pattern.conversion_parameter.get_as_dictionary(), token)
+                file_util.write_new_file(routine_path, str(routine_pattern.routine_pattern_id)+"_"+str(routine_pattern.pattern.pattern_id)+"_"+str(routine_pattern.repetitions), str(pattern_as_matrix))
+        sample_time_stamp = None
+        if active_routines:
+            sample_time_stamp = active_routines[0].time_stamp        
+        file_util.add_timestamp_file(resulting_dir)
+        file_util.add_sample_timestamp_file(resulting_dir, sample_time_stamp)
+    except RequestException:
+        return False
+    return True
     
 def write_test_pattern_to_file(token):
-    json_result = pattern_adapter.get_test_pattern_as_matrix(token)
-    pattern_as_matrix = json_result["patternAsMatrix"]
-    resulting_dir = file_util.make_new_dir(tp_dict[dir_key])
-    if pattern_as_matrix is not None:
-        file_util.write_new_file(resulting_dir, "1_1_1", str(pattern_as_matrix))
-    file_util.add_timestamp_file(resulting_dir)
-    file_util.add_sample_timestamp_file(resulting_dir, json_result["SampleTimeStamp"])
-
+    try:
+        json_result = pattern_adapter.get_test_pattern_as_matrix(token)
+        pattern_as_matrix = json_result["patternAsMatrix"]
+        resulting_dir = file_util.make_new_dir(tp_dict[dir_key])
+        if pattern_as_matrix is not None:
+            file_util.write_new_file(resulting_dir, "1_1_1", str(pattern_as_matrix))
+        file_util.add_timestamp_file(resulting_dir)
+        file_util.add_sample_timestamp_file(resulting_dir, json_result["SampleTimeStamp"])
+    except RequestException:
+        return False
+    return True
 '''
 This is the async function section
 '''
@@ -148,7 +164,7 @@ def write_test_pattern_to_file_async():
 This is the update function section
 '''
 def update_auth():
-    if not is_auth_valid() and not auth_dict[async_flag_key]:
+    if (not is_auth_valid() or auth_dict[refresh_key]) and not auth_dict[async_flag_key]:
         auth_dict[async_flag_key] = True
         authenticate_to_service_async()    
  
