@@ -69,12 +69,12 @@ namespace ImageProcessing.Business
 		}
 
 		private bool[,] GetUpsideDownBooleanMatrix(Bitmap bitmap){
-			var newBooleanMatrix = new bool[bitmap.Width, bitmap.Height];
+			var newBooleanMatrix = new bool[bitmap.Height, bitmap.Width];
 			for (int i = bitmap.Height-1; i >= 0 ; i--) {
 				for (int j = 0; j < bitmap.Width; j++) {
 					var currentPixel = bitmap.GetPixel (j, i);
 					var booleanCurrentPixel = GetBoolean (currentPixel);
-					newBooleanMatrix [j, i] = booleanCurrentPixel;
+                    newBooleanMatrix[Math.Abs(i - (bitmap.Height - 1)), j] = booleanCurrentPixel;
 				}
 			}
 			return newBooleanMatrix;
