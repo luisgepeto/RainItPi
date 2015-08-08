@@ -11,7 +11,7 @@ from domain.routine_pattern import RoutinePattern
 from domain.routine import Routine
 from domain import routine_pattern
 from multiprocessing import pool    
-from rain_it.domain.exceptions import RequestException
+from domain.exceptions import RequestException
 
 def get_routine_list_from_file(routine_root_dir):
     routine_list = []     
