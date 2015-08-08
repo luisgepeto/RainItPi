@@ -3,7 +3,7 @@ This will include the common files
 '''
 import requests
 import json
-from rain_it.domain.exceptions import GetRequestException, PostRequestException
+from domain.exceptions import GetRequestException, PostRequestException
 
 def get_authorization_header(token):
     header_value = "Bearer " + token
