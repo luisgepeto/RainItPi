@@ -1,17 +1,12 @@
 using System;
-using System.Collections.Generic;
+using System.Data.Entity.Migrations;
 using System.Linq;
-using System.Security.Cryptography;
-using System.Web;
 using RainIt.Domain.Repository;
-using Web.Security.Interfaces;
-using System.Web.Http;
 using Web.Security.Business;
+using Web.Security.Interfaces;
 
 namespace RainIt.Repository.Migrations
 {
-    using System.Data.Entity.Migrations;
-
     public sealed class Configuration : DbMigrationsConfiguration<RainItContext>
     {
         public Configuration()
