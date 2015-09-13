@@ -81,6 +81,10 @@ namespace RainIt.Repository
         {
             get { return SamplePatternSet.Where(sp => sp.DeviceId == CurrentDevice.DeviceId); }
         }
+        public IQueryable<Settings> DeviceSettingsSet
+        {
+            get { return SettingsSet.Where(s => s.DeviceId == CurrentDevice.DeviceId); }
+        }
 
         public DbSet<SampleRoutine> SampleRoutineSet { get; set; }
 

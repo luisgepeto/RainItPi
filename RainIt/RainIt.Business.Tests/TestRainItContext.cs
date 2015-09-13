@@ -80,6 +80,7 @@ namespace RainIt.Business.Tests
         public DbSet<SamplePattern> SamplePatternSet { get; set; }
 
         public IQueryable<SamplePattern> DeviceSamplePatternSet{ get; set; }
+        public IQueryable<Settings> DeviceSettingsSet { get; set; }
 
         public DbSet<SampleRoutine> SampleRoutineSet { get; set; }
 

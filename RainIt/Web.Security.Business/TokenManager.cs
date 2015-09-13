@@ -73,7 +73,12 @@ namespace Web.Security.Business
                 ValidAudience = "http://"+Audience,
                 IssuerSigningToken = new BinarySecretSecurityToken(Encoding.UTF8.GetBytes(SecretKey))
             };
-            principal = new JwtSecurityTokenHandler().ValidateToken(encodedTokenString, tokenValidationParameters, out token);
+            try
+            {
+                principal = new JwtSecurityTokenHandler().ValidateToken(encodedTokenString, tokenValidationParameters,
+                    out token);
+            }
+            catch{}
             
             return principal;
         }

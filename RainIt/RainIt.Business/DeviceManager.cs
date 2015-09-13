@@ -122,6 +122,17 @@ namespace RainIt.Business
             if (device.DeviceInfo.IsAlreadyActive) return false;
             return true;
         }
+
+        public SettingsDTO GetCurrentSettings()
+        {
+            return RainItContext.DeviceSettingsSet.Select(s => new SettingsDTO()
+            {
+                MinutesRefreshRate = s.MinutesRefreshRate,
+                MillisecondClockDelay = s.MillisecondClockDelay,
+                MillisecondLatchDelay = s.MillisecondLatchDelay
+            }).SingleOrDefault();
+        }
+
         public StatusMessage EditUserDevice(int deviceId, string newDeviceName)
         {
             Device outDevice;

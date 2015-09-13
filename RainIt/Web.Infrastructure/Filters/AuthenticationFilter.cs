@@ -35,7 +35,6 @@ namespace Web.Infrastructure.Filters
             if (!SkipAuthorization(actionContext))
             {
                 var principal = AuthenticateRequest(actionContext);
-
                 if (principal == null)
                 {
                     Challenge(actionContext);
