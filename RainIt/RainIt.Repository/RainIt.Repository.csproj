@@ -113,6 +113,7 @@
     <Compile Include="Configuration\RoutinePatternConfiguration.cs" />
     <Compile Include="Configuration\SampleRoutineConfiguration.cs" />
     <Compile Include="Configuration\SamplePatternConfiguration.cs" />
+    <Compile Include="Configuration\SettingsConfiguration.cs" />
     <Compile Include="Configuration\UserConfiguration.cs" />
     <Compile Include="Configuration\UserInfoConfiguration.cs" />
     <Compile Include="Migrations\201506101754131_initial.cs" />
@@ -166,6 +167,10 @@
     <Compile Include="Migrations\201508052059261_RenameToUTCSamplePatternMigration.cs" />
     <Compile Include="Migrations\201508052059261_RenameToUTCSamplePatternMigration.Designer.cs">
       <DependentUpon>201508052059261_RenameToUTCSamplePatternMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201509130702156_DeviceSettingsMigration.cs" />
+    <Compile Include="Migrations\201509130702156_DeviceSettingsMigration.Designer.cs">
+      <DependentUpon>201509130702156_DeviceSettingsMigration.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -232,6 +237,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201508052059261_RenameToUTCSamplePatternMigration.resx">
       <DependentUpon>201508052059261_RenameToUTCSamplePatternMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201509130702156_DeviceSettingsMigration.resx">
+      <DependentUpon>201509130702156_DeviceSettingsMigration.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

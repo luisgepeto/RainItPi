@@ -71,10 +71,10 @@ namespace RainIt.Repository
         public DbSet<Password> PasswordSet { get; set; }
         public DbSet<Pattern> PatternSet { get; set; }
         public DbSet<Routine> RoutineSet { get; set; }
-
         public DbSet<RoutinePattern> RoutinePatternSet { get; set; }
         public DbSet<Device> DeviceSet { get; set; }
         public DbSet<DeviceInfo> DeviceInfoSet { get; set; }
+        public DbSet<Settings> SettingsSet { get; set; }
         public DbSet<SamplePattern> SamplePatternSet { get; set; }
 
         public IQueryable<SamplePattern> DeviceSamplePatternSet
@@ -94,9 +94,6 @@ namespace RainIt.Repository
             return base.Entry(currentRoutine);
         }
 
-
-        //public DbSet<DeviceCredential> DeviceCredentialSet { get; set; }
-
         public IQueryable<Pattern> UserPatternSet
         {
             get { return PatternSet.Where(p => p.UserId == CurrentUser.UserId); }
@@ -109,13 +106,9 @@ namespace RainIt.Repository
         {
             get { return DeviceSet.Where(p => p.UserId == CurrentUser.UserId); }
         }
-
         public IQueryable<Routine> DeviceRoutineSet
         {
-            get
-            {
-                return RoutineSet.Where(r => r.Devices.Select(d => d.DeviceId).Contains(CurrentDevice.DeviceId));
-            }
+            get { return RoutineSet.Where(r => r.Devices.Select(d => d.DeviceId).Contains(CurrentDevice.DeviceId)); }
         }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -133,6 +126,7 @@ namespace RainIt.Repository
             modelBuilder.Configurations.Add(new UserInfoConfiguration());
             modelBuilder.Configurations.Add(new DeviceConfiguration());
             modelBuilder.Configurations.Add(new DeviceInfoConfiguration());
+            modelBuilder.Configurations.Add(new SettingsConfiguration());
             modelBuilder.Configurations.Add(new DeviceCredentialConfiguration());
             modelBuilder.Configurations.Add(new ConversionParameterConfiguration());
             modelBuilder.Configurations.Add(new SamplePatternConfiguration());
