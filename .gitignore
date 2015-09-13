@@ -69,3 +69,5 @@
 *.config
 *.config
 *.db
+/RainIt/Raspberry.SerialTest/bin/
+/RainIt/Raspberry.SerialTest/obj/
