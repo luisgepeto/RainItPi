@@ -4,14 +4,17 @@ All other source files must be in this directory
 '''
 
 from hardware import hardware_manager
-from adapters import login_adapter, routine_adapter, pattern_adapter
+from adapters import login_adapter, routine_adapter, pattern_adapter, device_adapter
 from common import file_util
 from domain.pattern import Pattern
 from domain.routine_pattern import RoutinePattern
 from domain.routine import Routine
+from domain.settings_response import Settings
 from domain import routine_pattern
 from multiprocessing import pool    
 from domain.exceptions import RequestException
+from datetime import datetime, timedelta
+
 
 def get_routine_list_from_file(routine_root_dir):
     routine_list = []     
@@ -53,6 +56,7 @@ dir_key = "dir"
 value_key = "value"
 async_flag_key = "async_flag"
 refresh_key = "refresh_key"
+last_access_key = "last_access_key"
 ar_dict = { dir_key: file_util.get_routine_root_path(),
                               value_key: get_routine_list_from_file(file_util.get_routine_root_path()),
                               async_flag_key: False}
@@ -62,7 +66,7 @@ tr_dict = { dir_key: file_util.get_test_routine_root_path(),
 tp_dict = { dir_key: file_util.get_test_pattern_root_path(),
                               value_key: get_pattern_from_file(file_util.get_test_pattern_root_path()),
                               async_flag_key: False}
-
+s_dict = {value_key: Settings(1, 0, 0), async_flag_key: False, last_access_key : None }
 auth_dict = {value_key: None, async_flag_key: False, refresh_key:False}
     
 ''' 
@@ -72,6 +76,13 @@ def authenticate_to_service_callback(authentication_response):
     auth_dict[refresh_key] = False
     auth_dict[async_flag_key] = False
     auth_dict[value_key] = authentication_response
+    
+def get_settings_callback(result):
+    auth_dict[refresh_key] = not result
+    s_dict[async_flag_key] = False
+    s_dict[last_access_key] = datetime.utcnow()
+    if result is not None:
+        s_dict[value_key] = result
     
 def write_active_routine_to_file_callback(result):
     auth_dict[refresh_key] = not result    
@@ -95,6 +106,10 @@ def authenticate_to_service():
     cpu_serial = hardware_manager.get_serial_number()
     authentication_result = login_adapter.authenticate(cpu_serial)
     return authentication_result
+
+def get_settings(token):
+    settings = device_adapter.get_settings(token)
+    return settings
 
 def write_active_routine_to_file(token):
     try:
@@ -147,6 +162,10 @@ def authenticate_to_service_async():
     p = pool.Pool(1)
     p.apply_async(authenticate_to_service, callback=authenticate_to_service_callback)
 
+def get_settings_async():
+    p = pool.Pool(1)
+    p.apply_async(get_settings,[auth_dict[value_key].token], callback=get_settings_callback)
+    
 def write_active_routine_to_file_async():
     p = pool.Pool(1)
     p.apply_async(write_active_routine_to_file,[auth_dict[value_key].token], callback=write_active_routine_to_file_callback)
@@ -166,19 +185,24 @@ def update_auth():
     if (not is_auth_valid() or auth_dict[refresh_key]) and not auth_dict[async_flag_key]:
         auth_dict[async_flag_key] = True
         authenticate_to_service_async()    
+
+def update_settings():
+    if not are_settings_valid() and not s_dict[async_flag_key] and is_auth_valid():
+        s_dict[async_flag_key] = True
+        get_settings_async()    
  
 def update_active_routine_dict():    
-    if not file_util.is_dir_valid(ar_dict[dir_key]) and not ar_dict[async_flag_key] and is_auth_valid():
+    if not file_util.is_dir_valid(ar_dict[dir_key], s_dict[value_key].minutes_refresh_rate) and not ar_dict[async_flag_key] and is_auth_valid():
         ar_dict[async_flag_key] = True
         write_active_routine_to_file_async()              
     
 def update_test_routine_dict():
-    if not file_util.is_dir_valid(tr_dict[dir_key]) and not tr_dict[async_flag_key] and is_auth_valid():
+    if not file_util.is_dir_valid(tr_dict[dir_key], s_dict[value_key].minutes_refresh_rate) and not tr_dict[async_flag_key] and is_auth_valid():
         tr_dict[async_flag_key] = True
         write_test_routine_to_file_async()
 
 def update_test_pattern_dict():
-    if not file_util.is_dir_valid(tp_dict[dir_key]) and not tp_dict[async_flag_key] and is_auth_valid():  
+    if not file_util.is_dir_valid(tp_dict[dir_key], s_dict[value_key].minutes_refresh_rate) and not tp_dict[async_flag_key] and is_auth_valid():  
         tp_dict[async_flag_key] = True                      
         write_test_pattern_to_file_async()
   
@@ -208,6 +232,13 @@ def is_auth_valid():
             and not auth_dict[value_key].token == ""
             and not auth_dict[value_key].has_expired())
 
+def are_settings_valid():
+    return (s_dict[value_key] is not None
+                and s_dict[last_access_key] is not None
+                and s_dict[last_access_key]  + timedelta(minutes = s_dict[value_key].minutes_refresh_rate) > datetime.utcnow())
+                
+                
+                
 def initialize():    
     while True:
         if tp_dict[value_key] is not None or tr_dict[value_key]:
@@ -215,6 +246,7 @@ def initialize():
         elif ar_dict[value_key]:
             output_routine_list(ar_dict[value_key])
         update_auth()
+        update_settings()
         update_active_routine_dict()
         update_test_routine_dict()
         update_test_pattern_dict()        

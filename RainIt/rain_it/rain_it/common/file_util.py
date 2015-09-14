@@ -70,9 +70,9 @@ def get_timestamp_from(dir_path):
         timestamp_from_file = "1970-01-01T00:00:00.0"       
     return datetime.fromtimestamp(time.mktime(time.strptime(timestamp_from_file, "%Y-%m-%dT%H:%M:%S.%f")))
 
-def is_dir_valid(dir_path):
+def is_dir_valid(dir_path, expiration_minutes):
     routine_timestamp = get_timestamp_from(dir_path)
-    return  routine_timestamp + timedelta(minutes = 1) > datetime.utcnow()
+    return  routine_timestamp + timedelta(minutes = expiration_minutes) > datetime.utcnow()
 
 def get_sampletimestamp_from(dir_path):
     timestamp_from_file = read_file(dir_path, "sample_timestamp")
