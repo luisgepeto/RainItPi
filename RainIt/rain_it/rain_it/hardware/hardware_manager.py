@@ -4,6 +4,8 @@ CLK refers to the clock that shifts the previous memory input to the next
 LATCH refers to the clock that makes the internal state to be displayed
 '''
 
+from time import sleep
+
 def get_serial_number():
     cpu_serial = "0000000000000000"
     try:
@@ -30,10 +32,10 @@ def push_bit(bit):
     set_output_pin_state(bit)
     clk_positive_transition()
     
-def write_line(line):
+def write_line(line, clock_delay):
     for bit in line:
         push_bit(bit)
-        #verify if after pushing bit we need to wait a while
+        sleep(float(clock_delay) / 1000.0)
     return True
 
 def flush_line():
@@ -41,8 +43,8 @@ def flush_line():
     print("")
     return True
 
-def print_matrix(matrix):        
+def print_matrix(matrix, clock_delay, latch_delay):        
     for row in matrix:        
-        write_line(row)
-        #missing setting of wait time between each line being displayed 
+        write_line(row, clock_delay)
         flush_line()
+        sleep(float(latch_delay) / 1000.0)
