@@ -15,14 +15,20 @@ def get_test_pattern_root_path():
 def make_new_dir(new_dir_path):    
     if is_dir_existent(new_dir_path):
         shutil.rmtree(new_dir_path, ignore_errors=True)
-    os.makedirs(new_dir_path)
+    try:
+        os.makedirs(new_dir_path)
+    except OSError:
+        pass
     return new_dir_path
 
 def make_new_dir_under(dir_path, new_dir_path):
     concat_new_dir_path = os.path.join(dir_path, new_dir_path)
     if is_dir_existent(concat_new_dir_path):
         shutil.rmtree(concat_new_dir_path, ignore_errors=True)
-    os.makedirs(concat_new_dir_path)
+    try:
+        os.makedirs(concat_new_dir_path)
+    except OSError:
+        pass
     return concat_new_dir_path
 
 def write_new_file(dir_path, file_name, file_contents):

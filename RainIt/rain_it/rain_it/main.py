@@ -68,7 +68,7 @@ tr_dict = { dir_key: file_util.get_test_routine_root_path(),
 tp_dict = { dir_key: file_util.get_test_pattern_root_path(),
                               value_key: get_pattern_from_file(file_util.get_test_pattern_root_path()),
                               async_flag_key: False}
-s_dict = {value_key: Settings(30, 0, 0), async_flag_key: False, last_access_key : None }
+s_dict = {value_key: Settings(30, 500, 0), async_flag_key: False, last_access_key : None }
 auth_dict = {value_key: None, async_flag_key: False, refresh_key:False}
 out_dict = {async_flag_key: False, refresh_key:False, pool_key:None}
 
@@ -85,7 +85,9 @@ def get_settings_callback(result):
     s_dict[async_flag_key] = False
     s_dict[last_access_key] = datetime.utcnow()
     if result is not None:
-        s_dict[value_key] = result        
+        if not s_dict[value_key] == result:        
+            s_dict[value_key] = result
+            out_dict[refresh_key] = True
     
 def write_active_routine_to_file_callback(result):
     auth_dict[refresh_key] = not result    
@@ -189,50 +191,43 @@ This is the async function section
 '''
 def authenticate_to_service_async():
     p = pool.Pool(1)
-    x= p.apply_async(authenticate_to_service, callback=authenticate_to_service_callback)
-    x.get()
+    p.apply_async(authenticate_to_service, callback=authenticate_to_service_callback)
     p.close()
     return p
 
 def get_settings_async():
     p = pool.Pool(1)
-    x=p.apply_async(get_settings,[auth_dict[value_key].token], callback=get_settings_callback)
-    x.get()
+    p.apply_async(get_settings,[auth_dict[value_key].token], callback=get_settings_callback)
     p.close()
     return p
     
 def write_active_routine_to_file_async():
     p = pool.Pool(1)
-    x=p.apply_async(write_active_routine_to_file,[auth_dict[value_key].token], callback=write_active_routine_to_file_callback)
-    x.get()
+    p.apply_async(write_active_routine_to_file,[auth_dict[value_key].token], callback=write_active_routine_to_file_callback)
     p.close()
     return p
     
 def write_test_routine_to_file_async():
     p = pool.Pool(1)
-    x=p.apply_async(write_test_routine_to_file,[auth_dict[value_key].token], callback=write_test_routine_to_file_callback)
-    x.get()
+    p.apply_async(write_test_routine_to_file,[auth_dict[value_key].token], callback=write_test_routine_to_file_callback)
     p.close()
     return p
 
 def write_test_pattern_to_file_async():
     p = pool.Pool(1)
-    x=p.apply_async(write_test_pattern_to_file,[auth_dict[value_key].token], callback=write_test_pattern_to_file_callback)
-    x.get()
+    p.apply_async(write_test_pattern_to_file,[auth_dict[value_key].token], callback=write_test_pattern_to_file_callback)
     p.close()
     return p
     
 def output_test_async(clock_delay, latch_delay):
     p = pool.Pool(1)
-    x=p.apply_async(output_test, [clock_delay, latch_delay],callback=output_test_callback)
-    x.get()
+    p.apply_async(output_test, [clock_delay, latch_delay],callback=output_test_callback)    
     p.close()
     return p
     
 def output_routine_list_async(routine_list,clock_delay, latch_delay):
     p = pool.Pool(1)
-    x=p.apply_async(output_routine_list, [routine_list,clock_delay, latch_delay], callback=output_routine_list_callback)
-    x.get()
+    p.apply_async(output_routine_list, [routine_list,clock_delay, latch_delay], callback=output_routine_list_callback)
     p.close()
     return p
     
