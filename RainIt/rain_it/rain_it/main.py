@@ -57,8 +57,7 @@ value_key = "value"
 async_flag_key = "async_flag"
 refresh_key = "refresh_key"
 last_access_key = "last_access_key"
-test_pool_key = "test pool key"
-routine_pool_key = "routine pool key"
+pool_key = "pool key"
 
 ar_dict = { dir_key: file_util.get_routine_root_path(),
                               value_key: get_routine_list_from_file(file_util.get_routine_root_path()),
@@ -69,9 +68,9 @@ tr_dict = { dir_key: file_util.get_test_routine_root_path(),
 tp_dict = { dir_key: file_util.get_test_pattern_root_path(),
                               value_key: get_pattern_from_file(file_util.get_test_pattern_root_path()),
                               async_flag_key: False}
-s_dict = {value_key: Settings(30, 0, 0, False), async_flag_key: False, last_access_key : None }
+s_dict = {value_key: Settings(30, 0, 0), async_flag_key: False, last_access_key : None }
 auth_dict = {value_key: None, async_flag_key: False, refresh_key:False}
-out_dict = {async_flag_key: False, refresh_key:False, test_pool_key:None, routine_pool_key: None}
+out_dict = {async_flag_key: False, refresh_key:False, pool_key:None}
 
 ''' 
 This is the callback section
@@ -86,9 +85,7 @@ def get_settings_callback(result):
     s_dict[async_flag_key] = False
     s_dict[last_access_key] = datetime.utcnow()
     if result is not None:
-        s_dict[value_key] = result
-        if s_dict[value_key].test_mode:
-            out_dict[refresh_key] = True
+        s_dict[value_key] = result        
     
 def write_active_routine_to_file_callback(result):
     auth_dict[refresh_key] = not result    
@@ -106,9 +103,11 @@ def write_test_pattern_to_file_callback(result):
     tp_dict[value_key] = get_pattern_from_file(tp_dict[dir_key])
         
 def output_test_callback(result):
+    out_dict[pool_key] = None
     out_dict[async_flag_key] = False
     
 def output_routine_list_callback(result):
+    out_dict[pool_key] = None
     out_dict[async_flag_key] = False
 
     
@@ -173,7 +172,7 @@ def output_test(clock_delay, latch_delay):
     test_pattern_timestamp = file_util.get_sampletimestamp_from(tp_dict[dir_key])
     test_routine_timestamp = file_util.get_sampletimestamp_from(tr_dict[dir_key])
     if test_routine_timestamp > test_pattern_timestamp and tr_dict[value_key]:
-        output_routine_list(tr_dict[value_key])
+        output_routine_list(tr_dict[value_key], clock_delay, latch_delay)
     elif test_routine_timestamp < test_pattern_timestamp and tp_dict[value_key] is not None:
         hardware_manager.print_matrix(tp_dict[value_key].pattern_as_matrix, clock_delay, latch_delay)
         
@@ -190,67 +189,68 @@ This is the async function section
 '''
 def authenticate_to_service_async():
     p = pool.Pool(1)
-    p.apply_async(authenticate_to_service, callback=authenticate_to_service_callback)
+    x= p.apply_async(authenticate_to_service, callback=authenticate_to_service_callback)
+    x.get()
     p.close()
     return p
 
 def get_settings_async():
     p = pool.Pool(1)
-    p.apply_async(get_settings,[auth_dict[value_key].token], callback=get_settings_callback)
+    x=p.apply_async(get_settings,[auth_dict[value_key].token], callback=get_settings_callback)
+    x.get()
     p.close()
     return p
     
 def write_active_routine_to_file_async():
     p = pool.Pool(1)
-    p.apply_async(write_active_routine_to_file,[auth_dict[value_key].token], callback=write_active_routine_to_file_callback)
+    x=p.apply_async(write_active_routine_to_file,[auth_dict[value_key].token], callback=write_active_routine_to_file_callback)
+    x.get()
     p.close()
     return p
     
 def write_test_routine_to_file_async():
     p = pool.Pool(1)
-    p.apply_async(write_test_routine_to_file,[auth_dict[value_key].token], callback=write_test_routine_to_file_callback)
+    x=p.apply_async(write_test_routine_to_file,[auth_dict[value_key].token], callback=write_test_routine_to_file_callback)
+    x.get()
     p.close()
     return p
 
 def write_test_pattern_to_file_async():
     p = pool.Pool(1)
-    p.apply_async(write_test_pattern_to_file,[auth_dict[value_key].token], callback=write_test_pattern_to_file_callback)
+    x=p.apply_async(write_test_pattern_to_file,[auth_dict[value_key].token], callback=write_test_pattern_to_file_callback)
+    x.get()
     p.close()
     return p
     
 def output_test_async(clock_delay, latch_delay):
     p = pool.Pool(1)
-    p.apply_async(output_test, [clock_delay, latch_delay],callback=output_test_callback)
+    x=p.apply_async(output_test, [clock_delay, latch_delay],callback=output_test_callback)
+    x.get()
     p.close()
     return p
     
 def output_routine_list_async(routine_list,clock_delay, latch_delay):
     p = pool.Pool(1)
-    p.apply_async(output_routine_list, [routine_list,clock_delay, latch_delay], callback=output_routine_list_callback)
+    x=p.apply_async(output_routine_list, [routine_list,clock_delay, latch_delay], callback=output_routine_list_callback)
+    x.get()
     p.close()
     return p
     
 '''
 This is the update function section
 '''
-    
-def display_test():
-    if out_dict[refresh_key] and out_dict[test_pool_key] is not None:
+def display():
+    if out_dict[refresh_key] and out_dict[pool_key] is not None:
         out_dict[refresh_key] = False
         out_dict[async_flag_key] = False
-        out_dict[test_pool_key].terminate()
-    if (tp_dict[value_key] is not None or tr_dict[value_key]) and not out_dict[async_flag_key]:
-        out_dict[async_flag_key] = True
-        out_dict[test_pool_key] = output_test_async(s_dict[value_key].millisecond_clock_delay,s_dict[value_key].millisecond_latch_delay)
-    
-def display_routines():
-    if out_dict[refresh_key] and out_dict[routine_pool_key] is not None:
-        out_dict[refresh_key] = False
-        out_dict[async_flag_key] = False
-        out_dict[routine_pool_key].terminate()
-    if tp_dict[value_key] is None and not tr_dict[value_key] and ar_dict[value_key] and not out_dict[async_flag_key]:
-        out_dict[async_flag_key] = True
-        out_dict[routine_pool_key] = output_routine_list_async(ar_dict[value_key],s_dict[value_key].millisecond_clock_delay,s_dict[value_key].millisecond_latch_delay)
+        out_dict[pool_key].terminate()
+    if not out_dict[async_flag_key]:
+        if tp_dict[value_key] is not None or tr_dict[value_key]:
+            out_dict[async_flag_key] = True
+            out_dict[pool_key] = output_test_async(s_dict[value_key].millisecond_clock_delay,s_dict[value_key].millisecond_latch_delay)
+        elif ar_dict[value_key]:
+            out_dict[async_flag_key] = True
+            out_dict[pool_key] = output_routine_list_async(ar_dict[value_key],s_dict[value_key].millisecond_clock_delay,s_dict[value_key].millisecond_latch_delay)
             
 def update_auth():
     if (not is_auth_valid() or auth_dict[refresh_key]) and not auth_dict[async_flag_key]:
@@ -293,8 +293,7 @@ def are_settings_valid():
                                 
 def initialize():    
     while True:
-        display_test()
-        display_routines()
+        display()
         update_auth()
         update_settings()
         update_active_routine_dict()
