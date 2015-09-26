@@ -6,15 +6,15 @@ All other source files must be in this directory
 from hardware import hardware_manager
 from adapters import login_adapter, routine_adapter, pattern_adapter, device_adapter
 from common import file_util
+from domain.conversion_parameter import ConversionParameter
 from domain.pattern import Pattern
 from domain.routine_pattern import RoutinePattern
 from domain.routine import Routine
-from domain.settings_response import Settings
-from domain import routine_pattern
+from domain.settings import Settings
 from multiprocessing import pool    
 from domain.exceptions import RequestException
 from datetime import datetime, timedelta
-
+import ast
 
 def get_routine_list_from_file(routine_root_dir):
     routine_list = []     
@@ -31,11 +31,17 @@ def get_routine_list_from_file(routine_root_dir):
                 for routine_pattern in all_routine_patterns:
                     routine_pattern_id = routine_pattern.split("_")[0]
                     pattern_id = routine_pattern.split("_")[1]
-                    repetitions = routine_pattern.split("_")[2]                                
-                    current_pattern = Pattern(pattern_id, file_util.read_file(routine_dir, routine_pattern))
-                    current_routine_pattern = RoutinePattern(routine_pattern_id, repetitions, current_pattern)
-                    routine_pattern_list.append(current_routine_pattern)
-                current_routine = Routine(routine_id, routine_pattern_list)
+                    repetitions = routine_pattern.split("_")[2]
+                    r_weight = routine_pattern.split("_")[3]
+                    g_weight = routine_pattern.split("_")[4]
+                    b_weight = routine_pattern.split("_")[5]
+                    is_inverted = routine_pattern.split("_")[6]
+                    threshold_percentage = routine_pattern.split("_")[7]
+                    conversion_parameter = ConversionParameter(r_weight, g_weight, b_weight, is_inverted, threshold_percentage)
+                    current_pattern = Pattern(pattern_id, "", conversion_parameter.get_as_dictionary(), ast.literal_eval(file_util.read_file(routine_dir, routine_pattern)))                    
+                    current_routine_pattern = RoutinePattern(routine_pattern_id, current_pattern.get_as_dictionary(), repetitions)
+                    routine_pattern_list.append(current_routine_pattern.get_as_dictionary())
+                current_routine = Routine(routine_id, routine_pattern_list, "")
                 routine_list.append(current_routine)
     except:
         pass 
@@ -47,7 +53,7 @@ def get_pattern_from_file(pattern_root_dir):
         all_patterns.remove("timestamp")    
         all_patterns.remove("sample_timestamp")    
         if all_patterns:
-            return Pattern(1, file_util.read_file(pattern_root_dir, all_patterns[0]))
+            return Pattern(1, "", None, ast.literal_eval(file_util.read_file(pattern_root_dir, all_patterns[0])))
     except:
         pass
     return None
@@ -61,7 +67,8 @@ pool_key = "pool key"
 
 ar_dict = { dir_key: file_util.get_routine_root_path(),
                               value_key: get_routine_list_from_file(file_util.get_routine_root_path()),
-                              async_flag_key: False}
+                              async_flag_key: False,
+                              refresh_key: False}
 tr_dict = { dir_key: file_util.get_test_routine_root_path(),
                               value_key: get_routine_list_from_file(file_util.get_test_routine_root_path()),
                               async_flag_key: False}
@@ -88,6 +95,18 @@ def get_settings_callback(result):
         if not s_dict[value_key] == result:        
             s_dict[value_key] = result
             out_dict[refresh_key] = True
+    
+def get_active_routines_callback(result):
+    # in this function we need to update the file expiration
+    # to prevent multiple reads
+    auth_dict[refresh_key] = not result
+    ar_dict[async_flag_key] = False
+    if result is not None:
+        if not ar_dict[value_key] == result:        
+            ar_dict[value_key] = result
+            ar_dict[refresh_key] = True
+            # write to file patterns asynchronously
+            # no need to read from file because we are doing it at init time 
     
 def write_active_routine_to_file_callback(result):
     auth_dict[refresh_key] = not result    
@@ -124,6 +143,14 @@ def authenticate_to_service():
 def get_settings(token):
     settings = device_adapter.get_settings(token)
     return settings
+
+def get_active_routines(token):
+    active_routines = routine_adapter.get_active_routines(token)
+    for routine in active_routines:
+        for routine_pattern in routine.routine_pattern_list:
+            pattern_as_matrix = pattern_adapter.get_pattern_as_matrix(routine_pattern.pattern.pattern_id,routine_pattern.pattern.conversion_parameter.get_as_dictionary(), token)
+            routine_pattern.pattern.set_matrix(pattern_as_matrix)
+    return active_routines
 
 def write_active_routine_to_file(token):
     try:
@@ -163,7 +190,7 @@ def write_test_pattern_to_file(token):
         pattern_as_matrix = json_result["patternAsMatrix"]
         resulting_dir = file_util.make_new_dir(tp_dict[dir_key])
         if pattern_as_matrix is not None:
-            file_util.write_new_file(resulting_dir, "1_1_1", str(pattern_as_matrix))
+            file_util.write_new_file(resulting_dir, "1_1_1_1_1_1_1_1", str(pattern_as_matrix))
         file_util.add_timestamp_file(resulting_dir)
         file_util.add_sample_timestamp_file(resulting_dir, json_result["SampleTimeStamp"])
     except RequestException:
@@ -201,6 +228,12 @@ def get_settings_async():
     p.close()
     return p
     
+def get_active_routines_async():
+    p = pool.Pool(1)
+    p.apply_async(get_active_routines,[auth_dict[value_key].token], callback=get_active_routines_callback)
+    p.close()
+    return p
+
 def write_active_routine_to_file_async():
     p = pool.Pool(1)
     p.apply_async(write_active_routine_to_file,[auth_dict[value_key].token], callback=write_active_routine_to_file_callback)
@@ -257,17 +290,18 @@ def update_settings():
         s_dict[async_flag_key] = True
         get_settings_async()    
  
-def update_active_routine_dict():    
+def update_active_routines():    
     if not file_util.is_dir_valid(ar_dict[dir_key], s_dict[value_key].minutes_refresh_rate) and not ar_dict[async_flag_key] and is_auth_valid():
         ar_dict[async_flag_key] = True
-        write_active_routine_to_file_async()              
+        get_active_routines_async()
+        #write_active_routine_to_file_async()              
     
-def update_test_routine_dict():
+def update_test_routine():
     if not file_util.is_dir_valid(tr_dict[dir_key], s_dict[value_key].minutes_refresh_rate) and not tr_dict[async_flag_key] and is_auth_valid():
         tr_dict[async_flag_key] = True
         write_test_routine_to_file_async()
 
-def update_test_pattern_dict():
+def update_test_pattern():
     if not file_util.is_dir_valid(tp_dict[dir_key], s_dict[value_key].minutes_refresh_rate) and not tp_dict[async_flag_key] and is_auth_valid():  
         tp_dict[async_flag_key] = True                      
         write_test_pattern_to_file_async()
@@ -288,12 +322,12 @@ def are_settings_valid():
                                 
 def initialize():    
     while True:
-        display()
+        #display()
         update_auth()
         update_settings()
-        update_active_routine_dict()
-        update_test_routine_dict()
-        update_test_pattern_dict()        
+        update_active_routines()
+        #update_test_routine()
+        #update_test_pattern()        
 
 if __name__ == '__main__':
     initialize()

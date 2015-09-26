@@ -3,7 +3,7 @@ This file will have the methods defined for calling the routine methods
 '''
 
 from common import adapter_util
-from domain.routine_response import Routine
+from domain.routine import Routine
 
 base_url = "http://localhost:8723/api/"
 

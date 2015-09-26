@@ -4,7 +4,7 @@ Created on Sep 14, 2015
 @author: luis
 '''
 from common import adapter_util
-from domain.settings_response import Settings
+from domain.settings import Settings
 
 base_url = "http://localhost:8723/api/"
 
