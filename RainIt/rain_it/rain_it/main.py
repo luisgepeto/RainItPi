@@ -82,7 +82,7 @@ out_dict = {async_flag_key: False, refresh_key:False, pool_key:None}
 ''' 
 This is the callback section
 '''
-def authenticate_to_service_callback(authentication_response):
+def get_authentication_callback(authentication_response):
     auth_dict[refresh_key] = False
     auth_dict[async_flag_key] = False
     auth_dict[value_key] = authentication_response
@@ -125,7 +125,7 @@ def write_test_pattern_to_file_callback(result):
 '''
 These functions will be called by their async partner
 '''
-def authenticate_to_service():
+def get_authentication():
     cpu_serial = hardware_manager.get_serial_number()
     authentication_result = login_adapter.authenticate(cpu_serial)
     return authentication_result
@@ -212,9 +212,9 @@ def output_routine_list(routine_list,clock_delay, latch_delay):
 '''
 This is the async function section
 '''
-def authenticate_to_service_async():
+def get_authentication_async():
     p = pool.Pool(1)
-    p.apply_async(authenticate_to_service, callback=authenticate_to_service_callback)
+    p.apply_async(get_authentication(), callback=get_authentication_callback)
     p.close()
     return p
 
@@ -274,10 +274,10 @@ def display():
             out_dict[async_flag_key] = True
             out_dict[pool_key] = output_routine_list_async(ar_dict[value_key],s_dict[value_key].millisecond_clock_delay,s_dict[value_key].millisecond_latch_delay)
             
-def update_auth():
+def update_authentication():
     if (not is_auth_valid() or auth_dict[refresh_key]) and not auth_dict[async_flag_key]:
         auth_dict[async_flag_key] = True
-        authenticate_to_service_async()    
+        get_authentication_async()    
 
 def update_settings():
     if not are_settings_valid() and not s_dict[async_flag_key] and is_auth_valid():
@@ -316,7 +316,7 @@ def are_settings_valid():
 def initialize():    
     while True:
         display()
-        update_auth()
+        update_authentication()
         update_settings()
         update_active_routines()
         #update_test_routine()
