@@ -105,16 +105,15 @@ def get_active_routines_callback(result):
         if result[value_key] is not None and result[is_new_key]:
             ar_dict[value_key] = result[value_key]
         out_dict[refresh_key] = result[is_new_key]
-    
-def write_active_routine_to_file_callback(result):
-    auth_dict[refresh_key] = not result    
-    ar_dict[async_flag_key] = False
-    ar_dict[value_key] = get_routine_list_from_file(ar_dict[dir_key])
-    
-def write_test_routine_to_file_callback(result):
-    auth_dict[refresh_key] = not result
+        
+def get_test_routine_callback(result):
     tr_dict[async_flag_key] = False
-    tr_dict[value_key] = get_routine_list_from_file(tr_dict[dir_key])
+    if result is None:
+        auth_dict[refresh_key] = True
+    else:
+        if result[value_key] is not None and result[is_new_key]:
+            tr_dict[value_key] = result[value_key]
+        out_dict[refresh_key] = result[is_new_key]
 
 def write_test_pattern_to_file_callback(result):
     auth_dict[refresh_key] = not result
@@ -145,9 +144,9 @@ def get_active_routines(old_value, token):
     try:
         is_new_value = False
         active_routines = routine_adapter.get_active_routines(token)
-        if active_routines is not None:
-            resulting_dir = file_util.make_new_dir(ar_dict[dir_key])
-            file_util.add_timestamp_file(resulting_dir)
+        resulting_dir = file_util.make_new_dir(ar_dict[dir_key])
+        file_util.add_timestamp_file(resulting_dir)
+        if active_routines is not None:            
             if not active_routines == old_value:
                 is_new_value = True
                 for routine in active_routines:
@@ -160,23 +159,27 @@ def get_active_routines(old_value, token):
         return False
     return {value_key: active_routines, is_new_key:is_new_value }
 
-def write_test_routine_to_file(token):
+def get_test_routine(old_value, token):
     try:
-        active_routines = routine_adapter.get_test_routine_as_list(token)
+        is_new_value = False
+        test_routine_list = routine_adapter.get_test_routine_as_list(token)
         resulting_dir = file_util.make_new_dir(tr_dict[dir_key])
-        for routine in active_routines:
-            routine_path = file_util.make_new_dir_under(resulting_dir, str(routine.routine_id))
-            for routine_pattern in routine.routine_pattern_list:
-                pattern_as_matrix = pattern_adapter.get_pattern_as_matrix(routine_pattern.pattern.pattern_id,routine_pattern.pattern.conversion_parameter.get_as_dictionary(), token)
-                file_util.write_new_file(routine_path, str(routine_pattern.routine_pattern_id)+"_"+str(routine_pattern.pattern.pattern_id)+"_"+str(routine_pattern.repetitions), str(pattern_as_matrix))
-        sample_time_stamp = None
-        if active_routines:
-            sample_time_stamp = active_routines[0].time_stamp        
         file_util.add_timestamp_file(resulting_dir)
-        file_util.add_sample_timestamp_file(resulting_dir, sample_time_stamp)
+        if test_routine_list is not None:            
+            if not test_routine_list == old_value:
+                for routine in test_routine_list:
+                    routine_path = file_util.make_new_dir_under(resulting_dir, str(routine.routine_id))
+                    for routine_pattern in routine.routine_pattern_list:
+                        pattern_as_matrix = pattern_adapter.get_pattern_as_matrix(routine_pattern.pattern.pattern_id,routine_pattern.pattern.conversion_parameter.get_as_dictionary(), token)
+                        routine_pattern.pattern.set_matrix(pattern_as_matrix)
+                        file_util.write_new_file(routine_path, str(routine_pattern.routine_pattern_id)+"_"+str(routine_pattern.pattern.pattern_id)+"_"+str(routine_pattern.repetitions)+"_"+str(routine_pattern.pattern.conversion_parameter.r_weight)+"_"+str(routine_pattern.pattern.conversion_parameter.g_weight)+"_"+str(routine_pattern.pattern.conversion_parameter.b_weight)+"_"+str(int(routine_pattern.pattern.conversion_parameter.is_inverted))+"_"+str(routine_pattern.pattern.conversion_parameter.threshold_percentage), str(pattern_as_matrix))
+                sample_time_stamp = None
+                if test_routine_list:
+                    sample_time_stamp = test_routine_list[0].time_stamp
+                file_util.add_sample_timestamp_file(resulting_dir, sample_time_stamp)
     except RequestException:
         return False
-    return True
+    return {value_key: test_routine_list, is_new_key:is_new_value }
     
 def write_test_pattern_to_file(token):
     try:
@@ -214,7 +217,7 @@ This is the async function section
 '''
 def get_authentication_async():
     p = pool.Pool(1)
-    p.apply_async(get_authentication(), callback=get_authentication_callback)
+    p.apply_async(get_authentication, callback=get_authentication_callback)
     p.close()
     return p
 
@@ -230,15 +233,9 @@ def get_active_routines_async():
     p.close()
     return p
 
-def write_active_routine_to_file_async():
+def get_test_routine_async():
     p = pool.Pool(1)
-    p.apply_async(write_active_routine_to_file,[auth_dict[value_key].token], callback=write_active_routine_to_file_callback)
-    p.close()
-    return p
-    
-def write_test_routine_to_file_async():
-    p = pool.Pool(1)
-    p.apply_async(write_test_routine_to_file,[auth_dict[value_key].token], callback=write_test_routine_to_file_callback)
+    p.apply_async(get_test_routine,[tr_dict[value_key], auth_dict[value_key].token], callback=get_test_routine_callback)
     p.close()
     return p
 
@@ -292,7 +289,7 @@ def update_active_routines():
 def update_test_routine():
     if not file_util.is_dir_valid(tr_dict[dir_key], s_dict[value_key].minutes_refresh_rate) and not tr_dict[async_flag_key] and is_auth_valid():
         tr_dict[async_flag_key] = True
-        write_test_routine_to_file_async()
+        get_test_routine_async()        
 
 def update_test_pattern():
     if not file_util.is_dir_valid(tp_dict[dir_key], s_dict[value_key].minutes_refresh_rate) and not tp_dict[async_flag_key] and is_auth_valid():  
