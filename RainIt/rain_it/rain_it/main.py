@@ -157,7 +157,7 @@ def get_active_routines(old_value, token):
                         routine_pattern.pattern.set_matrix(pattern_as_matrix)
                         file_util.write_new_file(routine_path, str(routine_pattern.routine_pattern_id)+"_"+str(routine_pattern.pattern.pattern_id)+"_"+str(routine_pattern.repetitions)+"_"+str(routine_pattern.pattern.conversion_parameter.r_weight)+"_"+str(routine_pattern.pattern.conversion_parameter.g_weight)+"_"+str(routine_pattern.pattern.conversion_parameter.b_weight)+"_"+str(int(routine_pattern.pattern.conversion_parameter.is_inverted))+"_"+str(routine_pattern.pattern.conversion_parameter.threshold_percentage), str(pattern_as_matrix))        
     except RequestException:
-        return None
+        return False
     return {value_key: active_routines, is_new_key:is_new_value }
 
 def write_test_routine_to_file(token):

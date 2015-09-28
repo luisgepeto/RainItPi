@@ -18,7 +18,7 @@ def make_new_dir(new_dir_path, delete_if_exists=False):
             shutil.rmtree(new_dir_path, ignore_errors=True)
     try:
         os.makedirs(new_dir_path)
-    except OSError:
+    except (OSError, IOError):
         pass
     return new_dir_path
 
@@ -29,17 +29,20 @@ def make_new_dir_under(dir_path, new_dir_path, delete_if_exists=False):
             shutil.rmtree(concat_new_dir_path, ignore_errors=True)
     try:
         os.makedirs(concat_new_dir_path)
-    except OSError:
+    except (OSError, IOError):
         pass
     return concat_new_dir_path
 
 def write_new_file(dir_path, file_name, file_contents):
     file_path = os.path.join(dir_path, file_name)
-    if os.path.isfile(file_path):
-        os.remove(file_path)
-    new_file = open(file_path, "w")
-    new_file.write(file_contents)
-    new_file.close()    
+    try:
+        if os.path.isfile(file_path):
+            os.remove(file_path)
+        new_file = open(file_path, "w")
+        new_file.write(file_contents)
+        new_file.close()    
+    except (OSError, IOError):
+        pass
     return file_path
 
 def read_file(dir_path, file_name):
