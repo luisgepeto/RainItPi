@@ -63,12 +63,12 @@ value_key = "value"
 async_flag_key = "async_flag"
 refresh_key = "refresh_key"
 last_access_key = "last_access_key"
-pool_key = "pool key"
+pool_key = "pool_key"
+is_new_key = "is_new_key"
 
 ar_dict = { dir_key: file_util.get_routine_root_path(),
                               value_key: get_routine_list_from_file(file_util.get_routine_root_path()),
-                              async_flag_key: False,
-                              refresh_key: False}
+                              async_flag_key: False}
 tr_dict = { dir_key: file_util.get_test_routine_root_path(),
                               value_key: get_routine_list_from_file(file_util.get_test_routine_root_path()),
                               async_flag_key: False}
@@ -88,25 +88,23 @@ def authenticate_to_service_callback(authentication_response):
     auth_dict[value_key] = authentication_response
     
 def get_settings_callback(result):
-    auth_dict[refresh_key] = not result
     s_dict[async_flag_key] = False
     s_dict[last_access_key] = datetime.utcnow()
-    if result is not None:
-        if not s_dict[value_key] == result:        
-            s_dict[value_key] = result
-            out_dict[refresh_key] = True
+    if result is None:
+        auth_dict[refresh_key] = True
+    else:
+        if result[value_key] is not None and result[is_new_key]:
+            s_dict[value_key] = result[value_key]
+        out_dict[refresh_key] = result[is_new_key]
     
 def get_active_routines_callback(result):
-    # in this function we need to update the file expiration
-    # to prevent multiple reads
-    auth_dict[refresh_key] = not result
     ar_dict[async_flag_key] = False
-    if result is not None:
-        if not ar_dict[value_key] == result:        
-            ar_dict[value_key] = result
-            ar_dict[refresh_key] = True
-            # write to file patterns asynchronously
-            # no need to read from file because we are doing it at init time 
+    if result is None:
+        auth_dict[refresh_key] = True
+    else:
+        if result[value_key] is not None and result[is_new_key]:
+            ar_dict[value_key] = result[value_key]
+        out_dict[refresh_key] = result[is_new_key]
     
 def write_active_routine_to_file_callback(result):
     auth_dict[refresh_key] = not result    
@@ -123,15 +121,7 @@ def write_test_pattern_to_file_callback(result):
     tp_dict[async_flag_key] = False
     tp_dict[value_key] = get_pattern_from_file(tp_dict[dir_key])
         
-def output_test_callback(result):
-    out_dict[pool_key] = None
-    out_dict[async_flag_key] = False
-    
-def output_routine_list_callback(result):
-    out_dict[pool_key] = None
-    out_dict[async_flag_key] = False
-
-    
+   
 '''
 These functions will be called by their async partner
 '''
@@ -140,31 +130,35 @@ def authenticate_to_service():
     authentication_result = login_adapter.authenticate(cpu_serial)
     return authentication_result
 
-def get_settings(token):
-    settings = device_adapter.get_settings(token)
-    return settings
-
-def get_active_routines(token):
-    active_routines = routine_adapter.get_active_routines(token)
-    for routine in active_routines:
-        for routine_pattern in routine.routine_pattern_list:
-            pattern_as_matrix = pattern_adapter.get_pattern_as_matrix(routine_pattern.pattern.pattern_id,routine_pattern.pattern.conversion_parameter.get_as_dictionary(), token)
-            routine_pattern.pattern.set_matrix(pattern_as_matrix)
-    return active_routines
-
-def write_active_routine_to_file(token):
+def get_settings(old_value, token):
     try:
-        active_routines = routine_adapter.get_active_routines(token)
-        resulting_dir = file_util.make_new_dir(ar_dict[dir_key])
-        for routine in active_routines:
-            routine_path = file_util.make_new_dir_under(resulting_dir, str(routine.routine_id))
-            for routine_pattern in routine.routine_pattern_list:
-                pattern_as_matrix = pattern_adapter.get_pattern_as_matrix(routine_pattern.pattern.pattern_id,routine_pattern.pattern.conversion_parameter.get_as_dictionary(), token)
-                file_util.write_new_file(routine_path, str(routine_pattern.routine_pattern_id)+"_"+str(routine_pattern.pattern.pattern_id)+"_"+str(routine_pattern.repetitions), str(pattern_as_matrix))
-        file_util.add_timestamp_file(resulting_dir)
+        is_new_value = False
+        settings = device_adapter.get_settings(token)
+        if settings is not None:
+            if not settings == old_value:
+                is_new_value = True
     except RequestException:
-        return False
-    return True
+        return None
+    return {value_key: settings, is_new_key: is_new_value }   
+
+def get_active_routines(old_value, token):
+    try:
+        is_new_value = False
+        active_routines = routine_adapter.get_active_routines(token)
+        if active_routines is not None:
+            resulting_dir = file_util.make_new_dir(ar_dict[dir_key])
+            file_util.add_timestamp_file(resulting_dir)
+            if not active_routines == old_value:
+                is_new_value = True
+                for routine in active_routines:
+                    routine_path = file_util.make_new_dir_under(resulting_dir, str(routine.routine_id), True)
+                    for routine_pattern in routine.routine_pattern_list:
+                        pattern_as_matrix = pattern_adapter.get_pattern_as_matrix(routine_pattern.pattern.pattern_id,routine_pattern.pattern.conversion_parameter.get_as_dictionary(), token)
+                        routine_pattern.pattern.set_matrix(pattern_as_matrix)
+                        file_util.write_new_file(routine_path, str(routine_pattern.routine_pattern_id)+"_"+str(routine_pattern.pattern.pattern_id)+"_"+str(routine_pattern.repetitions)+"_"+str(routine_pattern.pattern.conversion_parameter.r_weight)+"_"+str(routine_pattern.pattern.conversion_parameter.g_weight)+"_"+str(routine_pattern.pattern.conversion_parameter.b_weight)+"_"+str(int(routine_pattern.pattern.conversion_parameter.is_inverted))+"_"+str(routine_pattern.pattern.conversion_parameter.threshold_percentage), str(pattern_as_matrix))        
+    except RequestException:
+        return None
+    return {value_key: active_routines, is_new_key:is_new_value }
 
 def write_test_routine_to_file(token):
     try:
@@ -203,15 +197,17 @@ def output_test(clock_delay, latch_delay):
     if test_routine_timestamp > test_pattern_timestamp and tr_dict[value_key]:
         output_routine_list(tr_dict[value_key], clock_delay, latch_delay)
     elif test_routine_timestamp < test_pattern_timestamp and tp_dict[value_key] is not None:
-        hardware_manager.print_matrix(tp_dict[value_key].pattern_as_matrix, clock_delay, latch_delay)
+        while True:
+            hardware_manager.print_matrix(tp_dict[value_key].pattern_as_matrix, clock_delay, latch_delay)        
         
 def output_routine_list(routine_list,clock_delay, latch_delay):
     routine_list.sort(key = lambda x: x.routine_id)
-    for routine in routine_list:        
-        routine.routine_pattern_list.sort(key = lambda x: x.routine_pattern_id)
-        for routine_pattern in routine.routine_pattern_list:
-            for i in range(0, routine_pattern.repetitions):                
-                hardware_manager.print_matrix(routine_pattern.pattern.pattern_as_matrix, clock_delay, latch_delay)
+    while True:
+        for routine in routine_list:        
+            routine.routine_pattern_list.sort(key = lambda x: x.routine_pattern_id)
+            for routine_pattern in routine.routine_pattern_list:
+                for i in range(0, routine_pattern.repetitions):                
+                    hardware_manager.print_matrix(routine_pattern.pattern.matrix, clock_delay, latch_delay)
                 
 '''
 This is the async function section
@@ -224,13 +220,13 @@ def authenticate_to_service_async():
 
 def get_settings_async():
     p = pool.Pool(1)
-    p.apply_async(get_settings,[auth_dict[value_key].token], callback=get_settings_callback)
+    p.apply_async(get_settings,[s_dict[value_key], auth_dict[value_key].token], callback=get_settings_callback)
     p.close()
     return p
     
 def get_active_routines_async():
     p = pool.Pool(1)
-    p.apply_async(get_active_routines,[auth_dict[value_key].token], callback=get_active_routines_callback)
+    p.apply_async(get_active_routines,[ar_dict[value_key], auth_dict[value_key].token], callback=get_active_routines_callback)
     p.close()
     return p
 
@@ -254,14 +250,12 @@ def write_test_pattern_to_file_async():
     
 def output_test_async(clock_delay, latch_delay):
     p = pool.Pool(1)
-    p.apply_async(output_test, [clock_delay, latch_delay],callback=output_test_callback)    
-    p.close()
+    p.apply_async(output_test, [clock_delay, latch_delay])    
     return p
     
 def output_routine_list_async(routine_list,clock_delay, latch_delay):
     p = pool.Pool(1)
-    p.apply_async(output_routine_list, [routine_list,clock_delay, latch_delay], callback=output_routine_list_callback)
-    p.close()
+    p.apply_async(output_routine_list, [routine_list,clock_delay, latch_delay])    
     return p
     
 '''
@@ -271,7 +265,7 @@ def display():
     if out_dict[refresh_key] and out_dict[pool_key] is not None:
         out_dict[refresh_key] = False
         out_dict[async_flag_key] = False
-        out_dict[pool_key].terminate()
+        out_dict[pool_key].terminate()        
     if not out_dict[async_flag_key]:
         if tp_dict[value_key] is not None or tr_dict[value_key]:
             out_dict[async_flag_key] = True
@@ -294,7 +288,6 @@ def update_active_routines():
     if not file_util.is_dir_valid(ar_dict[dir_key], s_dict[value_key].minutes_refresh_rate) and not ar_dict[async_flag_key] and is_auth_valid():
         ar_dict[async_flag_key] = True
         get_active_routines_async()
-        #write_active_routine_to_file_async()              
     
 def update_test_routine():
     if not file_util.is_dir_valid(tr_dict[dir_key], s_dict[value_key].minutes_refresh_rate) and not tr_dict[async_flag_key] and is_auth_valid():
@@ -322,7 +315,7 @@ def are_settings_valid():
                                 
 def initialize():    
     while True:
-        #display()
+        display()
         update_auth()
         update_settings()
         update_active_routines()

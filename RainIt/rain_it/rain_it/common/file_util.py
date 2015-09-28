@@ -12,19 +12,21 @@ def get_test_routine_root_path():
 def get_test_pattern_root_path():
     return os.path.join(os.path.abspath(os.sep), "home/pi/Test/Pattern")
 
-def make_new_dir(new_dir_path):    
+def make_new_dir(new_dir_path, delete_if_exists=False):    
     if is_dir_existent(new_dir_path):
-        shutil.rmtree(new_dir_path, ignore_errors=True)
+        if delete_if_exists:
+            shutil.rmtree(new_dir_path, ignore_errors=True)
     try:
         os.makedirs(new_dir_path)
     except OSError:
         pass
     return new_dir_path
 
-def make_new_dir_under(dir_path, new_dir_path):
+def make_new_dir_under(dir_path, new_dir_path, delete_if_exists=False):
     concat_new_dir_path = os.path.join(dir_path, new_dir_path)
     if is_dir_existent(concat_new_dir_path):
-        shutil.rmtree(concat_new_dir_path, ignore_errors=True)
+        if delete_if_exists:
+            shutil.rmtree(concat_new_dir_path, ignore_errors=True)
     try:
         os.makedirs(concat_new_dir_path)
     except OSError:
