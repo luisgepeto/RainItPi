@@ -19,8 +19,8 @@ namespace Web.Services.Controllers
         }
 
         [HttpGet]
-        [Route("allActive")]
-        public IHttpActionResult GetAllActive()
+        [Route("active")]
+        public IHttpActionResult GetActive()
         {
             var activeRoutines = RoutineManager.GetActiveRoutines();
             return Ok(activeRoutines);
@@ -30,8 +30,8 @@ namespace Web.Services.Controllers
         [Route("test")]
         public IHttpActionResult GetTest()
         {
-            var testRoutine = RoutineManager.GetTestRoutine();
-            return Ok(testRoutine);
+            var testRoutines = RoutineManager.GetTestRoutines();
+            return Ok(testRoutines);
         }
     }
 }

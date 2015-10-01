@@ -12,7 +12,7 @@ namespace RainIt.Interfaces.Business
         List<RoutineDTO> GetUserRoutines();
         RoutineDTO GetUserRoutine(int routineId);
         List<RoutineDTO> GetActiveRoutines();
-        RoutineDTO GetTestRoutine();
+        List<RoutineDTO> GetTestRoutines();
         StatusMessage UpdateUserRoutine(RoutineUploadModel routineUploadModel);
         StatusMessage DeleteUserRoutine(int routineId);
     }

@@ -151,7 +151,7 @@ namespace RainIt.Business
                 }).ToList();
         }
 
-        public RoutineDTO GetTestRoutine()
+        public List<RoutineDTO> GetTestRoutines()
         {
             var expireTimeInMinutes = int.Parse(ConfigurationManager.AppSettings["SampleExpireTimeInMinutes"]);
             var maxExpireDate = DateTime.UtcNow.AddMinutes(-expireTimeInMinutes);
@@ -180,7 +180,7 @@ namespace RainIt.Business
                         Repetitions = rp.Repetitions
                     }).ToList(),
                     SampleTimeStamp = r.UpdateUTCDateTime
-                }).FirstOrDefault();
+                }).ToList();
         }
 
         #endregion
