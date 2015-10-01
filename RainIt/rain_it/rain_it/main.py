@@ -115,12 +115,15 @@ def get_test_routine_callback(result):
             tr_dict[value_key] = result[value_key]
         out_dict[refresh_key] = result[is_new_key]
 
-def write_test_pattern_to_file_callback(result):
-    auth_dict[refresh_key] = not result
+def get_test_pattern_callback(result):
     tp_dict[async_flag_key] = False
-    tp_dict[value_key] = get_pattern_from_file(tp_dict[dir_key])
-        
-   
+    if result is None:
+        auth_dict[refresh_key] = True
+    else:
+        if result[is_new_key]:
+            tp_dict[value_key] = result[value_key]
+        out_dict[refresh_key] = result[is_new_key]        
+
 '''
 These functions will be called by their async partner
 '''
@@ -167,8 +170,9 @@ def get_test_routine(old_value, token):
         file_util.add_timestamp_file(resulting_dir)
         if test_routine_list is not None:            
             if not test_routine_list == old_value:
+                is_new_value = True
                 for routine in test_routine_list:
-                    routine_path = file_util.make_new_dir_under(resulting_dir, str(routine.routine_id))
+                    routine_path = file_util.make_new_dir_under(resulting_dir, str(routine.routine_id), True)
                     for routine_pattern in routine.routine_pattern_list:
                         pattern_as_matrix = pattern_adapter.get_pattern_as_matrix(routine_pattern.pattern.pattern_id,routine_pattern.pattern.conversion_parameter.get_as_dictionary(), token)
                         routine_pattern.pattern.set_matrix(pattern_as_matrix)
@@ -181,18 +185,20 @@ def get_test_routine(old_value, token):
         return False
     return {value_key: test_routine_list, is_new_key:is_new_value }
     
-def write_test_pattern_to_file(token):
+def get_test_pattern(old_value, token):
     try:
+        is_new_value = False
         json_result = pattern_adapter.get_test_pattern_as_matrix(token)
         pattern_as_matrix = json_result["patternAsMatrix"]
         resulting_dir = file_util.make_new_dir(tp_dict[dir_key])
-        if pattern_as_matrix is not None:
-            file_util.write_new_file(resulting_dir, "1_1_1_1_1_1_1_1", str(pattern_as_matrix))
         file_util.add_timestamp_file(resulting_dir)
-        file_util.add_sample_timestamp_file(resulting_dir, json_result["SampleTimeStamp"])
+        if pattern_as_matrix is None or (old_value is not None and not pattern_as_matrix == old_value.matrix):
+            is_new_value = True
+            file_util.write_new_file(resulting_dir, "1_1_1_1_1_1_1_1", str(pattern_as_matrix))
+            file_util.add_sample_timestamp_file(resulting_dir, json_result["SampleTimeStamp"])
     except RequestException:
         return False
-    return True
+    return {value_key: pattern_as_matrix, is_new_key:is_new_value }
 
 def output_test(clock_delay, latch_delay):
     test_pattern_timestamp = file_util.get_sampletimestamp_from(tp_dict[dir_key])
@@ -201,7 +207,7 @@ def output_test(clock_delay, latch_delay):
         output_routine_list(tr_dict[value_key], clock_delay, latch_delay)
     elif test_routine_timestamp < test_pattern_timestamp and tp_dict[value_key] is not None:
         while True:
-            hardware_manager.print_matrix(tp_dict[value_key].pattern_as_matrix, clock_delay, latch_delay)        
+            hardware_manager.print_matrix(tp_dict[value_key].matrix, clock_delay, latch_delay)        
         
 def output_routine_list(routine_list,clock_delay, latch_delay):
     routine_list.sort(key = lambda x: x.routine_id)
@@ -239,9 +245,9 @@ def get_test_routine_async():
     p.close()
     return p
 
-def write_test_pattern_to_file_async():
+def get_test_pattern_async():
     p = pool.Pool(1)
-    p.apply_async(write_test_pattern_to_file,[auth_dict[value_key].token], callback=write_test_pattern_to_file_callback)
+    p.apply_async(get_test_pattern,[tp_dict[value_key], auth_dict[value_key].token], callback=get_test_pattern_callback)
     p.close()
     return p
     
@@ -293,8 +299,8 @@ def update_test_routine():
 
 def update_test_pattern():
     if not file_util.is_dir_valid(tp_dict[dir_key], s_dict[value_key].minutes_refresh_rate) and not tp_dict[async_flag_key] and is_auth_valid():  
-        tp_dict[async_flag_key] = True                      
-        write_test_pattern_to_file_async()
+        tp_dict[async_flag_key] = True
+        get_test_pattern_async()
   
 '''
 This is the output section
@@ -316,8 +322,8 @@ def initialize():
         update_authentication()
         update_settings()
         update_active_routines()
-        #update_test_routine()
-        #update_test_pattern()        
+        update_test_routine()
+        update_test_pattern()        
 
 if __name__ == '__main__':
     initialize()
