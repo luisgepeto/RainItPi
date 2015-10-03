@@ -71,8 +71,14 @@ namespace RainIt.Business
                 Identifier = Guid.NewGuid(),
                 Serial = device.Serial
             };
+            var deviceSettingsForDevice = new Settings()
+            {
+                MinutesRefreshRate = 30,
+                MillisecondClockDelay = 0,
+                MillisecondLatchDelay = 0
+            };
             deviceToAdd.DeviceInfo = deviceInfoForDevice;
-                
+            deviceToAdd.Settings = deviceSettingsForDevice;                
             RainItContext.DeviceSet.Add(deviceToAdd);
             RainItContext.SaveChanges();
             return StatusMessage.WriteMessage("The device was successfully saved");
