@@ -12,7 +12,7 @@ namespace RainIt.Domain.Repository
         public string Name { get; set; }
         public virtual User User { get; set; }
         public virtual DeviceInfo DeviceInfo { get; set; }
-        public virtual Settings Settings { get; set; }
+        public virtual DeviceSettings DeviceSettings { get; set; }
 
         public virtual ICollection<Routine> Routines { get; set; }
         public virtual SamplePattern SamplePattern { get; set; }

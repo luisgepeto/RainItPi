@@ -12,7 +12,7 @@ namespace RainIt.Repository.Configuration
             HasRequired(d => d.DeviceInfo)
                 .WithRequiredPrincipal(p => p.Device)
                 .WillCascadeOnDelete(true);
-            HasRequired(d => d.Settings)
+            HasRequired(d => d.DeviceSettings)
                 .WithRequiredPrincipal(s => s.Device)
                 .WillCascadeOnDelete(true);
             HasMany(d => d.Routines)

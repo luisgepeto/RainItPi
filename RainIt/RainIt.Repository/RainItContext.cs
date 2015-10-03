@@ -2,19 +2,15 @@
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Data.Entity.ModelConfiguration.Conventions;
-using System.Diagnostics;
 using System.Linq;
 using System.Security.Claims;
-using System.Security.Policy;
-using System.Threading;
 using System.Web;
 using RainIt.Domain.DTO;
 using RainIt.Domain.Repository;
 using RainIt.Interfaces.Repository;
 using RainIt.Repository.Configuration;
-using Address = RainIt.Domain.Repository.Address;
-using User = RainIt.Domain.Repository.User;
-using UserInfo = RainIt.Domain.Repository.UserInfo;
+using User = RainIt.Domain.DTO.User;
+
 
 namespace RainIt.Repository
 {
@@ -25,13 +21,13 @@ namespace RainIt.Repository
             Database.Log = Console.Write;
         }
 
-        public Domain.DTO.User CurrentUser
+        public User CurrentUser
         {
             get
             {
                 var username = HttpContext.Current.User.Identity.Name;
                 var userId = UserSet.Single(u => u.Username == username).UserId;
-                return new Domain.DTO.User()
+                return new User()
                 {
                     UserId = userId,
                     Username = username
@@ -64,9 +60,9 @@ namespace RainIt.Repository
             }
         }
 
-        public DbSet<User> UserSet { get; set; }
-        public DbSet<UserInfo> UserInfoSet { get; set; }
-        public DbSet<Address> AddressSet { get; set; }
+        public DbSet<Domain.Repository.User> UserSet { get; set; }
+        public DbSet<Domain.Repository.UserInfo> UserInfoSet { get; set; }
+        public DbSet<Domain.Repository.Address> AddressSet { get; set; }
         public DbSet<Role> RoleSet { get; set; }
         public DbSet<Password> PasswordSet { get; set; }
         public DbSet<Pattern> PatternSet { get; set; }
@@ -74,14 +70,14 @@ namespace RainIt.Repository
         public DbSet<RoutinePattern> RoutinePatternSet { get; set; }
         public DbSet<Device> DeviceSet { get; set; }
         public DbSet<DeviceInfo> DeviceInfoSet { get; set; }
-        public DbSet<Settings> SettingsSet { get; set; }
+        public DbSet<DeviceSettings> SettingsSet { get; set; }
         public DbSet<SamplePattern> SamplePatternSet { get; set; }
 
         public IQueryable<SamplePattern> DeviceSamplePatternSet
         {
             get { return SamplePatternSet.Where(sp => sp.DeviceId == CurrentDevice.DeviceId); }
         }
-        public IQueryable<Settings> DeviceSettingsSet
+        public IQueryable<DeviceSettings> DeviceSettingsSet
         {
             get { return SettingsSet.Where(s => s.DeviceId == CurrentDevice.DeviceId); }
         }
@@ -130,7 +126,7 @@ namespace RainIt.Repository
             modelBuilder.Configurations.Add(new UserInfoConfiguration());
             modelBuilder.Configurations.Add(new DeviceConfiguration());
             modelBuilder.Configurations.Add(new DeviceInfoConfiguration());
-            modelBuilder.Configurations.Add(new SettingsConfiguration());
+            modelBuilder.Configurations.Add(new DeviceSettingsConfiguration());
             modelBuilder.Configurations.Add(new DeviceCredentialConfiguration());
             modelBuilder.Configurations.Add(new ConversionParameterConfiguration());
             modelBuilder.Configurations.Add(new SamplePatternConfiguration());

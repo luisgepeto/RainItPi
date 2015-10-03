@@ -3,11 +3,11 @@ using RainIt.Domain.Repository;
 
 namespace RainIt.Repository.Configuration
 {
-    public class SettingsConfiguration : EntityTypeConfiguration<Settings>
+    public class DeviceSettingsConfiguration : EntityTypeConfiguration<DeviceSettings>
     {
-        public SettingsConfiguration(string schema = "dbo")
+        public DeviceSettingsConfiguration(string schema = "dbo")
         {
-            ToTable(schema + ".Settings");
+            ToTable(schema + ".DeviceSettings");
             HasKey(s => s.DeviceId);
             Property(s => s.MillisecondClockDelay).IsRequired();
             Property(s => s.MillisecondLatchDelay).IsRequired();

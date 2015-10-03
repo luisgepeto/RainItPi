@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace RainIt.Domain.Repository
 {
-    public class Settings
+    public class DeviceSettings
     {
         public int DeviceId { get; set; }
         public int MinutesRefreshRate { get; set; }

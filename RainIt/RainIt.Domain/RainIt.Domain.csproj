@@ -116,7 +116,7 @@
     <Compile Include="Repository\RoutinePattern.cs" />
     <Compile Include="Repository\SamplePattern.cs" />
     <Compile Include="Repository\SampleRoutine.cs" />
-    <Compile Include="Repository\Settings.cs" />
+    <Compile Include="Repository\DeviceSettings.cs" />
     <Compile Include="Repository\User.cs" />
     <Compile Include="Repository\UserInfo.cs" />
     <Compile Include="Services\User.cs" />
