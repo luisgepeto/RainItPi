@@ -24,11 +24,20 @@ namespace RainIt.Repository
             get
             {
                 var username = HttpContext.Current.User.Identity.Name;
-                var userId = UserSet.Single(u => u.Username == username).UserId;
+                var user = UserSet.Single(u => u.Username == username);
+
                 return new UserDTO
                 {
-                    UserId = userId,
-                    Username = username
+                    UserId = user.UserId,
+                    Username = username,
+                    UserSettings = new UserSettingsDTO()
+                    {
+                        MaxPatternPixelHeight = user.UserSettings.MaxPatternPixelHeight,
+                        MaxPatternCountPerRoutine = user.UserSettings.MaxPatternCountPerRoutine,
+                        MaxPatternPixelWidth = user.UserSettings.MaxPatternPixelWidth,
+                        MaxPatternByteCount = user.UserSettings.MaxPatternByteCount,
+                        MaxNumberOfRepetitionsPerPattern = user.UserSettings.MaxNumberOfRepetitionsPerPattern
+                    }
                 };
             }
         }

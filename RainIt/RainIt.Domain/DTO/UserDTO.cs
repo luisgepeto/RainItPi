@@ -31,5 +31,6 @@ namespace RainIt.Domain.DTO
         [DataType(DataType.Password)]
         [StringLength(20, MinimumLength = 6, ErrorMessage="The {0} field must be between 6 and 20 characters.")]
         public string PasswordConfirmation { get; set; }
+        public UserSettingsDTO UserSettings { get; set; }
     }
 }

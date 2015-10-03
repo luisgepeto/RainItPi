@@ -108,9 +108,9 @@ namespace RainIt.Business
         {
             return new UploadConstraintParameters()
             {
-                MaxBytesFileSize = int.Parse(ConfigurationManager.AppSettings["MaxPatternByteCount"]),
-                MaxHeight = int.Parse(ConfigurationManager.AppSettings["MaxPatternPixelHeight"]),
-                MaxWidth = int.Parse(ConfigurationManager.AppSettings["MaxPatternPixelWidth"]),
+                MaxBytesFileSize = RainItContext.CurrentUser.UserSettings.MaxPatternByteCount,
+                MaxHeight = RainItContext.CurrentUser.UserSettings.MaxPatternPixelHeight,
+                MaxWidth = RainItContext.CurrentUser.UserSettings.MaxPatternPixelWidth,
                 MaxNameLength = 50
             };
         }
@@ -297,13 +297,13 @@ namespace RainIt.Business
         #region Helper Methods
         private bool IsFileSizeValid(ImageDetails image)
         {
-            var maxSize = int.Parse(ConfigurationManager.AppSettings["MaxPatternByteCount"]);
+            var maxSize = RainItContext.CurrentUser.UserSettings.MaxPatternByteCount;
             return image.FileSize <= maxSize;
         }
         private bool AreDimensionsValid(ImageDetails image)
         {
-            var maxHeight = int.Parse(ConfigurationManager.AppSettings["MaxPatternPixelHeight"]);
-            var maxWidth = int.Parse(ConfigurationManager.AppSettings["MaxPatternPixelWidth"]);
+            var maxHeight = RainItContext.CurrentUser.UserSettings.MaxPatternPixelHeight;
+            var maxWidth = RainItContext.CurrentUser.UserSettings.MaxPatternPixelWidth;
             return image.Width <= maxWidth && image.Height <= maxHeight;
         }
         private bool DoesUserFileNameExist(string fileName)

@@ -107,9 +107,8 @@ namespace RainIt.Business
         {
             return new UploadConstraintParameters()
             {
-                MaxPatternCountPerRoutine = int.Parse(ConfigurationManager.AppSettings["MaxPatternCountPerRoutine"]),
-                MaxNumberOfRepetitionsPerPattern =
-                    int.Parse(ConfigurationManager.AppSettings["MaxNumberOfRepetitionsPerPattern"]),
+                MaxPatternCountPerRoutine = RainItContext.CurrentUser.UserSettings.MaxPatternCountPerRoutine,
+                MaxNumberOfRepetitionsPerPattern = RainItContext.CurrentUser.UserSettings.MaxNumberOfRepetitionsPerPattern,
                 MaxNameLength = 50
             };
         }
@@ -283,7 +282,7 @@ namespace RainIt.Business
 
         public bool IsPatternCountValid(List<RoutinePatternDTO> routinePatternDTOList)
         {
-            return routinePatternDTOList.Count <= int.Parse(ConfigurationManager.AppSettings["MaxPatternCountPerRoutine"]);
+            return routinePatternDTOList.Count <= RainItContext.CurrentUser.UserSettings.MaxPatternCountPerRoutine;
         }
 
         public bool DoesPatternExistsForUser(int patternId)

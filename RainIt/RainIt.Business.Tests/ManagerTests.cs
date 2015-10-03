@@ -29,9 +29,6 @@ namespace RainIt.Business.Tests
             };
             AzureCloudContext = new TestAzureCloudContext();
 
-            ConfigurationManager.AppSettings["MaxPatternPixelHeight"] = "200";
-            ConfigurationManager.AppSettings["MaxPatternPixelWidth"] = "200";
-            ConfigurationManager.AppSettings["MaxPatternByteCount"] = "1000";
         }
     }
 }

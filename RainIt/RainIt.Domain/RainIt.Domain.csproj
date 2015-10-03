@@ -103,6 +103,7 @@
     <Compile Include="DTO\UploadConstraintParameters.cs" />
     <Compile Include="DTO\UserDTO.cs" />
     <Compile Include="DTO\UserInfoDTO.cs" />
+    <Compile Include="DTO\UserSettingsDTO.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repository\Address.cs" />
     <Compile Include="Repository\Device.cs" />
