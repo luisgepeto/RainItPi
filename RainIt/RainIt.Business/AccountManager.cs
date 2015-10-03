@@ -55,6 +55,7 @@ namespace RainIt.Business
             var userToAdd = registration.User.ConvertTo(new User());
             var passwordToAdd = CreatePasswordFrom(registration.User);
             var userInfoToAdd = registration.UserInfo.ConvertTo(new UserInfo());
+            var userSettingsToAdd = GetDefaultUserSettings();
             var addressToAdd = registration.Address.ConvertTo(new Address());
             var deviceToLink = RainItContext.DeviceSet.Single(d => d.DeviceInfo.Identifier == registration.DeviceInfo.Identifier);
             deviceToLink.DeviceInfo.ActivatedUTCDate = DateTime.UtcNow;
@@ -64,9 +65,22 @@ namespace RainIt.Business
             userToAdd.Addresses = new List<Address>() {addressToAdd};
             userToAdd.RoleId = RainItContext.RoleSet.Single(r => r.Name == "customer").RoleId;
             userToAdd.Devices = new List<Device> {deviceToLink};
+            userToAdd.UserSettings = userSettingsToAdd;
             RainItContext.UserSet.Add(userToAdd);
             RainItContext.SaveChanges();
             return StatusMessage.WriteMessage("You were successfully registered.");
+        }
+
+        private UserSettings GetDefaultUserSettings()
+        {
+            return new UserSettings()
+            {
+                MaxNumberOfRepetitionsPerPattern = 5,
+                MaxPatternByteCount = 153600,
+                MaxPatternCountPerRoutine = 10,
+                MaxPatternPixelWidth = 200,
+                MaxPatternPixelHeight = 200
+            };
         }
 
         private Password CreatePasswordFrom(UserDTO userToAdd)
