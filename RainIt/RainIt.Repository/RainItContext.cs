@@ -56,13 +56,19 @@ namespace RainIt.Repository
                     Guid.TryParse(claimsIdentifier, out identifier);
                 }
 
-                var deviceId = DeviceSet.Single(d => d.DeviceInfo.Serial == serial && d.DeviceInfo.Identifier == identifier).DeviceId;
+                var device = DeviceSet.Single(d => d.DeviceInfo.Serial == serial && d.DeviceInfo.Identifier == identifier);
                 
                 return new DeviceDTO
                 {
-                    DeviceId = deviceId,
+                    DeviceId = device.DeviceId,
                     Identifier = identifier,
-                    Serial = serial
+                    Serial = serial,
+                    DeviceSettings = new DeviceSettingsDTO()
+                    {
+                        MinutesRefreshRate = device.DeviceSettings.MinutesRefreshRate,
+                        MillisecondLatchDelay = device.DeviceSettings.MillisecondLatchDelay,
+                        MillisecondClockDelay = device.DeviceSettings.MillisecondClockDelay
+                    }
                 };
             }
         }

@@ -129,14 +129,14 @@ namespace RainIt.Business
             return true;
         }
 
-        public SettingsDTO GetCurrentSettings()
+        public DeviceSettingsDTO GetCurrentSettings()
         {
-            return RainItContext.DeviceSettingsSet.Select(s => new SettingsDTO()
+            return new DeviceSettingsDTO()
             {
-                MinutesRefreshRate = s.MinutesRefreshRate,
-                MillisecondClockDelay = s.MillisecondClockDelay,
-                MillisecondLatchDelay = s.MillisecondLatchDelay
-            }).SingleOrDefault();
+                MillisecondClockDelay = RainItContext.CurrentDevice.DeviceSettings.MillisecondClockDelay,
+                MillisecondLatchDelay = RainItContext.CurrentDevice.DeviceSettings.MillisecondLatchDelay,
+                MinutesRefreshRate = RainItContext.CurrentDevice.DeviceSettings.MinutesRefreshRate
+            };
         }
 
         public StatusMessage EditUserDevice(int deviceId, string newDeviceName)

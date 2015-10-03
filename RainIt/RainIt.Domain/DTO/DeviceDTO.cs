@@ -11,5 +11,6 @@ namespace RainIt.Domain.DTO
         public Guid Identifier { get; set; }
         public string Serial { get; set; }
         public List<RoutineDTO> RoutineDTOs { get; set; }
+        public DeviceSettingsDTO DeviceSettings { get; set; }
     }
 }

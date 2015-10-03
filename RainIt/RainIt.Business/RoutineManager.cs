@@ -152,7 +152,7 @@ namespace RainIt.Business
 
         public List<RoutineDTO> GetTestRoutines()
         {
-            var expireTimeInMinutes = int.Parse(ConfigurationManager.AppSettings["SampleExpireTimeInMinutes"]);
+            var expireTimeInMinutes = RainItContext.CurrentDevice.DeviceSettings.MinutesRefreshRate;
             var maxExpireDate = DateTime.UtcNow.AddMinutes(-expireTimeInMinutes);
             return RainItContext.DeviceSampleRoutineSet
                 .Where(sr => sr.UpdateUTCDateTime >= maxExpireDate)

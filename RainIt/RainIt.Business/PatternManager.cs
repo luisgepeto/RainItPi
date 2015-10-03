@@ -161,7 +161,7 @@ namespace RainIt.Business
 
         public PatternDTO GetTestPattern()
         {
-            var expireTimeInMinutes = int.Parse(ConfigurationManager.AppSettings["SampleExpireTimeInMinutes"]);
+            var expireTimeInMinutes = RainItContext.CurrentDevice.DeviceSettings.MinutesRefreshRate;
             var maxExpireDate = DateTime.UtcNow.AddMinutes(-expireTimeInMinutes);
             return RainItContext.DeviceSamplePatternSet
                 .Where(sp => sp.UpdateUTCDateTime >= maxExpireDate)
