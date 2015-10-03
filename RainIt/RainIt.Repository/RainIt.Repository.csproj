@@ -106,6 +106,7 @@
     <Compile Include="Configuration\DeviceConfiguration.cs" />
     <Compile Include="Configuration\DeviceCredentialConfiguration.cs" />
     <Compile Include="Configuration\DeviceInfoConfiguration.cs" />
+    <Compile Include="Configuration\UserSettingsConfiguration.cs" />
     <Compile Include="Configuration\PasswordConfiguration.cs" />
     <Compile Include="Configuration\PatternConfiguration.cs" />
     <Compile Include="Configuration\RoleConfiguration.cs" />
@@ -175,6 +176,10 @@
     <Compile Include="Migrations\201510030630144_DeviceSettingsRenameMigration.cs" />
     <Compile Include="Migrations\201510030630144_DeviceSettingsRenameMigration.Designer.cs">
       <DependentUpon>201510030630144_DeviceSettingsRenameMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201510030657520_UserSettingsMigration.cs" />
+    <Compile Include="Migrations\201510030657520_UserSettingsMigration.Designer.cs">
+      <DependentUpon>201510030657520_UserSettingsMigration.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -247,6 +252,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201510030630144_DeviceSettingsRenameMigration.resx">
       <DependentUpon>201510030630144_DeviceSettingsRenameMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201510030657520_UserSettingsMigration.resx">
+      <DependentUpon>201510030657520_UserSettingsMigration.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -60,6 +60,7 @@ namespace RainIt.Repository
 
         public DbSet<User> UserSet { get; set; }
         public DbSet<UserInfo> UserInfoSet { get; set; }
+        public DbSet<UserSettings> UserSettingsSet { get; set; }
         public DbSet<Address> AddressSet { get; set; }
         public DbSet<Role> RoleSet { get; set; }
         public DbSet<Password> PasswordSet { get; set; }
@@ -122,6 +123,7 @@ namespace RainIt.Repository
             modelBuilder.Configurations.Add(new RoutinePatternConfiguration());
             modelBuilder.Configurations.Add(new UserConfiguration());
             modelBuilder.Configurations.Add(new UserInfoConfiguration());
+            modelBuilder.Configurations.Add(new UserSettingsConfiguration());
             modelBuilder.Configurations.Add(new DeviceConfiguration());
             modelBuilder.Configurations.Add(new DeviceInfoConfiguration());
             modelBuilder.Configurations.Add(new DeviceSettingsConfiguration());

@@ -15,7 +15,9 @@ namespace RainIt.Domain.Repository
         public virtual ICollection<Pattern> Patterns { get; set; } 
         public virtual ICollection<Routine> Routines { get; set; } 
         public virtual ICollection<RoutinePattern> RoutinePatterns { get; set; } 
-        public virtual ICollection<Device> Devices { get; set; } 
+        public virtual ICollection<Device> Devices { get; set; }
+        public virtual UserSettings UserSettings { get; set; }
+
     }
 }
 

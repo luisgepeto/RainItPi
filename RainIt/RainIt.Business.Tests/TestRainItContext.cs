@@ -43,24 +43,19 @@ namespace RainIt.Business.Tests
         public DbSet<Pattern> PatternSet{ get; set; }
         public DbSet<Routine> RoutineSet{ get; set; }
         public DbSet<Device> DeviceSet{ get; set; }
-
         public DbSet<RoutinePattern> RoutinePatternSet{ get; set; }
-
         public IQueryable<Pattern> UserPatternSet
         {
             get { return PatternSet.Where(p => p.UserId == CurrentUser.UserId); }
         }
-
         public IQueryable<Routine> UserRoutineSet
         {
             get { return RoutineSet.Where(p => p.UserId == CurrentUser.UserId); }
         }
-
         public IQueryable<Device> UserDeviceSet
         {
             get { return DeviceSet.Where(p => p.UserId == CurrentUser.UserId); }
         }
-
         public IQueryable<Routine> DeviceRoutineSet
         {
             get
@@ -70,18 +65,13 @@ namespace RainIt.Business.Tests
             }
             
         }
-
         public DbSet<SamplePattern> SamplePatternSet { get; set; }
-
         public IQueryable<SamplePattern> DeviceSamplePatternSet{ get; set; }
         public IQueryable<DeviceSettings> DeviceSettingsSet { get; set; }
-
+        public DbSet<UserSettings> UserSettingsSet { get; set; }
         public DbSet<SampleRoutine> SampleRoutineSet { get; set; }
-
         public IQueryable<SampleRoutine> DeviceSampleRoutineSet{ get; set; }
-
         public int SaveChangesCount { get; private set; }
-
         public int SaveChanges()
         {
             SaveChangesCount++;

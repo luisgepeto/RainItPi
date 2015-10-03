@@ -10,7 +10,6 @@ namespace RainIt.Interfaces.Repository
     {
         UserDTO CurrentUser { get; }
         DeviceDTO CurrentDevice { get; }
-
         DbSet<User> UserSet { get; set; }
         DbSet<UserInfo> UserInfoSet { get; set; }
         DbSet<Address> AddressSet { get; set; }
@@ -27,6 +26,7 @@ namespace RainIt.Interfaces.Repository
         DbSet<SamplePattern> SamplePatternSet { get; }
         IQueryable<SamplePattern> DeviceSamplePatternSet { get; }
         IQueryable<DeviceSettings> DeviceSettingsSet { get; }
+        DbSet<UserSettings> UserSettingsSet { get; }
         DbSet<SampleRoutine> SampleRoutineSet { get; }
         IQueryable<SampleRoutine> DeviceSampleRoutineSet { get; }
         int SaveChanges();

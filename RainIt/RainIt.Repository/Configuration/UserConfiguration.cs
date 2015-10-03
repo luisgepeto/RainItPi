@@ -42,6 +42,9 @@ namespace RainIt.Repository.Configuration
                 .WithOptional(r => r.User)
                 .HasForeignKey(r => r.UserId)
                 .WillCascadeOnDelete(true);
+            HasRequired(u => u.UserSettings)
+                .WithRequiredPrincipal(us => us.User)
+                .WillCascadeOnDelete(true);
         }
     }
 }

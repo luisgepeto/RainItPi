@@ -118,6 +118,7 @@
     <Compile Include="Repository\SampleRoutine.cs" />
     <Compile Include="Repository\DeviceSettings.cs" />
     <Compile Include="Repository\User.cs" />
+    <Compile Include="Repository\UserSettings.cs" />
     <Compile Include="Repository\UserInfo.cs" />
     <Compile Include="Services\User.cs" />
   </ItemGroup>
