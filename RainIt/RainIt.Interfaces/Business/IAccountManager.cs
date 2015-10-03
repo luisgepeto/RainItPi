@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using RainIt.Domain.DTO;
-using User = RainIt.Domain.DTO.User;
 
 namespace RainIt.Interfaces.Business
 {
@@ -12,7 +11,6 @@ namespace RainIt.Interfaces.Business
         bool IsUsernameAvailable(string username);
         bool IsEmailAvailable(string email);
         string GetRoleFor(string username);
-        User GetCurrentUsername();
         StatusMessage Authenticate(Login login);
         
     }

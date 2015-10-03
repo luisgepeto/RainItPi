@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography;
 using Common.Util;
 using RainIt.Domain.DTO;
 using RainIt.Domain.Repository;
 using RainIt.Interfaces.Business;
 using RainIt.Interfaces.Repository;
 using Web.Security.Interfaces;
-using User = RainIt.Domain.DTO.User;
-
 
 namespace RainIt.Business
 {
@@ -23,10 +20,6 @@ namespace RainIt.Business
             RainItContext = rainItContext;
         }
 
-        public User GetCurrentUsername()
-        {
-            return RainItContext.CurrentUser;
-        }
         public StatusMessage Register(Registration registration)
         {
             if (!IsUsernameAvailable(registration.User.Username))
@@ -59,16 +52,16 @@ namespace RainIt.Business
 
         private StatusMessage SaveToDatabase(Registration registration)
         {
-            var userToAdd = registration.User.ConvertTo(new Domain.Repository.User());
+            var userToAdd = registration.User.ConvertTo(new User());
             var passwordToAdd = CreatePasswordFrom(registration.User);
-            var userInfoToAdd = registration.UserInfo.ConvertTo(new Domain.Repository.UserInfo());
-            var addressToAdd = registration.Address.ConvertTo(new Domain.Repository.Address());
+            var userInfoToAdd = registration.UserInfo.ConvertTo(new UserInfo());
+            var addressToAdd = registration.Address.ConvertTo(new Address());
             var deviceToLink = RainItContext.DeviceSet.Single(d => d.DeviceInfo.Identifier == registration.DeviceInfo.Identifier);
             deviceToLink.DeviceInfo.ActivatedUTCDate = DateTime.UtcNow;
             deviceToLink.Name = "Initial RainIt device for "+registration.User.Username;
             userToAdd.UserInfo = userInfoToAdd;
             userToAdd.Password = passwordToAdd;
-            userToAdd.Addresses = new List<Domain.Repository.Address>() {addressToAdd};
+            userToAdd.Addresses = new List<Address>() {addressToAdd};
             userToAdd.RoleId = RainItContext.RoleSet.Single(r => r.Name == "customer").RoleId;
             userToAdd.Devices = new List<Device> {deviceToLink};
             RainItContext.UserSet.Add(userToAdd);
@@ -76,7 +69,7 @@ namespace RainIt.Business
             return StatusMessage.WriteMessage("You were successfully registered.");
         }
 
-        private Password CreatePasswordFrom(RainIt.Domain.DTO.User userToAdd)
+        private Password CreatePasswordFrom(UserDTO userToAdd)
         {
             var currentSalt = CryptoServiceManager.CreateRandomSalt();
             var concatenatedPass = currentSalt + userToAdd.Password;

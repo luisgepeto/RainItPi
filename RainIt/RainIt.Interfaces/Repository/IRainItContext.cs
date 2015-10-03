@@ -1,15 +1,15 @@
-﻿
-using System.Data.Entity;
+﻿using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
+using RainIt.Domain.DTO;
 using RainIt.Domain.Repository;
 
 namespace RainIt.Interfaces.Repository
 {
     public interface IRainItContext
     {
-        Domain.DTO.User CurrentUser { get; }
-        Domain.DTO.DeviceDTO CurrentDevice { get; }
+        UserDTO CurrentUser { get; }
+        DeviceDTO CurrentDevice { get; }
 
         DbSet<User> UserSet { get; set; }
         DbSet<UserInfo> UserInfoSet { get; set; }

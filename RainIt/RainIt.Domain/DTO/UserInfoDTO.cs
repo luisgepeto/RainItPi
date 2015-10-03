@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace RainIt.Domain.DTO
 {
-    public class UserInfo
+    public class UserInfoDTO
     {
         public int UserId { get; set; }
         [Required(ErrorMessage="The {0} field is required")]

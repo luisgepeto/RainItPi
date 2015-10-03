@@ -1,27 +1,21 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Common.Repository;
 using RainIt.Domain.DTO;
 using RainIt.Domain.Repository;
 using RainIt.Interfaces.Repository;
-using Address = RainIt.Domain.Repository.Address;
-using User = RainIt.Domain.Repository.User;
-using UserInfo = RainIt.Domain.Repository.UserInfo;
 
 namespace RainIt.Business.Tests
 {
     public class TestRainItContext : IRainItContext
     {
-        public Domain.DTO.User CurrentUser
+        public UserDTO CurrentUser
         {
             get
             {
-                return new Domain.DTO.User()
+                return new UserDTO()
                 {
                     UserId = 1,
                     Username = "UnitTestUser"

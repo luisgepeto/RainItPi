@@ -1,12 +1,10 @@
-﻿
-
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
 
 namespace RainIt.Domain.DTO
 {
-    public class User
+    public class UserDTO
     {
         public int  UserId { get; set; }
         [Required(ErrorMessage="The {0} field is required")]

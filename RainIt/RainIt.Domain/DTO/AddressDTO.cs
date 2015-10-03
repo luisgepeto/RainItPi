@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace RainIt.Domain.DTO
 {
-    public class Address
+    public class AddressDTO
     {
         public int AddressId { get; set; }
         [Required(ErrorMessage="The {0} field is required")]

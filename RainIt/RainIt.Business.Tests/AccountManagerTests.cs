@@ -6,9 +6,6 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RainIt.Domain.DTO;
 using RainIt.Domain.Repository;
-using Address = RainIt.Domain.DTO.Address;
-using User = RainIt.Domain.DTO.User;
-using UserInfo = RainIt.Domain.DTO.UserInfo;
 
 namespace RainIt.Business.Tests
 {
@@ -134,7 +131,7 @@ namespace RainIt.Business.Tests
             //Act
             var registration = new Registration()
             {
-                User = new User()
+                User = new UserDTO()
                 {
                     Username = "UnitTestUser",
                     Email = "UnitTestUser2@email.com",
@@ -157,7 +154,7 @@ namespace RainIt.Business.Tests
             //Act
             var registration = new Registration()
             {
-                User = new User()
+                User = new UserDTO()
                 {
                     Username = "UnitTestUser2",
                     Email = "UnitTestUser@email.com",
@@ -180,7 +177,7 @@ namespace RainIt.Business.Tests
             //Act
             var registration = new Registration()
             {
-                User = new User()
+                User = new UserDTO()
                 {
                     Username = "UnitTestUser2",
                     Email = "UnitTestUser2@email.com",
@@ -203,15 +200,15 @@ namespace RainIt.Business.Tests
             //Act
             var registration = new Registration()
             {
-                User = new User()
+                User = new UserDTO()
                 {
                     Username = "UnitTestUser2",
                     Email = "UnitTestUser2@email.com",
                     Password = "password",
                     PasswordConfirmation = "password"
                 },
-                Address = new Address(),
-                UserInfo = new UserInfo()
+                Address = new AddressDTO(),
+                UserInfo = new UserInfoDTO()
             };
             var canRegister = manager.Register(registration);
             var user = RainItContext.UserSet.SingleOrDefault(u => u.Username == "UnitTestUser2");

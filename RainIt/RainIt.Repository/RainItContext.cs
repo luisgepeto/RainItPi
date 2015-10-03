@@ -9,7 +9,6 @@ using RainIt.Domain.DTO;
 using RainIt.Domain.Repository;
 using RainIt.Interfaces.Repository;
 using RainIt.Repository.Configuration;
-using User = RainIt.Domain.DTO.User;
 
 
 namespace RainIt.Repository
@@ -21,13 +20,13 @@ namespace RainIt.Repository
             Database.Log = Console.Write;
         }
 
-        public User CurrentUser
+        public UserDTO CurrentUser
         {
             get
             {
                 var username = HttpContext.Current.User.Identity.Name;
                 var userId = UserSet.Single(u => u.Username == username).UserId;
-                return new User()
+                return new UserDTO()
                 {
                     UserId = userId,
                     Username = username
