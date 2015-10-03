@@ -10,7 +10,6 @@ using RainIt.Domain.Repository;
 using RainIt.Interfaces.Repository;
 using RainIt.Repository.Configuration;
 
-
 namespace RainIt.Repository
 {
     public class RainItContext : DbContext, IRainItContext
@@ -26,7 +25,7 @@ namespace RainIt.Repository
             {
                 var username = HttpContext.Current.User.Identity.Name;
                 var userId = UserSet.Single(u => u.Username == username).UserId;
-                return new UserDTO()
+                return new UserDTO
                 {
                     UserId = userId,
                     Username = username
@@ -50,7 +49,7 @@ namespace RainIt.Repository
 
                 var deviceId = DeviceSet.Single(d => d.DeviceInfo.Serial == serial && d.DeviceInfo.Identifier == identifier).DeviceId;
                 
-                return new DeviceDTO()
+                return new DeviceDTO
                 {
                     DeviceId = deviceId,
                     Identifier = identifier,
@@ -59,9 +58,9 @@ namespace RainIt.Repository
             }
         }
 
-        public DbSet<Domain.Repository.User> UserSet { get; set; }
-        public DbSet<Domain.Repository.UserInfo> UserInfoSet { get; set; }
-        public DbSet<Domain.Repository.Address> AddressSet { get; set; }
+        public DbSet<User> UserSet { get; set; }
+        public DbSet<UserInfo> UserInfoSet { get; set; }
+        public DbSet<Address> AddressSet { get; set; }
         public DbSet<Role> RoleSet { get; set; }
         public DbSet<Password> PasswordSet { get; set; }
         public DbSet<Pattern> PatternSet { get; set; }
