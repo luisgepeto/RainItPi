@@ -59,6 +59,11 @@ namespace Common.DependencyInjection
                 .As<ICryptoServiceManager>()
                 .PropertiesAutowired()
                 .InstancePerLifetimeScope();
+
+            builder.RegisterType<UserManager>()
+                .As<IUserManager>()
+                .PropertiesAutowired()
+                .InstancePerLifetimeScope();
         }
     }
 }

@@ -93,6 +93,7 @@
     <Compile Include="Business\IAccountManager.cs" />
     <Compile Include="Business\IDeviceManager.cs" />
     <Compile Include="Business\IRoutineManager.cs" />
+    <Compile Include="Business\IUserManager.cs" />
     <Compile Include="Repository\IAzureCloudContext.cs" />
     <Compile Include="ILookUpManager.cs" />
     <Compile Include="Business\IPatternManager.cs" />
