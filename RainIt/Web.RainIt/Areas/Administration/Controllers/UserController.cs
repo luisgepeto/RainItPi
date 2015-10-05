@@ -19,10 +19,16 @@ namespace Web.RainIt.Areas.Administration.Controllers
             return View(allUsers);
         }
 
-        public PartialViewResult Details(int userId)
+        public ActionResult Details(int userId)
         {
             var userDetails = UserManager.GetDetails(userId);
-            return PartialView(userDetails);
+            return View(userDetails);
+        }
+
+        public PartialViewResult Settings(int userId)
+        {
+            var userSettings = UserManager.GetSettings(userId);
+            return PartialView(userSettings);
         }
 
         public PartialViewResult Devices(int userId)

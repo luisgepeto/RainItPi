@@ -6,7 +6,8 @@ namespace RainIt.Interfaces.Business
     public interface IUserManager
     {
         List<UserDTO> GetAllUsers();
-        List<UserDTO> GetDetails(int userId);
+        UserDTO GetDetails(int userId);
+        UserSettingsDTO GetSettings(int userId);
         List<DeviceDTO> GetDevices(int userId);
     }
 }

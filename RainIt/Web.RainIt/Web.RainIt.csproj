@@ -264,6 +264,10 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Areas\Configuration\Views\Routine\_View.cshtml" />
+    <Content Include="Areas\Administration\Views\User\Index.cshtml" />
+    <Content Include="Areas\Administration\Views\User\Details.cshtml" />
+    <Content Include="Areas\Administration\Views\User\Settings.cshtml" />
+    <Content Include="Areas\Administration\Views\User\Devices.cshtml" />
     <None Include="Properties\PublishProfiles\DevRainIt.pubxml" />
     <None Include="Scripts\jquery-2.1.4.intellisense.js" />
     <Content Include="Scripts\custom-ajaxLoadingAnimation.js" />
@@ -325,7 +329,6 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Areas\Administration\Models\" />
-    <Folder Include="Areas\Administration\Views\User\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using Kendo.Mvc.Extensions;
@@ -15,7 +16,7 @@ namespace RainIt.Business
 
         public UserManager(IRainItContext rainItContext)
         {
-            RainItContext = rainItContext;z
+            RainItContext = rainItContext;
         }
 
         public List<UserDTO> GetAllUsers()
@@ -27,22 +28,41 @@ namespace RainIt.Business
             }).ToList();
         }
 
-        public List<UserDTO> GetDetails(int userId)
+        public UserDTO GetDetails(int userId)
         {
-            return RainItContext.UserSet.Select(u => new UserDTO()
+            return RainItContext.UserSet.Where(u => u.UserId == userId).Select(u => new UserDTO()
             {
                 UserId = u.UserId,
-                Username = u.Username,
                 Email = u.Email,
-                UserSettings = new UserSettingsDTO()
+                Username = u.Username,
+                UserInfo = new UserInfoDTO()
                 {
-                    MaxPatternPixelWidth = u.UserSettings.MaxPatternPixelWidth,
-                    MaxPatternByteCount = u.UserSettings.MaxPatternByteCount,
-                    MaxPatternPixelHeight = u.UserSettings.MaxPatternPixelHeight,
-                    MaxPatternCountPerRoutine = u.UserSettings.MaxPatternCountPerRoutine,
-                    MaxNumberOfRepetitionsPerPattern = u.UserSettings.MaxNumberOfRepetitionsPerPattern
+                    FirstName = u.UserInfo.FirstName,
+                    LastName = u.UserInfo.LastName,
+                    BirthDate = u.UserInfo.BirthDate
+                },
+                Address = new AddressDTO()
+                {
+                    AddressLine1 = u.Addresses.FirstOrDefault() != null ? u.Addresses.FirstOrDefault().AddressLine1 : String.Empty,
+                    AddressLine2 = u.Addresses.FirstOrDefault() != null ? u.Addresses.FirstOrDefault().AddressLine2 : String.Empty,
+                    City = u.Addresses.FirstOrDefault() != null ? u.Addresses.FirstOrDefault().City : String.Empty,
+                    Country = u.Addresses.FirstOrDefault() != null ? u.Addresses.FirstOrDefault().Country : String.Empty,
+                    State = u.Addresses.FirstOrDefault() != null ? u.Addresses.FirstOrDefault().State : String.Empty,
+                    PhoneNumber = u.Addresses.FirstOrDefault() != null ? u.Addresses.FirstOrDefault().PhoneNumber : String.Empty,
                 }
-            }).ToList();
+            }).SingleOrDefault();
+        }
+
+        public UserSettingsDTO GetSettings(int userId)
+        {
+            return RainItContext.UserSet.Where(u => u.UserId == userId).Select(u => new UserSettingsDTO()
+            {
+                MaxPatternPixelWidth = u.UserSettings.MaxPatternPixelWidth,
+                MaxPatternByteCount = u.UserSettings.MaxPatternByteCount,
+                MaxPatternPixelHeight = u.UserSettings.MaxPatternPixelHeight,
+                MaxPatternCountPerRoutine = u.UserSettings.MaxPatternCountPerRoutine,
+                MaxNumberOfRepetitionsPerPattern = u.UserSettings.MaxNumberOfRepetitionsPerPattern
+            }).SingleOrDefault();
         }
 
         public List<DeviceDTO> GetDevices(int userId)

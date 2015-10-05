@@ -49,6 +49,7 @@
                         @if (HttpContext.Current.User.IsInRole("Administrator"))
                         {
                             <li class="active">@Html.ActionLink("Manage Devices", "Index", "Device", new {area = "Administration"}, null)</li>
+                            <li class="active">@Html.ActionLink("Manage Users", "Index", "User", new { area = "Administration" }, null)</li>
                         }
                     </ul>
                 </div>
