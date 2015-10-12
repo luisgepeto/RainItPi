@@ -51,6 +51,16 @@ namespace RainIt.Repository.Migrations
                 BirthDate = new DateTime(1991, 7, 26)
             });
 
+            context.UserSettingsSet.AddOrUpdate(ui => ui.UserId, new UserSettings()
+            {
+                UserId = user != null ? user.UserId : 1,
+                MaxNumberOfRepetitionsPerPattern = 5,
+                MaxPatternByteCount = 153600,
+                MaxPatternCountPerRoutine = 10,
+                MaxPatternPixelWidth = 200,
+                MaxPatternPixelHeight = 200                
+            });
+
             var cryptoServiceManager = (ICryptoServiceManager) new CryptoServiceManager();
             var currentSalt = cryptoServiceManager.CreateRandomSalt();
             var concatenatedPass = currentSalt + "makiburtub";
