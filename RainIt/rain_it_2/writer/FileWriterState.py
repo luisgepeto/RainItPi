@@ -2,13 +2,13 @@ from writer.WriterState import WriterState
 
 class FileWriterState(WriterState):   
              
-    write_pool = None
+    write_future = None
         
     def force_write(self, writer_manager):
         self.write(writer_manager)
         
-    def get_write_pool(self):
-        return FileWriterState.write_pool 
+    def get_write_future(self):
+        return FileWriterState.write_future 
     
-    def set_write_pool(self, write_pool):
-        FileWriterState.write_pool =  write_pool
+    def set_write_future(self, write_future):
+        FileWriterState.write_future = write_future

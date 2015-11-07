@@ -6,7 +6,7 @@ class GPIOWriterBusy(GPIOWriterState):
         pass           
     
     def force_write(self, writer_manager):
-        self.terminate_pool()      
+        self.terminate_future()      
         free_state = writer_manager.state_factory.create_free_state()
         self.change_state(writer_manager, free_state)
         writer_manager.write()

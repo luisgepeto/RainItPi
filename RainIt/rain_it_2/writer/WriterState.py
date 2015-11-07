@@ -14,15 +14,15 @@ class WriterState(metaclass = ABCMeta):
         writer_manager.change_state(writer_state)
         
     @abstractmethod
-    def get_write_pool(self):
+    def get_write_future(self):
         pass
     
     @abstractmethod
-    def set_write_pool(self, new_write_pool):
+    def set_write_future(self, new_write_pool):
         pass
     
-    def terminate_pool(self):
-        instance_write_pool = self.get_write_pool()
-        if instance_write_pool:
-            instance_write_pool.terminate()
-            self.set_write_pool(None) 
+    def terminate_future(self):
+        instance_write_future = self.get_write_future()
+        if instance_write_future:
+            instance_write_future.set()
+            self.set_write_future(None) 

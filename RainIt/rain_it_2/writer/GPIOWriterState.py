@@ -2,10 +2,10 @@ from writer.WriterState import WriterState
 
 class GPIOWriterState(WriterState):
     
-    write_pool = None
+    write_future = None
         
-    def get_write_pool(self):
-        return GPIOWriterState.write_pool 
+    def get_write_future(self):
+        return GPIOWriterState.write_future 
     
-    def set_write_pool(self, write_pool):
-        GPIOWriterState.write_pool =  write_pool
+    def set_write_future(self, write_future):
+        GPIOWriterState.write_future =  write_future
