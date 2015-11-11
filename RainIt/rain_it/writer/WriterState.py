@@ -24,5 +24,5 @@ class WriterState(metaclass = ABCMeta):
     def terminate_event(self):
         write_event = self.get_write_event()
         if write_event:
-            write_event.set()
+            write_event.set()            
             self.set_write_event(None) 
