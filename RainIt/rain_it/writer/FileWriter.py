@@ -1,6 +1,6 @@
-from writer.WriterManager import WriterManager
+from writer.Writer import Writer
 
-class FileWriter(WriterManager):
+class FileWriter(Writer):
     
     def __init__(self, state_factory):
         super().__init__(state_factory)

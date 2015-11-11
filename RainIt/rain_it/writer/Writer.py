@@ -1,6 +1,6 @@
 from abc import ABCMeta, abstractmethod
 
-class WriterManager(metaclass = ABCMeta):
+class Writer(metaclass = ABCMeta):
     
     def __init__(self, writer_state_factory):
         self.state_factory = writer_state_factory

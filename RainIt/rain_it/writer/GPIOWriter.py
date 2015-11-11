@@ -1,6 +1,6 @@
-from writer.WriterManager import WriterManager
+from writer.Writer import Writer
 
-class GPIOWriter(WriterManager):
+class GPIOWriter(Writer):
     
     def __init__(self, state_factory):
         super().__init__(state_factory)
