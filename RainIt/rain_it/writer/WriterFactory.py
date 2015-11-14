@@ -3,7 +3,7 @@ from writer.FileWriterStateFactory import FileWriterStateFactory
 from writer.GPIOWriter import GPIOWriter
 from writer.GPIOWriterStateFactory import GPIOWriterStateFactory
 
-class WriterManagerFactory(object):    
+class WriterFactory(object):    
             
     def create_file_writer(self):
         return FileWriter(FileWriterStateFactory())

@@ -1,13 +1,29 @@
-from writer.WriterManagerFactory import WriterManagerFactory
+from writer.WriterFactory import WriterFactory
+from ric.Pattern import Pattern
+from ric.Routine import Routine
 
-writer_manager = WriterManagerFactory()
-file_writer = writer_manager.create_file_writer()
-gpio_writer = writer_manager.create_gpio_writer()
+writer_factory = WriterFactory()
+file_writer = writer_factory.create_file_writer()
+gpio_writer = writer_factory.create_gpio_writer()
 
-gpio_writer.write()
-gpio_writer.update()
-gpio_writer.write()
+patternA = Pattern("A")
+patternB = Pattern("B")
+patternC = Pattern("C")
 
-file_writer.write()
-file_writer.update()
-file_writer.write()
+routineX = Routine("X")
+routineX.add_rain_it_component(patternA)
+routineX.add_rain_it_component(patternB)
+
+routineX.add_writer(file_writer)
+routineX.add_writer(gpio_writer)
+patternC.add_writer(file_writer)
+patternC.add_writer(gpio_writer)
+
+
+routineX.file_write()
+routineX.gpio_write()
+routineX.gpio_force_write()
+
+patternC.file_write()
+patternC.gpio_write()
+patternC.gpio_force_write()

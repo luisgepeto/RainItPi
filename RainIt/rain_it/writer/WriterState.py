@@ -3,15 +3,15 @@ from abc import ABCMeta, abstractmethod
 class WriterState(metaclass = ABCMeta):
 
     @abstractmethod
-    def write(self, writer_manager):
+    def write(self, writer, rain_it_component):
         pass
     
     @abstractmethod
-    def force_write(self, writer_manager):
+    def force_write(self, writer, rain_it_component):
         pass
     
-    def change_state(self, writer_manager, writer_state):
-        writer_manager.change_state(writer_state)
+    def change_state(self, writer, writer_state):
+        writer.change_state(writer_state)
         
     @abstractmethod
     def get_write_event(self):

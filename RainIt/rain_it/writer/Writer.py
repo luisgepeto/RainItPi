@@ -7,11 +7,11 @@ class Writer(metaclass = ABCMeta):
         self.state = None
         
     @abstractmethod
-    def write(self):
+    def write(self, rain_it_component):
         pass
     
     @abstractmethod
-    def update(self):
+    def force_write(self, rain_it_component):
         pass
     
     def change_state(self, writer_state):

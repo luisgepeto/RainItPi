@@ -4,8 +4,8 @@ class FileWriterState(WriterState):
              
     write_event = None
         
-    def force_write(self, writer_manager):
-        self.write(writer_manager)
+    def force_write(self, writer, rain_it_component):
+        self.write(writer, rain_it_component)
         
     def get_write_event(self):
         return FileWriterState.write_event 
