@@ -25,8 +25,15 @@ class Routine(RainItComponent):
             component.gpio_write()
     
     def gpio_force_write(self):
-        for component in self.components:
-            component.gpio_force_write()
+        component_iterator = iter(self.components)
+        first_component = next(component_iterator)
+        first_component.gpio_force_write()
+        while True:
+            try:
+                component = next(component_iterator)
+                component.gpio_write()
+            except StopIteration:
+                break
                 
     def get_writer_of_type(self, writer_type):
         for writer in self.writers:

@@ -1,4 +1,5 @@
 from writer.GPIOWriterState import GPIOWriterState
+from queue import Queue
 import time
 import asyncio
 import threading
@@ -16,15 +17,21 @@ class GPIOWriterFree(GPIOWriterState):
     def write_async(self, writer, rain_it_component):        
         event = threading.Event()
         self.set_write_event(event)
-        asyncio.get_event_loop().run_in_executor(None, self.async_gpio_write, writer, rain_it_component, event)        
+        queue = Queue(maxsize=0)
+        queue.put(rain_it_component)
+        self.set_write_queue(queue)
+        asyncio.get_event_loop().run_in_executor(None, self.async_gpio_write, writer, queue, event)          
            
-    def async_gpio_write(self, writer, rain_it_component, event):
-        self.blocking_function(rain_it_component, event)
+    def async_gpio_write(self, writer, queue, event):
+        while not queue.empty():
+            rain_it_component = queue.get()
+            self.blocking_function(rain_it_component, event)
         if not event.is_set():
             self.async_gpio_write_callback(writer)
          
     def async_gpio_write_callback(self, writer):
         self.terminate_event()
+        self.terminate_queue()
         free_state = writer.state_factory.create_free_state()        
         self.change_state(writer, free_state)
         

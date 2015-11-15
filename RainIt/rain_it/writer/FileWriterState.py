@@ -2,13 +2,17 @@ from writer.WriterState import WriterState
 
 class FileWriterState(WriterState):   
              
-    write_event = None
+    write_queue = None
         
     def force_write(self, writer, rain_it_component):
         self.write(writer, rain_it_component)
         
-    def get_write_event(self):
-        return FileWriterState.write_event 
+    def get_write_queue(self):
+        return FileWriterState.write_queue
     
-    def set_write_event(self, write_event):
-        FileWriterState.write_event = write_event
+    def set_write_queue(self, write_queue):
+        FileWriterState.write_queue = write_queue   
+        
+    def terminate_queue(self):
+        self.set_write_queue(None)
+    
