@@ -1,5 +1,4 @@
 from writer.WriterState import WriterState
-from async_queue import AsyncProcessQueue
  
 class GPIOWriterState(WriterState):
     
