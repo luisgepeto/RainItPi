@@ -4,7 +4,7 @@ class RainItComponent(metaclass = ABCMeta):
     
     def __init__(self, name):
         self.name = name
-        self.writers = []        
+        self.writers = []
         
     def add_writer(self, writer):
         self.writers.append(writer)

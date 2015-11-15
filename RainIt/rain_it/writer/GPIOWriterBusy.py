@@ -2,7 +2,7 @@ from writer.GPIOWriterState import GPIOWriterState
 
 class GPIOWriterBusy(GPIOWriterState):
     
-    def write(self, writer):
+    def write(self, writer, rain_it_component):
         pass           
     
     def force_write(self, writer, rain_it_component):

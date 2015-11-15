@@ -8,22 +8,14 @@ gpio_writer = writer_factory.create_gpio_writer()
 
 patternA = Pattern("A")
 patternB = Pattern("B")
-patternC = Pattern("C")
-
+patternB.add_writer(gpio_writer)
 routineX = Routine("X")
+routineX.add_writer(file_writer)
 routineX.add_rain_it_component(patternA)
+routineX.add_writer(gpio_writer)
 routineX.add_rain_it_component(patternB)
 
-routineX.add_writer(file_writer)
-routineX.add_writer(gpio_writer)
-patternC.add_writer(file_writer)
-patternC.add_writer(gpio_writer)
-
-
-routineX.file_write()
-routineX.gpio_write()
-routineX.gpio_force_write()
-
-patternC.file_write()
-patternC.gpio_write()
-patternC.gpio_force_write()
+patternA.file_write()
+patternB.file_write()
+patternA.gpio_write()
+patternB.gpio_write()

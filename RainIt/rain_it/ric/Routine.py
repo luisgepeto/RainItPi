@@ -6,10 +6,17 @@ class Routine(RainItComponent):
         super().__init__(name)
         self.components = []    
     
+    def add_writer(self, writer):
+        super().add_writer(writer)
+        for component in self.components:
+            component.add_writer(writer)
+        
     def add_rain_it_component(self, rain_it_component):
+        for writer in self.writers:
+            rain_it_component.add_writer(writer)
         self.components.append(rain_it_component)
     
-    def file_write(self):        
+    def file_write(self):
         for component in self.components:
             component.file_write()
     
