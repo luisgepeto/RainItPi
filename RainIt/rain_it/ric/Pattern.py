@@ -4,9 +4,6 @@ from writer.GPIOWriter import GPIOWriter
 
 class Pattern(RainItComponent):
     
-    def __init__(self, name):
-        super().__init__(name)
-        
     def file_write(self):        
         file_writer = self.get_writer_of_type(FileWriter)
         if file_writer is not None:

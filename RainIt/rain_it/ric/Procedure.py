@@ -1,4 +1,4 @@
 from ric.RainItComposite import RainItComposite
 
-class Routine(RainItComposite):
+class Procedure(RainItComposite):
     pass

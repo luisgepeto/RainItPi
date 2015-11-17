@@ -2,8 +2,7 @@ from abc import ABCMeta, abstractmethod
 
 class RainItComponent(metaclass = ABCMeta):
     
-    def __init__(self, name):
-        self.name = name
+    def __init__(self):
         self.writers = []
         
     def add_writer(self, writer):
