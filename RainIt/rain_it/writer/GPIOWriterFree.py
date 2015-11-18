@@ -36,9 +36,12 @@ class GPIOWriterFree(GPIOWriterState):
         self.change_state(writer, free_state)
         
     def blocking_function(self, rain_it_component, event):
-        for i in range(10):
-            if event.is_set():
-                return
-            print('writing gpio {} {}/{}'.format(rain_it_component.name, i, 10))
+        print('writing gpio')
+        for matrix_line in rain_it_component.matrix:
+            for element in matrix_line:
+                if event.is_set():
+                    return
+                print(element,end="",flush=True)                
+            print()
             time.sleep(1)
-        print('done writing gpio {} {}'.format(rain_it_component.name, 10))
+        print('done writing gpio')

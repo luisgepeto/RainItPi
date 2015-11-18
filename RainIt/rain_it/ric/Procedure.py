@@ -1,4 +1,5 @@
 from ric.RainItComposite import RainItComposite
 
 class Procedure(RainItComposite):
-    pass
+    def __init__(self):
+        super().__init__()

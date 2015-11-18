@@ -28,7 +28,10 @@ class FileWriterFree(FileWriterState):
         self.change_state(writer, free_state)
         
     def blocking_function(self, rain_it_component):
-        for i in range(10):
-            print('writing file {} {}/{}'.format(rain_it_component.name, i, 10))
+        print('writing file')
+        for matrix_line in rain_it_component.matrix:
+            for element in matrix_line:                
+                print(element,end="",flush=True)                
+            print()
             time.sleep(1)
-        print('done writing file {} {}'.format(rain_it_component.name, 10))
+        print('done writing file')

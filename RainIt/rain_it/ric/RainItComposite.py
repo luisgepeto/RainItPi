@@ -3,7 +3,8 @@ from ric.RainItComponent import RainItComponent
 class RainItComposite(RainItComponent):
     
     def __init__(self):
-        self.components = []    
+        super().__init__()
+        self.components = []
     
     def add_writer(self, writer):
         super().add_writer(writer)

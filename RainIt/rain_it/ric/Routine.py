@@ -1,4 +1,6 @@
 from ric.RainItComposite import RainItComposite
 
 class Routine(RainItComposite):
-    pass
+    def __init__(self, routine_id):   
+        super().__init__()
+        self.routine_id = routine_id
