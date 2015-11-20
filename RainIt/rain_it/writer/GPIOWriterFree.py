@@ -43,5 +43,5 @@ class GPIOWriterFree(GPIOWriterState):
                     return
                 print(element,end="",flush=True)                
             print()
-            time.sleep(1)
+            time.sleep(0.005)
         print('done writing gpio')

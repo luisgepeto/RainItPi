@@ -10,21 +10,13 @@ if __name__ == '__main__':
     gpio_writer = writer_factory.create_gpio_writer()
     
     director = RainItDirector(DemoBuilder())
-    pattern1 = director.get_test_pattern() 
-    pattern2 = director.get_test_pattern()
-    pattern3 = director.get_test_pattern()
+    procedure = director.get_active_procedure()
     
-    pattern1.add_writer(file_writer)
-    pattern1.add_writer(gpio_writer)
-    pattern2.add_writer(file_writer)
-    pattern2.add_writer(gpio_writer)
-    pattern3.add_writer(file_writer)
-    pattern3.add_writer(gpio_writer)
+    procedure.add_writer(file_writer)
+    procedure.add_writer(gpio_writer)
     
-    pattern1.gpio_write()
-    pattern2.gpio_write()
-    pattern3.gpio_write()
-    
+    procedure.gpio_write()
+    procedure.file_write()
     
     
     
