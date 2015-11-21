@@ -38,10 +38,14 @@ class DemoBuilder(RainItBuilder):
         second_routine_list = self.get_test_routine()        
         return first_routine_list + second_routine_list
         
-    def build_pattern(self, pattern_id = 0, conversion_parameter = None, path = None, matrix = None):
+    def build_pattern(self, pattern_id = 0, conversion_parameter = None, matrix = None, path = None, pattern_factory = None):
         if not matrix:
-            matrix = self.create_new_matrix(pattern_id)   
-        return Pattern(pattern_id, conversion_parameter, matrix)
+            matrix = self.create_new_matrix(pattern_id)
+        pattern = pattern_factory.get_pattern(pattern_id)
+        if pattern is None:
+            pattern = Pattern(pattern_id, conversion_parameter, matrix)
+            pattern_factory.add_pattern(pattern)    
+        return pattern 
     
     def build_routine(self, routine_id, pattern_list):
         routine = Routine(routine_id)

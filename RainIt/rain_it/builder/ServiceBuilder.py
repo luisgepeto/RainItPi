@@ -1,10 +1,14 @@
 from builder.RainItBuilder import RainItBuilder
 from builder.SourceSubject import SourceSubject
+from ric.PatternFactory import PatternFactory
 
 class ServiceBuilder(RainItBuilder):
 
     base_url = "http://localhost:8723/api/"
     
+    def __init__(self):
+        self.base_url = "http://localhost:8723/api/"
+        
     def read_data_source(self, source_subject):
         if source_subject is SourceSubject.test_pattern:
             pass            
@@ -15,7 +19,7 @@ class ServiceBuilder(RainItBuilder):
         else:
             pass
     
-    def build_pattern(self, pattern_id = 0, conversion_parameter = None, matrix = None):
+    def build_pattern(self, pattern_id = 0, conversion_parameter = None, matrix = None, path = None, pattern_factory = None):
         pass
     
     def build_routine(self, pattern_list):

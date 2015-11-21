@@ -13,7 +13,7 @@ class FileBuilder(RainItBuilder):
         else:
             pass
     
-    def build_pattern(self, pattern_id = 0, conversion_parameter = None, matrix = None):
+    def build_pattern(self, pattern_id = 0, conversion_parameter = None, matrix = None, path = None, pattern_factory = None):
         pass
     
     def build_routine(self, pattern_list):

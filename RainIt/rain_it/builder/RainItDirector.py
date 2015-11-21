@@ -1,10 +1,11 @@
 from builder.SourceSubject import SourceSubject
-from domain import conversion_parameter
+from ric.PatternFactory import PatternFactory
 
 class RainItDirector(object):
     
     def __init__(self, rain_it_builder):
         self.rain_it_builder = rain_it_builder
+        self.pattern_factory = PatternFactory()
     
     def get_test_pattern(self): 
         result = self.rain_it_builder.read_data_source(SourceSubject.test_pattern)        
@@ -37,7 +38,7 @@ class RainItDirector(object):
             current_pattern_id = current_pattern["PatternId"]
             current_pattern_path = current_pattern["Path"]
             current_pattern_conversion = current_pattern["ConversionParameterDTO"]
-            pattern = self.rain_it_builder.build_pattern(pattern_id = current_pattern_id, conversion_parameter = current_pattern_conversion, path = current_pattern_path)
+            pattern = self.rain_it_builder.build_pattern(pattern_id = current_pattern_id, conversion_parameter = current_pattern_conversion, path = current_pattern_path, pattern_factory = self.pattern_factory)
             for i in range(repetitions):
                 patterns.append(pattern)                
         routine = self.rain_it_builder.build_routine(routine_id, patterns)

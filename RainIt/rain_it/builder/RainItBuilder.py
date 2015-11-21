@@ -7,7 +7,7 @@ class RainItBuilder(metaclass = ABCMeta):
         pass
     
     @abstractmethod
-    def build_pattern(self, pattern_id = 0, conversion_parameter = None, matrix = None):
+    def build_pattern(self, pattern_id = 0, conversion_parameter = None, matrix = None, path = None, pattern_factory = None):
         pass
     
     @abstractmethod

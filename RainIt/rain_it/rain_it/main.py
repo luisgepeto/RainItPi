@@ -16,7 +16,7 @@ if __name__ == '__main__':
     procedure.add_writer(gpio_writer)
     
     procedure.gpio_write()
-    procedure.file_write()
+    
     
     
     
