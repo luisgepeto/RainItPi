@@ -1,5 +1,4 @@
 from builder.RainItBuilder import RainItBuilder
-from ric.Pattern import Pattern 
 from datetime import datetime
 
 class DemoBuilder(RainItBuilder):

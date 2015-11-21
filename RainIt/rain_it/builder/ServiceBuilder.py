@@ -1,9 +1,5 @@
 from builder.RainItBuilder import RainItBuilder
 from adapter.ServiceAdapter import ServiceAdapter
-from ric.Pattern import Pattern 
-
-
-
 import json
 
 class ServiceBuilder(RainItBuilder):
