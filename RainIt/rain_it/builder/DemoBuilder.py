@@ -1,8 +1,6 @@
 from builder.RainItBuilder import RainItBuilder
 from ric.Pattern import Pattern 
-from ric.Routine import Routine
 from datetime import datetime
-from ric.Procedure import Procedure
 
 class DemoBuilder(RainItBuilder):
     
@@ -26,34 +24,13 @@ class DemoBuilder(RainItBuilder):
         first_routine_list = self.get_test_routine()
         second_routine_list = self.get_test_routine()        
         return first_routine_list + second_routine_list
-        
-    def build_pattern(self, pattern_id = 0, conversion_parameter = None, matrix = None, path = None, pattern_factory = None):
-        if not matrix:
-            matrix = self.create_new_matrix(pattern_id)
-        pattern = pattern_factory.get_pattern(pattern_id)
-        if pattern is None:
-            pattern = Pattern(pattern_id, conversion_parameter, matrix)
-            pattern_factory.add_pattern(pattern)    
-        return pattern 
     
-    def build_routine(self, routine_id, pattern_list):
-        routine = Routine(routine_id)
-        for pattern in pattern_list:
-            routine.add_rain_it_component(pattern)
-        return routine
-    
-    def build_procedure(self, routine_list):
-        procedure = Procedure()
-        for routine in routine_list:
-            procedure.add_rain_it_component(routine)
-        return procedure
-    
-    def create_new_matrix(self, new_matrix_elements):        
+    def get_matrix(self, pattern_id, conversion_parameter):        
         sample_matrix = []
         for i in range(10):
             current_line = []
             for j in range(10):
-                current_line.append(new_matrix_elements)
+                current_line.append(pattern_id)
             sample_matrix.append(current_line)
         return sample_matrix  
     

@@ -9,7 +9,7 @@ if __name__ == '__main__':
     gpio_writer = writer_factory.create_gpio_writer()
     
     director = RainItDirector(ServiceBuilder())
-    pattern = director.get_test_routine()
+    pattern = director.get_active_procedure()
     
     pattern.add_writer(file_writer)
     pattern.add_writer(gpio_writer)
