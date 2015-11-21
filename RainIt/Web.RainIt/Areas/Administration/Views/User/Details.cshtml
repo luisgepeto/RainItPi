@@ -2,68 +2,17 @@
 <div class="container">
     <div class="row">
         <div class="col-md-4">
-            <div class="row">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">
-                            <strong>
-                                Details
-                            </strong>
-                        </h3>
-                    </div>
-                    <div class="panel-body">
-                        <table class="table">
-                            <tbody>
-                            <tr>
-                                <th>Username:&nbsp;</th>
-                                <td>@Html.Raw(Model.Username)</td>
-                            </tr>
-                            <tr>
-                                <th>Name:&nbsp;</th>
-                                <td>@Html.Raw(String.Format("{0} {1}", Model.UserInfo.FirstName, Model.UserInfo.LastName))</td>
-                            </tr>
-                            <tr>
-                                <th>Email:&nbsp;</th>
-                                <td>@Html.Raw(Model.Email)</td>
-                            </tr>
-                            <tr>
-                                <th>DOB:&nbsp;</th>
-                                <td>@Html.Raw(Model.UserInfo.BirthDate.ToString("d"))</td>
-                            </tr>
-                            <tr>
-                                <th>Address:&nbsp;</th>
-                                <td>
-                                    @Html.Raw(Model.Address.AddressLine1)
-                                    @if (Model.Address.AddressLine2 != String.Empty)
-                                    {
-                                        <br/>
-                                        @Html.Raw(Model.Address.AddressLine2)
-                                    }
-                                    @if (Model.Address.City != String.Empty || Model.Address.State != String.Empty)
-                                    {
-                                        <br/>
-                                        @Html.Raw(Model.Address.City)
-                                        if (Model.Address.State != String.Empty)
-                                        {
-                                            @Html.Raw((Model.Address.City != String.Empty ? ", " : String.Empty) + Model.Address.State)
-                                        }
-                                    }
-                                    @if (Model.Address.Country != String.Empty)
-                                    {
-                                        <br/>
-                                        @Html.Raw(Model.Address.Country)
-                                    }
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+            <div class="container" id="user-information">
+                @Html.Action("Information", "User", new {area = "Administration", userId = Model.UserId})
             </div>
         </div>
         <div class="col-md-8">
-            @Html.Action("Settings", "User", new { area = "Administration", userId = Model.UserId})
-            @Html.Action("Devices", "User", new { area = "Administration", userId = Model.UserId })
+            <div class="container" id="user-settings">
+                @Html.Action("Settings", "User", new { area = "Administration", userId = Model.UserId })
+            </div>
+            <div class="container" id="user-devices">
+                @Html.Action("Devices", "User", new { area = "Administration", userId = Model.UserId })
+            </div>
         </div>
     </div>
 </div>

@@ -266,9 +266,12 @@
     <Content Include="Areas\Configuration\Views\Routine\_View.cshtml" />
     <Content Include="Areas\Administration\Views\User\Index.cshtml" />
     <Content Include="Areas\Administration\Views\User\Details.cshtml" />
-    <Content Include="Areas\Administration\Views\User\Settings.cshtml" />
-    <Content Include="Areas\Administration\Views\User\Devices.cshtml" />
+    <Content Include="Areas\Administration\Views\User\_Settings.cshtml" />
+    <Content Include="Areas\Administration\Views\User\_Devices.cshtml" />
+    <Content Include="Areas\Administration\Views\User\_EditInformation.cshtml" />
+    <Content Include="Areas\Administration\Views\User\_Information.cshtml" />
     <None Include="Properties\PublishProfiles\DevRainIt.pubxml" />
+    <None Include="Properties\PublishProfiles\LocalRainIt.pubxml" />
     <None Include="Scripts\jquery-2.1.4.intellisense.js" />
     <Content Include="Scripts\custom-ajaxLoadingAnimation.js" />
     <Content Include="Scripts\dropzone.js" />

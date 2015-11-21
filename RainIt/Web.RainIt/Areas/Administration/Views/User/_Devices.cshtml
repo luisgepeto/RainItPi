@@ -1,18 +1,16 @@
 ﻿@model System.Collections.Generic.List<RainIt.Domain.DTO.DeviceDTO>
-
-<div class="container">
-    <div class="row">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title">
-                    <strong>
-                        Devices
-                    </strong>
-                </h3>
-            </div>
-            <div class="panel-body">
-                @foreach (var device in Model)
-                {
+<div class="row">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">
+                <strong>
+                    Devices
+                </strong>
+            </h3>
+        </div>
+        <div class="panel-body">
+            @foreach (var device in Model)
+            {
                 <table class="table">
                     <tbody>
                     <tr>
@@ -45,8 +43,7 @@
                     </tr>
                     </tbody>
                 </table>
-                }
-            </div>
+            }
         </div>
     </div>
 </div>

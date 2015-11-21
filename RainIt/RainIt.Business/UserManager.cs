@@ -28,7 +28,7 @@ namespace RainIt.Business
             }).ToList();
         }
 
-        public UserDTO GetDetails(int userId)
+        public UserDTO GetInformation(int userId)
         {
             return RainItContext.UserSet.Where(u => u.UserId == userId).Select(u => new UserDTO()
             {
@@ -85,6 +85,48 @@ namespace RainIt.Business
                     MinutesRefreshRate = d.DeviceSettings.MinutesRefreshRate
                 }
             }).ToList();
+        }
+
+        public StatusMessage EditInformation(UserDTO user)
+        {
+            if(String.IsNullOrEmpty(user.Email)) return StatusMessage.WriteError("The user e-mail cannot be blank");
+            if(String.IsNullOrEmpty(user.Username)) return StatusMessage.WriteError("The username cannot be blank");
+            User userToEdit;
+            if(!TryGetUser(user.UserId, out userToEdit)) return StatusMessage.WriteError("The selected user id does not exist");
+            if(!IsUsernameAvailable(user.Username)) return  StatusMessage.WriteError("The selected username is already in use");
+            if (!IsEmailAvailable(user.Email)) return StatusMessage.WriteError("The selected email is already in use");
+            return EditUser(userToEdit, user);
+        }
+
+        private bool TryGetUser(int userId, out User userToEdit)
+        {
+            userToEdit = RainItContext.UserSet.SingleOrDefault(u => u.UserId == userId);
+            return userToEdit != null;
+        }
+
+        private bool IsUsernameAvailable(string username)
+        {
+            return
+                !RainItContext.UserSet.Any(
+                    u => String.Compare(u.Username, username, StringComparison.InvariantCultureIgnoreCase) == 0);
+        }
+
+        private bool IsEmailAvailable(string email)
+        {
+            return
+                !RainItContext.UserSet.Any(
+                    u => String.Compare(u.Email, email, StringComparison.InvariantCultureIgnoreCase) == 0);
+        }
+
+        private StatusMessage EditUser(User userToEdit, UserDTO newUserInfo)
+        {
+            if (userToEdit.Username != newUserInfo.Username)
+                userToEdit.Username = newUserInfo.Username;
+            if (userToEdit.Email != newUserInfo.Email)
+                userToEdit.Email = newUserInfo.Email;
+            RainItContext.UserSet.Attach(userToEdit);
+            RainItContext.SaveChanges();
+            return StatusMessage.WriteMessage("Successfully saved changes");
         }
     }
 }
