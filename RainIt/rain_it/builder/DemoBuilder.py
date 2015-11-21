@@ -1,5 +1,4 @@
 from builder.RainItBuilder import RainItBuilder
-from builder.SourceSubject import SourceSubject
 from ric.Pattern import Pattern 
 from ric.Routine import Routine
 from datetime import datetime
@@ -9,16 +8,6 @@ class DemoBuilder(RainItBuilder):
     
     initial_pattern_id = 0
     initial_routine_id = 0
-    
-    def read_data_source(self, source_subject):
-        if source_subject is SourceSubject.test_pattern:
-            return self.get_test_pattern()
-        elif source_subject is SourceSubject.test_routine:
-            return self.get_test_routine()
-        elif source_subject is SourceSubject.active_procedure:
-            return self.get_active_procedure()
-        else:
-            pass    
     
     def get_test_pattern(self):
         DemoBuilder.initial_pattern_id+=1

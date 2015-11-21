@@ -1,5 +1,3 @@
-from ric.Pattern import Pattern
-
 class PatternFactory(object):
     
     def __init__(self):

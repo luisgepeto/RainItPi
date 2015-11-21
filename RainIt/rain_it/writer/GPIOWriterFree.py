@@ -41,6 +41,10 @@ class GPIOWriterFree(GPIOWriterState):
             for element in matrix_line:
                 if event.is_set():
                     return
+                if element == True:
+                    element = 1
+                elif element == False:
+                    element = 0
                 print(element,end="",flush=True)                
             print()
             time.sleep(0.005)

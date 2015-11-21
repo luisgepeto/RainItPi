@@ -10,7 +10,7 @@ class RainItDirector(object):
     def get_test_pattern(self): 
         result = self.rain_it_builder.read_data_source(SourceSubject.test_pattern)        
         pattern_as_matrix = result["patternAsMatrix"]
-        test_pattern = self.rain_it_builder.build_pattern(matrix = pattern_as_matrix)
+        test_pattern = self.rain_it_builder.build_pattern(matrix = pattern_as_matrix, pattern_factory = self.pattern_factory)
         return test_pattern
     
     def get_test_routine(self):

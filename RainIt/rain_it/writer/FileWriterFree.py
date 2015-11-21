@@ -30,7 +30,11 @@ class FileWriterFree(FileWriterState):
     def blocking_function(self, rain_it_component):
         print('writing file')
         for matrix_line in rain_it_component.matrix:
-            for element in matrix_line:                
+            for element in matrix_line:
+                if element == True:
+                    element = 1
+                elif element == False:
+                    element = 0
                 print(element,end="",flush=True)                
             print()
             time.sleep(0.005)
