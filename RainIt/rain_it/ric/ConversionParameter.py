@@ -6,3 +6,7 @@ class ConversionParameter(object):
         self.b_weight = b_weight
         self.is_inverted = is_inverted
         self.threshold_percentage = threshold_percentage
+        
+    
+    def get_as_dictionary(self):
+        return {"RWeight":self.r_weight, "GWeight":self.g_weight, "BWeight":self.b_weight, "IsInverted":self.is_inverted, "ThresholdPercentage":self.threshold_percentage}

@@ -27,3 +27,20 @@ class RainItComponent(metaclass = ABCMeta):
         for writer in self.writers:
             if type(writer) is writer_type:
                 return writer
+         
+    @abstractmethod
+    def should_pickle(self):
+        pass
+   
+    @abstractmethod
+    def get_pickle_dir(self):
+        pass
+    
+    @abstractmethod
+    def get_pickle_name(self):
+        pass
+    
+    @abstractmethod
+    def get_pickle_form(self):
+        pass
+    

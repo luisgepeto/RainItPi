@@ -1,7 +1,11 @@
 from writer.FileWriterState import FileWriterState
 from queue import Queue
+from ric.Pattern import Pattern
+from ric.Routine import Routine
 import asyncio
 import time
+import pickle 
+import os
 
 class FileWriterFree(FileWriterState):
     
@@ -19,7 +23,7 @@ class FileWriterFree(FileWriterState):
     def async_file_write(self,writer, queue):
         while not queue.empty():
             rain_it_component = queue.get()
-            self.blocking_function(rain_it_component)
+            self.pickle_component(rain_it_component)
         self.async_file_write_callback(writer)
         
     def async_file_write_callback(self, writer):        
@@ -27,15 +31,19 @@ class FileWriterFree(FileWriterState):
         free_state = writer.state_factory.create_free_state()        
         self.change_state(writer, free_state)
         
-    def blocking_function(self, rain_it_component):
-        print('writing file')
-        for matrix_line in rain_it_component.matrix:
-            for element in matrix_line:
-                if element == True:
-                    element = 1
-                elif element == False:
-                    element = 0
-                print(element,end="",flush=True)                
-            print()
+    def pickle_component(self, rain_it_component):
+        print("starting pickle")
+        if rain_it_component.should_pickle():
+            print("will pickle")            
+            file_directory = os.path.join(os.path.abspath(os.sep), "home\\pi\\"+rain_it_component.get_pickle_dir())            
+            file_name = rain_it_component.get_pickle_name()+'.pickle'
+            full_path = os.path.join(file_directory, file_name)
+            print("will pickle in {}".format(full_path))
+            with open(full_path, 'wb') as f:          
+                print("pickling")          
+                pickle.dump(rain_it_component.get_pickle_form(), f, pickle.HIGHEST_PROTOCOL)
+                print("pickled")                
             time.sleep(0.001)
-        print('done writing file')
+        print("finished pickling")
+    
+        
