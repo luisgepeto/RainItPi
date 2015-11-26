@@ -26,7 +26,7 @@ namespace Web.Services.Controllers
         [AllowAnonymous]
         [HttpPost]
         [Route("login")]
-        public IHttpActionResult Login(string serial)
+        public IHttpActionResult Login([FromBody] string serial)
         {
             var authResult = new AuthenticationResult();
             if (ModelState.IsValid)
@@ -38,6 +38,16 @@ namespace Web.Services.Controllers
                     authResult.TokenExpirationUtcTime = DateTime.UtcNow.AddDays(7);
                     authResult.SecurityToken = TokenManager.CreateJwtToken(serial);
                 }
+                else
+                {
+                    authResult.ErrorMessage = "The specified device was not found";
+                    authResult.LoginStatus = LoginStatus.InvalidCredentials;
+                }
+            }
+            else
+            {
+                authResult.ErrorMessage = "No credentials were provided";
+                authResult.LoginStatus= LoginStatus.InsufficientCredentials;
             }
             return Ok(authResult);
         }
