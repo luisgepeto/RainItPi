@@ -37,5 +37,5 @@ class FileWriterFree(FileWriterState):
                     element = 0
                 print(element,end="",flush=True)                
             print()
-            time.sleep(0.005)
+            time.sleep(0.001)
         print('done writing file')
