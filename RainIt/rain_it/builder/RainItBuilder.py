@@ -1,5 +1,5 @@
 from abc import ABCMeta, abstractmethod
-from builder.SourceSubject import SourceSubject
+from rain_it.SourceSubject import SourceSubject
 from ric.Routine import Routine
 from ric.Procedure import Procedure
 from ric.Pattern import Pattern

@@ -1,7 +1,7 @@
 from writer.WriterFactory import WriterFactory
 from builder.RainItDirector import RainItDirector
 from builder.ServiceBuilder import ServiceBuilder
-from builder.DemoBuilder import DemoBuilder
+from rain_it.SourceSubject import SourceSubject
 
 if __name__ == '__main__':    
     writer_factory = WriterFactory()
@@ -17,10 +17,6 @@ if __name__ == '__main__':
     routine.add_writer(file_writer)
     procedure.add_writer(file_writer)
     
-    pattern.file_write()
-    routine.file_write()
-    procedure.file_write() 
-    
-    
-
-
+    pattern.file_write(SourceSubject.test_pattern)
+    routine.file_write(SourceSubject.test_routine)
+    procedure.file_write(SourceSubject.active_procedure)

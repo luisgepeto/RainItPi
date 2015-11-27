@@ -1,4 +1,4 @@
-from builder.SourceSubject import SourceSubject
+from rain_it.SourceSubject import SourceSubject
 from ric.PatternFactory import PatternFactory
 
 class RainItDirector(object):

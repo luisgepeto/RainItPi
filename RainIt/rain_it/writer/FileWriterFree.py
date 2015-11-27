@@ -1,7 +1,5 @@
 from writer.FileWriterState import FileWriterState
 from queue import Queue
-from ric.Pattern import Pattern
-from ric.Routine import Routine
 import asyncio
 import time
 import pickle 
@@ -26,12 +24,13 @@ class FileWriterFree(FileWriterState):
             self.pickle_component(rain_it_component)
         self.async_file_write_callback(writer)
         
-    def async_file_write_callback(self, writer):        
-        self.terminate_queue()
+    def async_file_write_callback(self, writer):
         free_state = writer.state_factory.create_free_state()        
         self.change_state(writer, free_state)
+        self.terminate_queue()
         
     def pickle_component(self, rain_it_component):
+        time.sleep(0.001)
         print("starting pickle")
         if rain_it_component.should_pickle():
             print("will pickle")            
@@ -42,8 +41,7 @@ class FileWriterFree(FileWriterState):
             with open(full_path, 'wb') as f:          
                 print("pickling")          
                 pickle.dump(rain_it_component.get_pickle_form(), f, pickle.HIGHEST_PROTOCOL)
-                print("pickled")                
-            time.sleep(0.001)
+                print("pickled")
         print("finished pickling")
     
         
