@@ -35,17 +35,18 @@ class GPIOWriterFree(GPIOWriterState):
         free_state = writer.state_factory.create_free_state()        
         self.change_state(writer, free_state)
         
-    def blocking_function(self, rain_it_component, event):
+    def blocking_function(self, pattern, event):
         print('writing gpio')
-        for matrix_line in rain_it_component.matrix:
-            for element in matrix_line:
-                if event.is_set():
-                    return
-                if element == True:
-                    element = 1
-                elif element == False:
-                    element = 0
-                print(element,end="",flush=True)                
-            print()
-            time.sleep(0.005)
+        if pattern.matrix is not None:
+            for matrix_line in pattern.matrix:
+                for element in matrix_line:
+                    if event.is_set():
+                        return
+                    if element == True:
+                        element = 1
+                    elif element == False:
+                        element = 0
+                    print(element,end="",flush=True)                
+                print()
+                time.sleep(0.001)
         print('done writing gpio')

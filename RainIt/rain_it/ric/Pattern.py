@@ -10,7 +10,7 @@ class Pattern(RainItComponent):
         self.conversion_parameter = conversion_parameter
         self.matrix = matrix
         
-    def file_write(self):        
+    def file_write(self, source_subject):        
         file_writer = self.get_writer_of_type(FileWriter)
         if file_writer is not None:
             file_writer.write(self)
@@ -24,3 +24,16 @@ class Pattern(RainItComponent):
         gpio_writer = self.get_writer_of_type(GPIOWriter)
         if gpio_writer is not None:
             gpio_writer.force_write(self)
+            
+    def should_pickle(self):
+        return self.matrix is not None
+   
+    def get_pickle_dir(self):
+        return "pattern"
+    
+    def get_pickle_name(self):
+        return '{}_{}_{}_{}_{}_{}'.format(self.pattern_id, self.conversion_parameter.r_weight, self.conversion_parameter.g_weight, self.conversion_parameter.b_weight , self.conversion_parameter.is_inverted, self.conversion_parameter.threshold_percentage)
+    
+    def get_pickle_form(self):
+        return self
+    

@@ -1,17 +1,6 @@
 from builder.RainItBuilder import RainItBuilder
-from builder.SourceSubject import SourceSubject
 
 class FileBuilder(RainItBuilder):
-    
-    def read_data_source(self, source_subject):
-        if source_subject is SourceSubject.test_pattern:
-            pass
-        elif source_subject is SourceSubject.test_routine:
-            pass
-        elif source_subject is SourceSubject.active_procedure:
-            pass
-        else:
-            pass
     
     def build_pattern(self, pattern_id = 0, conversion_parameter = None, matrix = None, path = None, pattern_factory = None):
         pass
