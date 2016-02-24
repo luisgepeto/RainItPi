@@ -8,7 +8,7 @@ class DemoBuilder(RainItBuilder):
     
     def get_test_pattern(self):
         DemoBuilder.initial_pattern_id+=1
-        sample_matrix = self.create_new_matrix(DemoBuilder.initial_pattern_id)
+        sample_matrix = self.get_matrix(DemoBuilder.initial_pattern_id, None)
         return { 'patternAsMatrix' : sample_matrix, 'SampleTimeStamp': datetime.now()}
     
     def get_test_routine(self):         
