@@ -1,51 +1,39 @@
 from writer.WriterFactory import WriterFactory
 from builder.RainItDirector import RainItDirector
+from builder.DemoBuilder import DemoBuilder
 from builder.ServiceBuilder import ServiceBuilder
-from rain_it.SourceSubject import SourceSubject
+from builder.FileBuilder import FileBuilder
+
 
 if __name__ == '__main__':    
+    '''
+        With the WriterFactory we can create several types of writers
+        depending on the output type. These writers have specific states
+        which control their behavior on the different operations they expose.
+        The FileWriter serializes information into a file, while the GPIOWriter
+        displays the information on the pins of the Raspberry Pi.
+    '''
     writer_factory = WriterFactory()
-    file_writer = writer_factory.create_file_writer()
-    gpio_writer = writer_factory.create_gpio_writer()
-    
-<<<<<<< HEAD
-    director = RainItDirector(DemoBuilder())
-    pattern = director.get_test_pattern()
-    routine = director.get_test_routine()
-    procedure = director.get_active_procedure()
-    
-=======
-    director = RainItDirector(ServiceBuilder())
-    pattern = director.get_test_pattern()
-    routine = director.get_test_routine()
-    procedure = director.get_active_procedure()
-     
->>>>>>> branch 'dev' of https://luisgepeto@bitbucket.org/luisgepeto/rainitpi.git
-    pattern.add_writer(file_writer)
-<<<<<<< HEAD
-    pattern.add_writer(gpio_writer)
-    routine.add_writer(file_writer)
-    routine.add_writer(gpio_writer)
-    procedure.add_writer(file_writer)
-    procedure.add_writer(gpio_writer)
-=======
-    routine.add_writer(file_writer)
-    procedure.add_writer(file_writer)
->>>>>>> branch 'dev' of https://luisgepeto@bitbucket.org/luisgepeto/rainitpi.git
-    
-<<<<<<< HEAD
-    pattern.gpio_write()
-    pattern.file_write()
-    routine.gpio_write()
-    procedure.gpio_write()
-    
-    
-    
-    
+    all_writers = writer_factory.create_all_writers()
+        
+    '''
+        The director exposes an interface to retrieve the different products
+        that can be displayed. It needs a builder which indicates the source 
+        from which the different products will be composed. The three possible
+        sources are: DemoBuilder, ServiceBuilder and FileBuilder. It also needs
+        a list of writers which will be used when writing the resulting objects. 
+    '''
+    demo_director = RainItDirector(DemoBuilder(), all_writers)
+    #service_director = RainItDirector(ServiceBuilder(), all_writers)
+    #file_director = RainItDirector(FileBuilder(), all_writers)
 
-
-=======
-    pattern.file_write(SourceSubject.test_pattern)
-    routine.file_write(SourceSubject.test_routine)
-    procedure.file_write(SourceSubject.active_procedure)
->>>>>>> branch 'dev' of https://luisgepeto@bitbucket.org/luisgepeto/rainitpi.git
+    demo_pattern = demo_director.get_test_pattern()
+    demo_routine = demo_director.get_test_routine()
+    demo_procedure = demo_director.get_active_procedure()
+    
+    demo_pattern.gpio_write()
+    demo_pattern.file_write()
+    demo_routine.gpio_write()
+    demo_routine.file_write()
+    demo_procedure.gpio_write()
+    demo_procedure.file_write()   

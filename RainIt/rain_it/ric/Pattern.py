@@ -10,7 +10,7 @@ class Pattern(RainItComponent):
         self.conversion_parameter = conversion_parameter
         self.matrix = matrix
         
-    def file_write(self, source_subject):        
+    def file_write(self):        
         file_writer = self.get_writer_of_type(FileWriter)
         if file_writer is not None:
             file_writer.write(self)

@@ -17,12 +17,12 @@ class RainItComposite(RainItComponent):
             rain_it_component.add_writer(writer)
         self.components.append(rain_it_component)
     
-    def file_write(self, source_subject):
+    def file_write(self):
         file_writer = self.get_writer_of_type(FileWriter)
         if file_writer is not None:
-            file_writer.write(self, source_subject)
+            file_writer.write(self)
         for component in self.components:
-            component.file_write(source_subject)
+            component.file_write()
     
     def gpio_write(self):
         for component in self.components:

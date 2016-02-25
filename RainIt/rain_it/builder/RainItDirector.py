@@ -1,23 +1,28 @@
-from rain_it.SourceSubject import SourceSubject
 from ric.PatternFactory import PatternFactory
+from builder.SourceSubject import SourceSubject
 
 class RainItDirector(object):
     
-    def __init__(self, rain_it_builder):
+    def __init__(self, rain_it_builder, writers):
         self.rain_it_builder = rain_it_builder
         self.pattern_factory = PatternFactory()
+        self.writers = writers
     
     def get_test_pattern(self): 
         result = self.rain_it_builder.read_data_source(SourceSubject.test_pattern)        
         pattern_as_matrix = result["patternAsMatrix"]        
-        return self.rain_it_builder.build_pattern(matrix = pattern_as_matrix, pattern_factory = self.pattern_factory)        
+        pattern_result = self.rain_it_builder.build_pattern(matrix = pattern_as_matrix, pattern_factory = self.pattern_factory)        
+        return self.add_writers(pattern_result)
+                
     
     def get_test_routine(self):
         result = self.rain_it_builder.read_data_source(SourceSubject.test_routine)
         routine_dict = None 
         if result:
             routine_dict = result[0]
-        return self.get_routine_from_dict(routine_dict)        
+        routine_result = self.get_routine_from_dict(routine_dict)
+        return self.add_writers(routine_result)
+                
     
     def get_active_procedure(self):
         result = self.rain_it_builder.read_data_source(SourceSubject.active_procedure)        
@@ -25,8 +30,8 @@ class RainItDirector(object):
         for routine_dict in result:
             routine = self.get_routine_from_dict(routine_dict)
             routines.append(routine)
-        active_procedure = self.rain_it_builder.build_procedure(routines)
-        return active_procedure        
+        procedure_result = self.rain_it_builder.build_procedure(routines)
+        return self.add_writers(procedure_result)     
         
     def get_routine_from_dict(self, routine_dict):
         routine_id = 0
@@ -55,5 +60,11 @@ class RainItDirector(object):
         threshold_percentage = conversion_parameter_dict["ThresholdPercentage"]
         conversion_parameter = self.rain_it_builder.build_conversion_parameter(r_weight, g_weight, b_weight, is_inverted, threshold_percentage)
         return conversion_parameter
+    
+    def add_writers(self, rain_it_component):
+        for writer in self.writers:
+            rain_it_component.add_writer(writer)
+        return rain_it_component
+        
     
     

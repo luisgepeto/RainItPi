@@ -12,7 +12,7 @@ class RainItComponent(metaclass = ABCMeta):
         pass
     
     @abstractmethod
-    def file_write(self, source_subject):        
+    def file_write(self):        
         pass
     
     @abstractmethod
