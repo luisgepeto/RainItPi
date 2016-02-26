@@ -64,6 +64,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web.Services", "Web.Service
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web.Infrastructure", "Web.Infrastructure\Web.Infrastructure.csproj", "{155BB47B-445B-46F0-ACC4-18B55CEB2D6B}"
 EndProject
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "PI.RainIt", "PI.RainIt\PI.RainIt.pyproj", "{567B9AE6-DDB7-4EC0-B4EA-29B8EC344619}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -272,6 +274,12 @@ Global
 		{155BB47B-445B-46F0-ACC4-18B55CEB2D6B}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{155BB47B-445B-46F0-ACC4-18B55CEB2D6B}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{155BB47B-445B-46F0-ACC4-18B55CEB2D6B}.Release|x86.ActiveCfg = Release|Any CPU
+		{567B9AE6-DDB7-4EC0-B4EA-29B8EC344619}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{567B9AE6-DDB7-4EC0-B4EA-29B8EC344619}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{567B9AE6-DDB7-4EC0-B4EA-29B8EC344619}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{567B9AE6-DDB7-4EC0-B4EA-29B8EC344619}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{567B9AE6-DDB7-4EC0-B4EA-29B8EC344619}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{567B9AE6-DDB7-4EC0-B4EA-29B8EC344619}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
