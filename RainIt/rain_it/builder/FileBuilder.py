@@ -2,7 +2,7 @@ from builder.RainItBuilder import RainItBuilder
 
 class FileBuilder(RainItBuilder):
     
-    def build_pattern(self, pattern_id = 0, conversion_parameter = None, matrix = None, path = None, pattern_factory = None, source_subject = None):
+    def build_pattern(self, pattern_id = 0, conversion_parameter = None, matrix = None, path = None, pattern_factory = None, component_type = None):
         pass
     
     def build_routine(self, pattern_list):

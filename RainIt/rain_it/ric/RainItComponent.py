@@ -5,10 +5,10 @@ class RainItComponent(metaclass = ABCMeta):
     
     def __init__(self):
         self.writers = []
-        self.source_subject = None
+        self.component_type = None
         
-    def set_source_subject(self, source_subject):
-        self.source_subject = source_subject
+    def set_component_type(self, component_type):
+        self.component_type = component_type
         
     def add_writer(self, writer):
         self.writers.append(writer)

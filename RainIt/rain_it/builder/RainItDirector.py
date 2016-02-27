@@ -1,5 +1,5 @@
 from ric.PatternFactory import PatternFactory
-from builder.SourceSubject import SourceSubject
+from builder.ComponentType import ComponentType
 
 class RainItDirector(object):
     
@@ -9,31 +9,31 @@ class RainItDirector(object):
         self.writers = writers
     
     def get_test_pattern(self): 
-        result = self.rain_it_builder.read_data_source(SourceSubject.test_pattern)        
+        result = self.rain_it_builder.read_data_source(ComponentType.test_pattern)        
         pattern_as_matrix = result["patternAsMatrix"]        
-        pattern_result = self.rain_it_builder.build_pattern(matrix = pattern_as_matrix, pattern_factory = self.pattern_factory, source_subject = SourceSubject.test_pattern)        
+        pattern_result = self.rain_it_builder.build_pattern(matrix = pattern_as_matrix, pattern_factory = self.pattern_factory, component_type = ComponentType.test_pattern)        
         return self.add_writers(pattern_result)
                 
     
     def get_test_routine(self):
-        result = self.rain_it_builder.read_data_source(SourceSubject.test_routine)
+        result = self.rain_it_builder.read_data_source(ComponentType.test_routine)
         routine_dict = None 
         if result:
             routine_dict = result[0]
-        routine_result = self.get_routine_from_dict(routine_dict, SourceSubject.test_routine)
+        routine_result = self.get_routine_from_dict(routine_dict, ComponentType.test_routine)
         return self.add_writers(routine_result)
                 
     
     def get_active_procedure(self):
-        result = self.rain_it_builder.read_data_source(SourceSubject.active_procedure)        
+        result = self.rain_it_builder.read_data_source(ComponentType.active_procedure)        
         routines = []
         for routine_dict in result:
-            routine = self.get_routine_from_dict(routine_dict, SourceSubject.active_procedure)
+            routine = self.get_routine_from_dict(routine_dict, ComponentType.active_procedure)
             routines.append(routine)
-        procedure_result = self.rain_it_builder.build_procedure(routines, SourceSubject.active_procedure)
+        procedure_result = self.rain_it_builder.build_procedure(routines, ComponentType.active_procedure)
         return self.add_writers(procedure_result)     
         
-    def get_routine_from_dict(self, routine_dict, source_subject):
+    def get_routine_from_dict(self, routine_dict, component_type):
         routine_id = 0
         patterns = []        
         if routine_dict is not None:
@@ -46,10 +46,10 @@ class RainItDirector(object):
                 current_pattern_path = current_pattern["Path"]
                 current_conversion_dict = current_pattern["ConversionParameterDTO"]
                 current_conversion  = self.get_conversion_parameter_from_dict(current_conversion_dict)
-                pattern = self.rain_it_builder.build_pattern(pattern_id = current_pattern_id, conversion_parameter = current_conversion, path = current_pattern_path, pattern_factory = self.pattern_factory, source_subject = source_subject)
+                pattern = self.rain_it_builder.build_pattern(pattern_id = current_pattern_id, conversion_parameter = current_conversion, path = current_pattern_path, pattern_factory = self.pattern_factory, component_type = component_type)
                 for i in range(repetitions):
                     patterns.append(pattern)                
-        routine = self.rain_it_builder.build_routine(routine_id, patterns, source_subject)
+        routine = self.rain_it_builder.build_routine(routine_id, patterns, component_type)
         return routine
     
     def get_conversion_parameter_from_dict(self, conversion_parameter_dict):
