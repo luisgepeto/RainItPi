@@ -35,14 +35,6 @@ class RainItComponent(metaclass = ABCMeta):
                 return writer
          
     @abstractmethod
-    def should_pickle(self):
-        pass
-   
-    @abstractmethod
-    def get_pickle_dir(self):
-        pass
-    
-    @abstractmethod
     def get_pickle_name(self):
         pass
     

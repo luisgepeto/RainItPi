@@ -3,7 +3,7 @@ from queue import Queue
 import asyncio
 import time
 import pickle 
-import os
+from writer.PicklePathGenerator import PicklePathGenerator
 
 class FileWriterFree(FileWriterState):
     
@@ -32,16 +32,12 @@ class FileWriterFree(FileWriterState):
     def pickle_component(self, rain_it_component):
         time.sleep(0.001)
         print("starting pickle")
-        if rain_it_component.should_pickle():
-            print("will pickle")            
-            file_directory = os.path.join(os.path.abspath(os.sep), "home\\pi\\"+rain_it_component.get_pickle_dir())            
-            file_name = rain_it_component.get_pickle_name()+'.pickle'
-            full_path = os.path.join(file_directory, file_name)
-            print("will pickle in {}".format(full_path))
-            with open(full_path, 'wb') as f:          
-                print("pickling")          
-                pickle.dump(rain_it_component.get_pickle_form(), f, pickle.HIGHEST_PROTOCOL)
-                print("pickled")
+        pickle_path = PicklePathGenerator().get_full_pickle_path(rain_it_component.get_pickle_name(), rain_it_component.component_type)
+        print("will pickle in {}".format(pickle_path))
+        with open(pickle_path, 'wb') as f:          
+            print("pickling")          
+            pickle.dump(rain_it_component.get_pickle_form(), f, pickle.HIGHEST_PROTOCOL)
+            print("pickled")
         print("finished pickling")
     
         

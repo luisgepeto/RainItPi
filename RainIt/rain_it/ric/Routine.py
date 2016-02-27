@@ -6,12 +6,6 @@ class Routine(RainItComposite):
         super().__init__()
         self.routine_id = routine_id
         
-    def should_pickle(self):
-        return self.components
-   
-    def get_pickle_dir(self):
-        return "routine"
-    
     def get_pickle_name(self):
         return '{}'.format(self.routine_id)
     

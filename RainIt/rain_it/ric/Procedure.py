@@ -4,12 +4,6 @@ class Procedure(RainItComposite):
     def __init__(self):
         super().__init__()
      
-    def should_pickle(self):
-        return self.components
-   
-    def get_pickle_dir(self):
-        return "procedure"
-    
     def get_pickle_name(self):
         return 'pickled_procedure'
     
