@@ -1,5 +1,4 @@
 from ric.RainItComponent import RainItComponent
-from writer.FileWriter import FileWriter
 
 class RainItComposite(RainItComponent):
     
@@ -15,14 +14,7 @@ class RainItComposite(RainItComponent):
     def add_rain_it_component(self, rain_it_component):
         for writer in self.writers:
             rain_it_component.add_writer(writer)
-        self.components.append(rain_it_component)
-    
-    def file_write(self):
-        file_writer = self.get_writer_of_type(FileWriter)
-        if file_writer is not None:
-            file_writer.write(self)
-        for component in self.components:
-            component.file_write()
+        self.components.append(rain_it_component)    
     
     def gpio_write(self):
         for component in self.components:
