@@ -30,14 +30,7 @@ class FileWriterFree(FileWriterState):
         self.terminate_queue()
         
     def pickle_component(self, rain_it_component):
-        time.sleep(0.001)
-        print("starting pickle")
-        pickle_path = PicklePathGenerator().get_full_pickle_path(rain_it_component.get_pickle_name(), rain_it_component.component_type)
-        print("will pickle in {}".format(pickle_path))
-        with open(pickle_path, 'wb') as f:          
-            print("pickling")          
+        time.sleep(0.001)        
+        pickle_path = PicklePathGenerator().get_full_pickle_path(rain_it_component.component_type)        
+        with open(pickle_path, 'wb') as f:
             pickle.dump(rain_it_component.get_pickle_form(), f, pickle.HIGHEST_PROTOCOL)
-            print("pickled")
-        print("finished pickling")
-    
-        

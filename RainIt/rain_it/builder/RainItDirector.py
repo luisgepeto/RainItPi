@@ -1,5 +1,6 @@
 from ric.PatternFactory import PatternFactory
 from builder.ComponentType import ComponentType
+from builder.FileBuilder import FileBuilder
 
 class RainItDirector(object):
     
@@ -8,15 +9,19 @@ class RainItDirector(object):
         self.pattern_factory = PatternFactory()
         self.writers = writers
     
-    def get_test_pattern(self): 
-        result = self.rain_it_builder.read_data_source(ComponentType.test_pattern)        
+    def get_test_pattern(self):
+        result = self.rain_it_builder.read_data_source(ComponentType.test_pattern)  
+        if isinstance(self.rain_it_builder, FileBuilder):
+            return result    
         pattern_as_matrix = result["patternAsMatrix"]        
         pattern_result = self.rain_it_builder.build_pattern(matrix = pattern_as_matrix, pattern_factory = self.pattern_factory, component_type = ComponentType.test_pattern)        
-        return self.add_writers(pattern_result)
-                
+        return self.add_writers(pattern_result) 
+                  
     
     def get_test_routine(self):
         result = self.rain_it_builder.read_data_source(ComponentType.test_routine)
+        if isinstance(self.rain_it_builder, FileBuilder):
+            return result
         routine_dict = None 
         if result:
             routine_dict = result[0]
@@ -25,7 +30,9 @@ class RainItDirector(object):
                 
     
     def get_active_procedure(self):
-        result = self.rain_it_builder.read_data_source(ComponentType.active_procedure)        
+        result = self.rain_it_builder.read_data_source(ComponentType.active_procedure)
+        if isinstance(self.rain_it_builder, FileBuilder):
+            return result        
         routines = []
         for routine_dict in result:
             routine = self.get_routine_from_dict(routine_dict, ComponentType.active_procedure)
