@@ -1,11 +1,8 @@
-from writer.WriterFactory import WriterFactory
-from builder.RainItDirector import RainItDirector
-from builder.DemoBuilder import DemoBuilder
-from builder.ServiceBuilder import ServiceBuilder
 from builder.FileBuilder import FileBuilder
+from builder.RainItDirector import RainItDirector
+from writer.WriterFactory import WriterFactory
 
-
-if __name__ == '__main__':    
+if __name__ == '__main__':
     '''
         With the WriterFactory we can create several types of writers
         depending on the output type. These writers have specific states

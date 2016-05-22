@@ -9,7 +9,7 @@ class PatternFactory(object):
         return self.pattern_id_dict[pattern_id]
         
     def add_pattern(self, pattern):
-        '''avoiding the add of patterns with id 0 
-        helps us to avoid adding the test pattern to the dictionary'''
+        """avoiding the add of patterns with id 0
+        helps us to avoid adding the test pattern to the dictionary"""
         if not pattern.pattern_id == 0:
             self.pattern_id_dict[pattern.pattern_id] = pattern        
