@@ -1,0 +1,311 @@
+﻿body {
+    padding-bottom: 20px;
+    padding-top: 50px
+}
+
+/* Set padding to keep content from hitting the edges */
+.body-content {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* Override the default bootstrap behavior where horizontal description lists 
+   will truncate terms that are too long to fit in the left column 
+*/
+.dl-horizontal dt {
+    white-space: normal;
+}
+
+/* Set width on the form input elements since they're 100% wide by default */
+input,
+select,
+textarea {
+    width: 100%;
+}
+
+/* This will avoid the multiselect container issues when setting the width to default*/
+.multiselect-container input {
+    width: auto;
+}
+
+/* Set the navbar items to appear on the right*/
+ul.nav.navbar-nav {
+    float: right;
+    background-color: transparent;
+    border-color: transparent;
+}
+
+/* Set the color of the inverse navbar to transparent*/
+.navbar-inverse{
+    background-color: transparent;
+    border-color: transparent;
+}
+
+/* Sets the navbar links to have background of transparent */
+.navbar-inverse .navbar-nav > .active > a, .navbar-inverse .navbar-nav > .active > a:hover, .navbar-inverse .navbar-nav > .active > a:focus{
+    background-color: transparent;
+}
+
+/* Sets the style for the validation errors of the fields*/
+.field-validation-error{ color: red; font-weight: bold; }
+
+/* This is the status for the validation messages passed from view to view*/
+.error-status-message{
+    color: red;
+     font-weight: bold; 
+}
+
+.valid-status-message{
+    color: green;
+     font-weight: bold; 
+}
+
+/* Sets the visibility of strange datepicker to none*/
+#ui-datepicker-div {display: none;}
+
+/* Alters bootstrap img-responsive to set max height of 100%*/
+.img-responsive {
+    width: auto;
+    max-height: 100%;
+}
+
+/*Includes the themes for the shapeshifting plugin*/ 
+.shapeshift-gallery {
+        position: relative;
+        width: 100%;
+}
+.shapeshift-element {
+    position: absolute;
+    height: 200px;
+    width: 200px;
+}
+.library .shapeshift-element {
+    height: 100px;
+    width: 100px;
+}
+#routine-builder .shapeshift-element {
+    width: 100px;
+     height: 140px;
+}
+
+/* This is intended to work as additional space on top of the bootstrap .row*/
+.spacer {
+    margin-top: 20px; /* define margin as you see fit */
+}
+
+/*Adding color to glyphicons*/
+.glyphicon.red {
+    color: red;
+}
+.glyphicon.green {
+    color: green;
+}
+.glyphicon.blue {
+    color: blue;
+}
+
+/* Changes the font when element is bold*/
+strong {
+    font-family: "gotham-bold", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+@font-face {
+    font-family: 'gotham-bold';
+    src: url('fonts/gotham-bold.woff') format('woff');
+}
+
+/* these are the styles for the loading bar*/
+k-loading-mask, .k-loading-image, .k-loading-text {
+  position: absolute;
+}
+
+.k-loading-text {
+  text-align: center;
+}
+.k-loading-image {
+    background-image: url('loading-image-navy.gif');
+}
+.k-loading-image {
+  top: 0;
+  left: 0;
+  z-index: 2;
+}
+.k-loading-image, .k-loading-color {
+  width: 100%;
+  height: 100%;
+}
+.k-loading, .k-loading-image {
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+.k-loading-color {
+  background-color: #fff;
+}
+.k-loading-color {
+  opacity: .3;
+}
+
+/* This will set the border on the image containers and holders*/
+    .img-holder {
+        width: 100%;
+        background-size: 100% auto;
+    }
+    .img-container {
+        background: url("icons/image.png") no-repeat center;
+    }
+.img-adder {
+    background: url('icons/add.png') no-repeat center;
+}
+.img-dropper {
+    background: url('icons/drop.png') no-repeat center;
+}
+.invisible-background {
+    background: initial;
+}
+     
+     /*This will limit the columns to a maximum height*/
+     .limit-add{
+        height: 500px;
+        max-height:500px;
+        overflow:hidden;  
+    }
+     .limit-view{
+        height: 200px;
+        max-height:200px;
+        overflow:hidden;
+         width: 200px; 
+    }
+     .img-holder img {
+         max-width: 100%;
+         max-height: 100%;
+     }
+     .library .limit-view, #routine-builder .limit-view{
+        height: 100px;
+        max-height:100px;
+        overflow:hidden;
+         width: 100px; 
+    }
+    
+     /* This makes the cursor a pointer*/
+     .pointer {
+         cursor: pointer;
+     }
+     .move {
+         cursor: move;
+     }
+
+     /* Added the circle styles*/
+     .img-circle-primary {
+         background: url("circle_primary.png") no-repeat center;
+         background-size: 100% auto;
+         /*width: 100%;
+         box-sizing: border-box;
+         position: relative;*/
+     }
+     .img-circle-default {
+         background: url("circle_default.png") no-repeat center;
+         background-size: 100% auto;
+         /*width: 100%;
+         box-sizing: border-box;
+         position: relative;*/
+     }
+     .img-circle-info {
+         background: url("circle_info.png") no-repeat center;
+         background-size: 100% auto;
+         /*width: 100%;
+         box-sizing: border-box;
+         position: relative;*/
+     }
+
+     /* This will set the styles for the delete button thumb*/
+     .routine-holder {
+         width: 100%;
+         overflow: auto;
+     }
+     .delete-button {
+        width: 30px;
+        height: 30px;
+        background: url('../../../../Content/icons/delete.png') no-repeat center center;
+        background-size: contain;
+        top: -15px;
+        z-index: 2;
+    }
+     .shapeshift-gallery .delete-button  {
+         position: absolute;
+        left: 92%;
+     }
+     .routine-holder .delete-button {
+        position: relative;
+        left: 0%;
+    }
+
+     /* This will set the styles to the title which are below the images on the pattern index page*/
+     .img-title {
+        position: absolute;
+        bottom: 5px;
+        left: 5px;
+        background-color: skyblue;
+        padding: 5px;
+        max-width: 190px;
+        width: 190px;
+        max-height: 30px;
+        height: 30px;
+        overflow: hidden;
+        word-break: break-all;
+    }
+
+     .library .img-title {
+        max-width: 90px;
+        width: 90px;
+        max-height: 20px;
+        height: 20px;
+        overflow: hidden;
+        word-break: break-all;
+        font-size: 0.8em;
+    }
+     #routine-builder .img-title {
+         bottom: 45px;
+         max-width: 90px;
+        width: 90px;
+        max-height: 20px;
+        height: 20px;
+        overflow: hidden;
+        word-break: break-all;
+        font-size: 0.8em;
+     }
+
+     /* This will set the routine title style in the routine index page*/
+     .routine-title {
+          position: absolute;
+          bottom: 5px;
+          left: 20px;
+          background-color: skyblue;
+          padding: 5px;
+          max-width: 100%;
+          width: 20%;
+          max-height: 30px;
+          height: 30px;
+          overflow: hidden;
+          word-break: break-all;
+    }
+     .routine-holder .img-repetitions {
+        position: relative;
+        bottom: 201px;
+        left: 5px;
+        background-color: #ffffff;
+        background-color: rgba(255, 255, 255, 0.5);
+        padding: 5px;
+        max-width: 190px;
+        width: 190px;
+        max-height: 190px;
+        height: 190px;
+        overflow: hidden;
+        word-break: break-all;
+    }
+    .routine-holder .img-repetitions p {
+        color: skyblue;
+        font-size: 5em;
+        text-align: center;
+        line-height: 180px;
+    }
+    

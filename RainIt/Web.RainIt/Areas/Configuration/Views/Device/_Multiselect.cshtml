@@ -1,0 +1,60 @@
+﻿@model List<RainIt.Domain.DTO.DeviceDTO>
+<style>
+    #device-multiselect + .btn-group{
+        width: 100% !important;
+        max-width: 100%;
+    }
+    #device-multiselect + .btn-group button.multiselect{
+        width: 100% !important;
+        max-width: 100%;
+    }
+</style>
+<select id="device-multiselect" multiple="multiple">
+    @foreach (var device in Model)
+    {
+        <option value="@device.Identifier">@device.Name</option>
+    }
+</select>
+<script type="text/javascript">
+    (function() {
+        this.DeviceMultiselectProperties = this.DeviceMultiselectProperties || {};
+        var multiselect = (function() {
+            var properties = {};
+            properties.Initialize = function () {
+                $('#device-multiselect').multiselect({ buttonWidth: '150px', disableIfEmpty: true });
+
+            }
+            properties.SelectDevices = function (deviceIds) {
+                $.each(deviceIds, function() {
+                    var deviceId = this;
+                    $('#device-multiselect option[value="' + deviceId + '"').attr("selected", 1);
+                });
+                $('#device-multiselect').multiselect("refresh");
+
+            }
+            properties.GetSelectedDevices = function () {
+                var selectedDevices = [];
+                $('#device-multiselect option:selected').each(function () {
+                    var selectedOption = this;
+                    selectedDevices.push(selectedOption.value);
+                });
+                return selectedDevices;
+            }
+            return properties;
+        }());
+
+        DeviceMultiselectProperties.SelectDevices = function (deviceIds) {
+            return multiselect.SelectDevices(deviceIds);
+        }
+        DeviceMultiselectProperties.GetSelectedDevices = function () {
+            return multiselect.GetSelectedDevices();
+        }
+
+        DeviceMultiselectProperties.SetupPage = function () {
+            multiselect.Initialize();
+        }
+    }());
+    $(document).ready(function () {
+        DeviceMultiselectProperties.SetupPage();
+    });
+</script>

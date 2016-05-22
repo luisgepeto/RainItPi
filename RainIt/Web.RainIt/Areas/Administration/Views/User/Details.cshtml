@@ -1,0 +1,18 @@
+﻿@model RainIt.Domain.DTO.UserDTO
+<div class="container">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="container" id="user-information">
+                @Html.Action("Information", "User", new {area = "Administration", userId = Model.UserId})
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="container" id="user-settings">
+                @Html.Action("Settings", "User", new { area = "Administration", userId = Model.UserId })
+            </div>
+            <div class="container" id="user-devices">
+                @Html.Action("Devices", "User", new { area = "Administration", userId = Model.UserId })
+            </div>
+        </div>
+    </div>
+</div>

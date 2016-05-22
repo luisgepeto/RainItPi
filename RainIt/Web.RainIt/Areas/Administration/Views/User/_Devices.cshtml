@@ -1,0 +1,49 @@
+﻿@model System.Collections.Generic.List<RainIt.Domain.DTO.DeviceDTO>
+<div class="row">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">
+                <strong>
+                    Devices
+                </strong>
+            </h3>
+        </div>
+        <div class="panel-body">
+            @foreach (var device in Model)
+            {
+                <table class="table">
+                    <tbody>
+                    <tr>
+                        <th>Serial:&nbsp;</th>
+                        <td>@Html.Raw(device.Serial)</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <th>Identifier:&nbsp;</th>
+                        <td>@Html.Raw(device.Identifier)</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <th>Name:&nbsp;</th>
+                        <td>@Html.Raw(device.Name)</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <th rowspan="3">Settings:&nbsp;</th>
+                        <th>Clock delay (ms):&nbsp;</th>
+                        <td>@Html.Raw(device.DeviceSettings.MillisecondClockDelay)</td>
+                    </tr>
+                    <tr>
+                        <th>Latch delay (ms):&nbsp;</th>
+                        <td>@Html.Raw(device.DeviceSettings.MillisecondLatchDelay)</td>
+                    </tr>
+                    <tr>
+                        <th>Refresh rate (min):&nbsp;</th>
+                        <td>@Html.Raw(device.DeviceSettings.MinutesRefreshRate)</td>
+                    </tr>
+                    </tbody>
+                </table>
+            }
+        </div>
+    </div>
+</div>

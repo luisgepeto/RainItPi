@@ -1,0 +1,129 @@
+﻿@model RainIt.Domain.DTO.RoutineDTO
+
+<div class="routine-holder" data-routine-id="@Model.RoutineId">
+    <ul>
+        @foreach (var routinePattern in Model.RoutinePatternDTOs)
+        {
+            <li class="limit-view routine-element">
+                <div class="limit-view img-holder img-thumbnail">
+                    <img src="@routinePattern.PatternDTO.Path" class="img-element" data-orig-src="@routinePattern.PatternDTO.Path" data-pattern-id="@routinePattern.PatternDTO.PatternId">
+                </div>
+                <div class="caption img-repetitions" style="display: none;">
+                    <p>
+                        <strong>@("x" + routinePattern.Repetitions)</strong>
+                    </p>
+                </div>
+            </li>
+        }
+    </ul>
+    <div class="caption routine-title" style="display: none;">
+        <p>@Model.Name</p>
+    </div>
+</div>
+
+<script type="text/javascript">
+    (function () {
+
+        this.RoutineViewProperties =  {};
+        var scroller = (function () {
+            var properties = {};
+            properties.Initialize = function (routineId) {
+                $('.routine-holder[data-routine-id="'+routineId+'"]').mThumbnailScroller({
+                    axis: 'x',
+                    type: 'hover-90',
+                    speed: 30
+                });
+            }
+            return properties;
+        }());
+
+        var image = (function () {
+            var properties = {};
+            var hasAjaxRunFor = [];
+
+            function makeHoverAjaxCall(currentImageHolder) {
+                var id = currentImageHolder.find('.img-element').attr("data-pattern-id");
+                if (hasAjaxRunFor.indexOf(id) == -1) {
+                    hasAjaxRunFor.push(id);
+                    currentImageHolder.setAjaxLoadingAnimation();
+                    var url = '@Url.Action("GetBlackWhiteFor", "Pattern", new {area = "Configuration", patternId = -1})';
+                    url = url.replace("-1", id);
+                    $.ajax({
+                        url: url,
+                        type: "GET",
+                        contentType: "application/x-www-form-urlencoded",
+                        success: function (data) {
+                            var allImageHolders = $('.img-holder').find('.img-element[data-pattern-id="' + currentImageHolder.find('.img-element').attr('data-pattern-id') + '"]').closest('.img-holder');
+                            allImageHolders.removeAjaxLoadingAnimation();
+                            allImageHolders.children('.img-element').attr("data-bw-src", "data:image/png;base64," + data.blackWhiteFile);
+                            if (currentImageHolder.is(":hover")) {
+                                currentImageHolder.children('.img-element').attr("src", currentImageHolder.children('.img-element').attr("data-bw-src"));
+                                currentImageHolder.siblings('.img-repetitions').show();
+                            }
+                        }
+                    });
+                }
+            }
+
+            function hoverFunction(currentImageElement, mouseChangeFunction) {
+                var originalSource = currentImageElement.attr("data-orig-src");
+                var bwSource = currentImageElement.attr("data-bw-src");
+                if (originalSource && bwSource) {
+                    mouseChangeFunction(currentImageElement);
+                }
+            }
+
+            function addHoverListener(routineId) {
+                $('.routine-holder[data-routine-id="' + routineId + '"] .routine-element').hover(function (e) {
+                    var currentImageHolder = $(e.currentTarget).find('.img-holder');
+                    currentImageHolder.children('.k-loading-mask').show();
+                    if (currentImageHolder.children('.img-element').attr("data-bw-src") == undefined) {
+                        makeHoverAjaxCall(currentImageHolder);
+                    }
+                    currentImageHolder.siblings('.img-title').show();
+                },
+                    function (e) {
+                        var currentImageHolder = $(e.currentTarget).find('.img-holder');
+                        currentImageHolder.children('.k-loading-mask').hide();
+                        currentImageHolder.siblings('.img-title').hide();
+                    });
+
+                $('.routine-holder[data-routine-id="' + routineId + '"] .routine-element').hover(function (e) {
+                    var currentImageElement = $(e.currentTarget).find('.img-element');
+                    hoverFunction(currentImageElement, function (currentImageElement) {
+                        currentImageElement.attr("src", currentImageElement.attr("data-bw-src"));
+                        currentImageElement.parent().siblings('.img-repetitions').show();
+                    });
+                }, function (e) {
+                    var currentImageElement = $(e.currentTarget).find('.img-element');
+                    hoverFunction(currentImageElement, function (currentImageElement) {
+                        currentImageElement.attr("src", currentImageElement.attr("data-orig-src"));
+                        currentImageElement.parent().siblings('.img-repetitions').hide();
+                    });
+                });
+
+                $('.routine-holder[data-routine-id="' + routineId + '"] ul').hover(function (e) {
+                    var currentUl = $(e.currentTarget);
+                    currentUl.closest('.routine-holder').find('.routine-title').show();
+                }, function (e) {
+                    var currentUl = $(e.currentTarget);
+                    currentUl.closest('.routine-holder').find('.routine-title').hide();
+                });
+            }
+
+            properties.Initialize = function (routineId) {
+                addHoverListener(routineId);
+            }
+            return properties;
+        }());
+
+        RoutineViewProperties.Initialize = function(routineId) {
+            scroller.Initialize(routineId);
+            image.Initialize(routineId);
+        }
+    }());
+    $(document).ready(function() {
+        var routineId = '@Model.RoutineId';
+        RoutineViewProperties.Initialize(routineId);
+    });
+</script>

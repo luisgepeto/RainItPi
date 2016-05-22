@@ -1,0 +1,22 @@
+﻿@model System.Collections.Generic.List<RainIt.Domain.DTO.UserDTO>
+<table class="table table-bordered table-striped">
+    <thead>
+    <tr>
+        <th>Id</th>
+        <th>Username</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var user in Model)
+    {
+        <tr>
+            <td>
+                @Html.ActionLink(""+user.UserId, "Details", new { controller = "User", area="Administration", userId = user.UserId })
+            </td>
+            <td>
+                @Html.ActionLink(user.Username, "Details", new { controller = "User", area = "Administration", userId = user.UserId })
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
