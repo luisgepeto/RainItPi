@@ -1,3 +1,4 @@
+from builder.DemoBuilder import DemoBuilder
 from builder.FileBuilder import FileBuilder
 from builder.RainItDirector import RainItDirector
 from writer.WriterFactory import WriterFactory
@@ -20,10 +21,10 @@ if __name__ == '__main__':
         sources are: DemoBuilder, ServiceBuilder and FileBuilder. It also needs
         a list of writers which will be used when writing the resulting objects. 
     '''
-    #demo_director = RainItDirector(DemoBuilder(), all_writers)
+    demo_director = RainItDirector(DemoBuilder(), all_writers)
     #service_director = RainItDirector(ServiceBuilder(), all_writers)
-    file_director = RainItDirector(FileBuilder(), all_writers)
-    director = file_director
+    #file_director = RainItDirector(FileBuilder(), all_writers)
+    director = demo_director
     
     pattern = director.get_test_pattern()
     routine = director.get_test_routine()
