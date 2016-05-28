@@ -4,7 +4,7 @@ import asyncio
 import time
 import pickle
 from writer.PicklePathGenerator import PicklePathGenerator
-
+import os
 
 class FileWriterFree(FileWriterState):
     def write(self, writer, rain_it_component):
@@ -32,5 +32,6 @@ class FileWriterFree(FileWriterState):
     def pickle_component(self, rain_it_component):
         time.sleep(0.001)
         pickle_path = PicklePathGenerator().get_full_pickle_path(rain_it_component.component_type)
+        os.makedirs(os.path.dirname(pickle_path), exist_ok=True)
         with open(pickle_path, 'wb') as f:
             pickle.dump(rain_it_component.get_pickle_form(), f, pickle.HIGHEST_PROTOCOL)
