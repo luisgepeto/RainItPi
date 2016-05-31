@@ -11,6 +11,4 @@ class Routine(RainItComposite):
         return '{}'.format(self.routine_id)
 
     def get_pickle_form(self):
-        grouped_list = [(component.get_pickle_name(), sum(1 for i in grouped_patterns)) for component, grouped_patterns
-                        in groupby(self.components)]
-        return grouped_list
+        return self

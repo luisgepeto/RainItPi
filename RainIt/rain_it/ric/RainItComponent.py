@@ -11,7 +11,13 @@ class RainItComponent(metaclass=ABCMeta):
         self.component_type = component_type
 
     def add_writer(self, writer):
-        self.writers.append(writer)
+        found_writer = False
+        for index, old_writer in enumerate(self.writers):
+            if isinstance(old_writer, type(writer)):
+                self.writers[index] = writer
+                found_writer = True
+        if not found_writer:
+            self.writers.append(writer)
 
     def add_rain_it_component(self, rain_it_component):
         pass

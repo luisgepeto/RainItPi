@@ -21,7 +21,7 @@ class FileBuilder(RainItBuilder):
         return unpickled_object
 
     def get_pickle_file(self, component_type):
-        pickle_path = PicklePathGenerator().get_full_pickle_path(ComponentType.test_pattern)
+        pickle_path = PicklePathGenerator().get_full_pickle_path(component_type)
         return open(pickle_path, 'rb')
 
     def build_pattern(self, pattern_id=0, conversion_parameter=None, matrix=None, path=None, pattern_factory=None,

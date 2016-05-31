@@ -1,3 +1,6 @@
+import sys
+import os.path
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from builder.DemoBuilder import DemoBuilder
 from builder.FileBuilder import FileBuilder
 from builder.RainItDirector import RainItDirector
@@ -21,10 +24,10 @@ if __name__ == '__main__':
         sources are: DemoBuilder, ServiceBuilder and FileBuilder. It also needs
         a list of writers which will be used when writing the resulting objects. 
     '''
-    demo_director = RainItDirector(DemoBuilder(), all_writers)
+    #demo_director = RainItDirector(DemoBuilder(), all_writers)
     #service_director = RainItDirector(ServiceBuilder(), all_writers)
-    #file_director = RainItDirector(FileBuilder(), all_writers)
-    director = demo_director
+    file_director = RainItDirector(FileBuilder(), all_writers)
+    director = file_director
     
     pattern = director.get_test_pattern()
     routine = director.get_test_routine()
@@ -35,4 +38,4 @@ if __name__ == '__main__':
     routine.gpio_write()
     routine.file_write()
     procedure.gpio_write()
-    procedure.file_write()   
+    procedure.file_write()

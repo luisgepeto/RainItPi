@@ -12,6 +12,7 @@ class RainItDirector(object):
     def get_test_pattern(self):
         result = self.rain_it_builder.read_data_source(ComponentType.test_pattern)
         if isinstance(self.rain_it_builder, FileBuilder):
+            result = self.add_writers(result)
             return result
         pattern_as_matrix = result["patternAsMatrix"]
         pattern_result = self.rain_it_builder.build_pattern(matrix=pattern_as_matrix,
@@ -22,6 +23,7 @@ class RainItDirector(object):
     def get_test_routine(self):
         result = self.rain_it_builder.read_data_source(ComponentType.test_routine)
         if isinstance(self.rain_it_builder, FileBuilder):
+            result = self.add_writers(result)
             return result
         routine_dict = None
         if result:
@@ -32,6 +34,7 @@ class RainItDirector(object):
     def get_active_procedure(self):
         result = self.rain_it_builder.read_data_source(ComponentType.active_procedure)
         if isinstance(self.rain_it_builder, FileBuilder):
+            result = self.add_writers(result)
             return result
         routines = []
         for routine_dict in result:
