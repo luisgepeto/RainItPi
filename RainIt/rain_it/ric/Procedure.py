@@ -9,4 +9,4 @@ class Procedure(RainItComposite):
         return 'pickled_procedure'
 
     def get_pickle_form(self):
-        return Procedure()
+        return self
