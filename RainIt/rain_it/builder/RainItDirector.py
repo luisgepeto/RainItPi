@@ -18,6 +18,9 @@ class RainItDirector(object):
         pattern_result = self.rain_it_builder.build_pattern(matrix=pattern_as_matrix,
                                                             pattern_factory=self.pattern_factory,
                                                             component_type=ComponentType.test_pattern)
+        sample_time_stamp = result["SampleTimeStamp"]
+        if sample_time_stamp is not None:
+            pattern_result.set_time_stamp(sample_time_stamp)
         return self.add_writers(pattern_result)
 
     def get_test_routine(self):
@@ -29,6 +32,10 @@ class RainItDirector(object):
         if result:
             routine_dict = result[0]
         routine_result = self.get_routine_from_dict(routine_dict, ComponentType.test_routine)
+        if routine_dict is not None:
+            sample_time_stamp = routine_dict["SampleTimeStamp"]
+            if sample_time_stamp is not None:
+                routine_result.set_time_stamp(sample_time_stamp)
         return self.add_writers(routine_result)
 
     def get_active_procedure(self):
