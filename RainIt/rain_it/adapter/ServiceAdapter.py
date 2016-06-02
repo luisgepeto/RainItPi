@@ -4,17 +4,18 @@ import json
 from adapter.AuthenticationResult import AuthenticationResult
 from adapter.Exceptions import GetRequestException
 from adapter.Exceptions import PostRequestException
+from adapter.HardwareAdapter import HardwareAdapter
 
 
 class ServiceAdapter(object):
-    serial = "0123456789abcdef"
 
     def __init__(self, base_uri):
         self.base_uri = base_uri
         self.authentication_result = None
 
     def authenticate(self):
-        json_result = self.post("account/login/" + self.serial, needs_authentication=False);
+        serial = HardwareAdapter().get_serial()
+        json_result = self.post("account/login/" + serial, needs_authentication=False);
         self.authentication_result = AuthenticationResult(json_result["LoginStatus"], json_result["SecurityToken"],
                                                           json_result["TokenExpirationUtcTime"])
 
