@@ -3,6 +3,7 @@ import os.path
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from builder.DemoBuilder import DemoBuilder
 from builder.FileBuilder import FileBuilder
+from builder.ServiceBuilder import ServiceBuilder
 from builder.RainItDirector import RainItDirector
 from writer.WriterFactory import WriterFactory
 
