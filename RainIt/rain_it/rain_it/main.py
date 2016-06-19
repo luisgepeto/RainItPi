@@ -26,21 +26,23 @@ if __name__ == '__main__':
         a list of writers which will be used when writing the resulting objects. 
     '''
     #demo_director = RainItDirector(DemoBuilder(), all_writers)
-    #service_director = RainItDirector(ServiceBuilder(), all_writers)
-    file_director = RainItDirector(FileBuilder(), all_writers)
-    director = file_director
-    
-    pattern = director.get_test_pattern()
-    routine = director.get_test_routine()
-    procedure = director.get_active_procedure()
-    
-    pattern.gpio_write()
-    pattern.file_write()
-    routine.gpio_write()
-    routine.file_write()
-    procedure.gpio_write()
-    procedure.file_write()
+    service_director = RainItDirector(ServiceBuilder(), all_writers)
+    #file_director = RainItDirector(FileBuilder(), all_writers)
+    director = service_director
 
-    print(pattern.is_expired(1))
-    print(routine.is_expired(1))
-    print(procedure.is_expired(1))
+    settings = director.get_device_settings()
+    #pattern = director.get_test_pattern()
+    #routine = director.get_test_routine()
+    #procedure = director.get_active_procedure()
+
+    settings.file_write()
+    #pattern.gpio_write()
+    #pattern.file_write()
+    #routine.gpio_write()
+    #routine.file_write()
+    #procedure.gpio_write()
+    #procedure.file_write()
+
+    #print(pattern.is_expired(1))
+    #print(routine.is_expired(1))
+    #print(procedure.is_expired(1))

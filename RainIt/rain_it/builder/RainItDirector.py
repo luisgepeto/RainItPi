@@ -87,3 +87,15 @@ class RainItDirector(object):
         for writer in self.writers:
             rain_it_component.add_writer(writer)
         return rain_it_component
+
+    def get_device_settings(self):
+        result = self.rain_it_builder.read_data_source(ComponentType.device_settings)
+        if isinstance(self.rain_it_builder, FileBuilder):
+            result = self.add_writers(result)
+            return result
+        minutes_refresh_rate = result["MinutesRefreshRate"]
+        millisecond_latch_delay = result["MillisecondLatchDelay"]
+        millisecond_clock_delay = result["MillisecondClockDelay"]
+        device_settings_result = self.rain_it_builder.build_device_settings(minutes_refresh_rate, millisecond_latch_delay, millisecond_clock_delay)
+        return self.add_writers(device_settings_result)
+

@@ -16,7 +16,9 @@ class PicklePathGenerator(object):
         elif component_type is ComponentType.test_routine:
             name = "test_routine"
         elif component_type is ComponentType.active_procedure:
-            name = "active_procedure"        
+            name = "active_procedure"
+        elif component_type is ComponentType.device_settings:
+            name = "device_settings"
         return name
     
     def get_pickle_path(self, component_type):
@@ -26,7 +28,9 @@ class PicklePathGenerator(object):
         elif component_type is ComponentType.test_routine:
             specific_path = "test_routine"
         elif component_type is ComponentType.active_procedure:
-            specific_path = "active_procedure"        
+            specific_path = "active_procedure"
+        elif component_type is ComponentType.device_settings:
+            specific_path = "device_settings"
         return self.create_path(specific_path)
             
     def create_path(self, specific_path):

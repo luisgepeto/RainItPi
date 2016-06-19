@@ -1,5 +1,6 @@
 from abc import ABCMeta, abstractmethod
 from builder.ComponentType import ComponentType
+from ric.DeviceSettings import DeviceSettings
 from ric.Routine import Routine
 from ric.Procedure import Procedure
 from ric.Pattern import Pattern
@@ -14,8 +15,14 @@ class RainItBuilder(metaclass=ABCMeta):
             return self.get_test_routine()
         elif component_type is ComponentType.active_procedure:
             return self.get_active_procedure()
+        elif component_type is ComponentType.device_settings:
+            return self.get_device_settings()
         else:
             pass
+
+    @abstractmethod
+    def get_device_settings(self):
+        pass
 
     @abstractmethod
     def get_test_pattern(self):
@@ -32,6 +39,11 @@ class RainItBuilder(metaclass=ABCMeta):
     @abstractmethod
     def get_active_procedure(self):
         pass
+
+    def build_device_settings(self, minutes_refresh_rate, millisecond_latch_delay, millisecond_clock_delay):
+        device_settings =  DeviceSettings(minutes_refresh_rate, millisecond_latch_delay, millisecond_clock_delay)
+        device_settings.set_component_type(ComponentType.device_settings)
+        return device_settings
 
     def build_pattern(self, pattern_id=0, conversion_parameter=None, matrix=None, path=None, pattern_factory=None,
                       component_type=None):

@@ -4,10 +4,14 @@ import json
 
 
 class ServiceBuilder(RainItBuilder):
+
     base_url = "http://localhost:100/api/"
 
     def __init__(self):
         self.service_adapter = ServiceAdapter(self.base_url)
+
+    def get_device_settings(self):
+        return self.service_adapter.get("device/settings")
 
     def get_test_pattern(self):
         return self.service_adapter.get("pattern/test")

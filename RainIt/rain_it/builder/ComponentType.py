@@ -5,3 +5,4 @@ class ComponentType(Enum):
     test_pattern = 1
     test_routine = 2
     active_procedure = 3
+    device_settings = 4

@@ -6,6 +6,9 @@ class DemoBuilder(RainItBuilder):
     initial_pattern_id = 0
     initial_routine_id = 0
 
+    def get_device_settings(self):
+        return {"MinutesRefreshRate": 5, "MillisecondLatchDelay": 2, "MillisecondClockDelay": 1}
+
     def get_test_pattern(self):
         DemoBuilder.initial_pattern_id += 1
         sample_matrix = self.get_matrix(DemoBuilder.initial_pattern_id, None)

@@ -5,6 +5,9 @@ import pickle
 
 
 class FileBuilder(RainItBuilder):
+    def get_device_settings(self):
+        return self.get_unpickled_object(ComponentType.device_settings)
+
     def get_test_pattern(self):
         return self.get_unpickled_object(ComponentType.test_pattern)
 
