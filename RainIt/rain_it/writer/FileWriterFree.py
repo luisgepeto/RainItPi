@@ -6,6 +6,7 @@ import pickle
 from writer.PicklePathGenerator import PicklePathGenerator
 import os
 
+
 class FileWriterFree(FileWriterState):
     def write(self, writer, rain_it_component):
         self.write_async(writer, rain_it_component)

@@ -9,7 +9,7 @@ class DemoBuilder(RainItBuilder):
     def get_test_pattern(self):
         DemoBuilder.initial_pattern_id += 1
         sample_matrix = self.get_matrix(DemoBuilder.initial_pattern_id, None)
-        return {'patternAsMatrix': sample_matrix, 'SampleTimeStamp': datetime.now()}
+        return {'patternAsMatrix': sample_matrix, 'SampleTimeStamp': datetime.now().strftime('%Y-%m-%dT%H:%M:%S.%f')}
 
     def get_test_routine(self):
         routine_list = []
@@ -36,7 +36,7 @@ class DemoBuilder(RainItBuilder):
     def create_new_routine(self, new_routine_base):
         routine = {
             'RoutineId': new_routine_base,
-            'SampleTimeStamp': datetime.now(),
+            'SampleTimeStamp': datetime.now().strftime('%Y-%m-%dT%H:%M:%S.%f'),
             'RoutinePatternDTOs': [
                 {
                     'Repetitions': new_routine_base,
