@@ -11,6 +11,8 @@ class RainItDirector(object):
 
     def get_test_pattern(self):
         result = self.rain_it_builder.read_data_source(ComponentType.test_pattern)
+        if result is None:
+            return result
         if isinstance(self.rain_it_builder, FileBuilder):
             result = self.add_writers(result)
             return result
@@ -25,6 +27,8 @@ class RainItDirector(object):
 
     def get_test_routine(self):
         result = self.rain_it_builder.read_data_source(ComponentType.test_routine)
+        if result is None:
+            return result
         if isinstance(self.rain_it_builder, FileBuilder):
             result = self.add_writers(result)
             return result
@@ -40,6 +44,8 @@ class RainItDirector(object):
 
     def get_active_procedure(self):
         result = self.rain_it_builder.read_data_source(ComponentType.active_procedure)
+        if result is None:
+            return result
         if isinstance(self.rain_it_builder, FileBuilder):
             result = self.add_writers(result)
             return result
@@ -90,6 +96,8 @@ class RainItDirector(object):
 
     def get_device_settings(self):
         result = self.rain_it_builder.read_data_source(ComponentType.device_settings)
+        if result is None:
+            return result
         if isinstance(self.rain_it_builder, FileBuilder):
             result = self.add_writers(result)
             return result

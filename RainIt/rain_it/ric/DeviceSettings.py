@@ -8,9 +8,6 @@ class DeviceSettings(RainItComponent):
         self.millisecond_latch_delay = millisecond_latch_delay
         self.millisecond_clock_delay = millisecond_clock_delay
 
-    def get_pickle_name(self):
-        return 'pickled_settings'
-
     def get_pickle_form(self):
         return self
 

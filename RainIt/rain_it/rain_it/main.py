@@ -25,23 +25,23 @@ if __name__ == '__main__':
         sources are: DemoBuilder, ServiceBuilder and FileBuilder. It also needs
         a list of writers which will be used when writing the resulting objects. 
     '''
-    #demo_director = RainItDirector(DemoBuilder(), all_writers)
-    service_director = RainItDirector(ServiceBuilder(), all_writers)
-    #file_director = RainItDirector(FileBuilder(), all_writers)
-    director = service_director
+    demo_director = RainItDirector(DemoBuilder(), all_writers)
+    #service_director = RainItDirector(ServiceBuilder(), all_writers)
+    file_director = RainItDirector(FileBuilder(), all_writers)
+    director = file_director
 
     settings = director.get_device_settings()
-    #pattern = director.get_test_pattern()
-    #routine = director.get_test_routine()
-    #procedure = director.get_active_procedure()
+    pattern = director.get_test_pattern()
+    routine = director.get_test_routine()
+    procedure = director.get_active_procedure()
 
     settings.file_write()
     #pattern.gpio_write()
-    #pattern.file_write()
+    pattern.file_write()
     #routine.gpio_write()
-    #routine.file_write()
+    routine.file_write()
     #procedure.gpio_write()
-    #procedure.file_write()
+    procedure.file_write()
 
     #print(pattern.is_expired(1))
     #print(routine.is_expired(1))

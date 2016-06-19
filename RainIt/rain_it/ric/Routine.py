@@ -7,8 +7,5 @@ class Routine(RainItComposite):
         super().__init__()
         self.routine_id = routine_id
 
-    def get_pickle_name(self):
-        return '{}'.format(self.routine_id)
-
     def get_pickle_form(self):
         return self

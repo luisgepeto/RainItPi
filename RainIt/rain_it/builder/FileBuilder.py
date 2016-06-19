@@ -19,13 +19,20 @@ class FileBuilder(RainItBuilder):
 
     def get_unpickled_object(self, component_type):
         pickle_file = self.get_pickle_file(component_type)
-        unpickled_object = pickle.load(pickle_file)
-        pickle_file.close()
+        unpickled_object = None
+        if not pickle_file == "":
+            unpickled_object = pickle.load(pickle_file)
+            pickle_file.close()
         return unpickled_object
 
     def get_pickle_file(self, component_type):
         pickle_path = PicklePathGenerator().get_full_pickle_path(component_type)
-        return open(pickle_path, 'rb')
+        file_content = ""
+        try:
+            file_content = open(pickle_path, 'rb')
+        except IOError:
+            pass
+        return file_content
 
     def build_pattern(self, pattern_id=0, conversion_parameter=None, matrix=None, path=None, pattern_factory=None,
                       component_type=None):

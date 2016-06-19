@@ -6,9 +6,5 @@ class IPickleable(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def get_pickle_name(self):
-        pass
-
-    @abstractmethod
     def get_pickle_form(self):
         pass

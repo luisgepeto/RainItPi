@@ -4,6 +4,7 @@
       <w>expirable</w>
       <w>gpio</w>
       <w>pickleable</w>
+      <w>unpickled</w>
     </words>
   </dictionary>
 </component>
