@@ -1,9 +1,7 @@
-import requests
 import json
-
+import requests
+from requests.exceptions import RequestException
 from adapter.AuthenticationResult import AuthenticationResult
-from adapter.Exceptions import GetRequestException
-from adapter.Exceptions import PostRequestException
 from adapter.HardwareAdapter import HardwareAdapter
 
 
@@ -15,7 +13,10 @@ class ServiceAdapter(object):
 
     def authenticate(self):
         serial = HardwareAdapter().get_serial()
-        json_result = self.post("account/login/" + serial, needs_authentication=False);
+        try:
+            json_result = self.post("account/login/" + serial, needs_authentication=False);
+        except RequestException:
+            return
         self.authentication_result = AuthenticationResult(json_result["LoginStatus"], json_result["SecurityToken"],
                                                           json_result["TokenExpirationUtcTime"])
 
@@ -25,9 +26,19 @@ class ServiceAdapter(object):
                 self.authenticate()
 
     def get_authorization_header(self):
-        header_value = "Bearer " + self.authentication_result.security_token
+        header_value = "Bearer"
+        if self.authentication_result is not None:
+            header_value = header_value + self.authentication_result.security_token
         authorization_header = {"Authorization": header_value}
         return authorization_header
+
+    def try_get(self, api_url, needs_authentication = True):
+        result = None
+        try:
+            result = self.get(api_url, needs_authentication)
+        except RequestException:
+            pass
+        return result
 
     def get(self, api_url, needs_authentication = True):
         self.authenticate_if(needs_authentication)
@@ -39,7 +50,15 @@ class ServiceAdapter(object):
             json_result = r.json()
             return json_result
         else:
-            raise GetRequestException("An exception occurred when making the get request for " + api_url)
+            raise RequestException("An exception occurred when making the get request for " + api_url)
+
+    def try_post(self, api_url, data="", needs_authentication = True):
+        result = None
+        try:
+            result = self.post(api_url, data, needs_authentication)
+        except RequestException:
+            pass
+        return result
 
     def post(self, api_url, data = "", needs_authentication = True):
         self.authenticate_if(needs_authentication)
@@ -55,7 +74,7 @@ class ServiceAdapter(object):
             json_result = r.json()
             return json_result
         else:
-            raise PostRequestException("An exception occurred when making the post request for " + api_url)
+            raise RequestException("An exception occurred when making the post request for " + api_url)
 
     def is_json(self, json_data):
         try:
