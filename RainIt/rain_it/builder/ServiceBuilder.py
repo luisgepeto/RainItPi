@@ -5,7 +5,7 @@ import json
 
 class ServiceBuilder(RainItBuilder):
 
-    base_url = "http://localhost:110/api/"
+    base_url = "http://localhost:100/api/"
 
     def __init__(self):
         self.service_adapter = ServiceAdapter(self.base_url)

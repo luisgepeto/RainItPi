@@ -26,7 +26,7 @@ class ServiceAdapter(object):
                 self.authenticate()
 
     def get_authorization_header(self):
-        header_value = "Bearer"
+        header_value = "Bearer "
         if self.authentication_result is not None:
             header_value = header_value + self.authentication_result.security_token
         authorization_header = {"Authorization": header_value}
