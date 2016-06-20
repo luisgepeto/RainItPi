@@ -21,7 +21,7 @@ class RainItComponentManager(object):
                 and not rain_it_component.is_expired(device_settings.minutes_refresh_rate) \
                 and not current_time - start_time > device_settings.minutes_refresh_rate:
             current_time = time.time()
-            rain_it_component.gpio_write()
+            rain_it_component.gpio_write(device_settings)
 
     def file_write_component(self, rain_it_component):
         if rain_it_component is not None:

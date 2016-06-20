@@ -6,26 +6,28 @@ import threading
 
 
 class GPIOWriterFree(GPIOWriterState):
-    def write(self, writer, rain_it_component):
-        self.write_async(writer, rain_it_component)
+    def write(self, writer, rain_it_component, device_settings):
+        self.write_async(writer, rain_it_component, device_settings)
         busy_state = writer.state_factory.create_busy_state()
         self.change_state(writer, busy_state)
 
-    def force_write(self, writer, rain_it_component):
-        self.write(writer, rain_it_component)
+    def force_write(self, writer, rain_it_component, device_settings):
+        self.write(writer, rain_it_component, device_settings)
 
-    def write_async(self, writer, rain_it_component):
+    def write_async(self, writer, rain_it_component, device_settings):
         event = threading.Event()
         self.set_write_event(event)
         queue = Queue(maxsize=0)
-        queue.put(rain_it_component)
+        queue.put({"rain_it_component": rain_it_component, "device_settings": device_settings})
         self.set_write_queue(queue)
         asyncio.get_event_loop().run_in_executor(None, self.async_gpio_write, writer, queue, event)
 
     def async_gpio_write(self, writer, queue, event):
         while not queue.empty():
-            rain_it_component = queue.get()
-            self.blocking_function(rain_it_component, event)
+            queue_element = queue.get()
+            pattern = queue_element["rain_it_component"]
+            device_settings = queue_element["device_settings"]
+            self.blocking_function(pattern, device_settings, event)
         if not event.is_set():
             self.async_gpio_write_callback(writer)
 
@@ -35,7 +37,7 @@ class GPIOWriterFree(GPIOWriterState):
         free_state = writer.state_factory.create_free_state()
         self.change_state(writer, free_state)
 
-    def blocking_function(self, pattern, event):
+    def blocking_function(self, pattern, device_settings, event):
         print('writing gpio')
         if pattern.matrix is not None:
             for matrix_line in pattern.matrix:
@@ -47,6 +49,7 @@ class GPIOWriterFree(GPIOWriterState):
                     elif element == False:
                         element = 0
                     print(element, end="", flush=True)
+                    time.sleep(device_settings.millisecond_clock_delay/1000)
                 print()
-                time.sleep(0.001)
+                time.sleep(device_settings.millisecond_latch_delay/1000)
         print('done writing gpio')

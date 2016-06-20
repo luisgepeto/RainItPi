@@ -16,17 +16,17 @@ class RainItComposite(RainItComponent):
             rain_it_component.add_writer(writer)
         self.components.append(rain_it_component)
 
-    def gpio_write(self):
+    def gpio_write(self, device_settings):
         for component in self.components:
-            component.gpio_write()
+            component.gpio_write(device_settings)
 
-    def gpio_force_write(self):
+    def gpio_force_write(self, device_settings):
         component_iterator = iter(self.components)
         first_component = next(component_iterator)
-        first_component.gpio_force_write()
+        first_component.gpio_force_write(device_settings)
         while True:
             try:
                 component = next(component_iterator)
-                component.gpio_write()
+                component.gpio_write(device_settings)
             except StopIteration:
                 break

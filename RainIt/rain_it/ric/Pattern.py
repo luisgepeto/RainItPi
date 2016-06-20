@@ -15,15 +15,15 @@ class Pattern(RainItComponent):
         if file_writer is not None:
             file_writer.write(self)
 
-    def gpio_write(self):
+    def gpio_write(self, device_settings):
         gpio_writer = self.get_writer_of_type(GPIOWriter)
         if gpio_writer is not None:
-            gpio_writer.write(self)
+            gpio_writer.write(self, device_settings)
 
-    def gpio_force_write(self):
+    def gpio_force_write(self, device_settings):
         gpio_writer = self.get_writer_of_type(GPIOWriter)
         if gpio_writer is not None:
-            gpio_writer.force_write(self)
+            gpio_writer.force_write(self, device_settings)
 
     def get_pickle_form(self):
         return self
