@@ -12,7 +12,5 @@ class WriterFactory(object):
         return GPIOWriter(GPIOWriterStateFactory())
 
     def create_all_writers(self):
-        all_writers = []
-        all_writers.append(self.create_file_writer())
-        all_writers.append(self.create_gpio_writer())
+        all_writers = [self.create_file_writer(), self.create_gpio_writer()]
         return all_writers
