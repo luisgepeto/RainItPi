@@ -11,4 +11,6 @@ class IExpirable(metaclass=ABCMeta):
 
     def is_expired(self, expire_minutes):
         utc_now = datetime.datetime.utcnow()
-        return self.time_stamp is not None and self.time_stamp + datetime.timedelta(minutes=expire_minutes) < utc_now
+        if self.time_stamp is None:
+            return True
+        return self.time_stamp + datetime.timedelta(minutes=expire_minutes) < utc_now

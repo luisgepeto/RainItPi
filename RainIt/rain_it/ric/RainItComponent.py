@@ -9,6 +9,7 @@ from writer.FileWriter import FileWriter
 
 class RainItComponent(IExpirable, IPickleable):
     def __init__(self):
+        IExpirable.__init__(self)
         self.writers = []
         self.component_type = None
 
@@ -44,3 +45,7 @@ class RainItComponent(IExpirable, IPickleable):
         for writer in self.writers:
             if type(writer) is writer_type:
                 return writer
+
+    @abstractmethod
+    def __eq__(self, other):
+        pass

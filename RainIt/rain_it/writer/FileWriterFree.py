@@ -14,7 +14,7 @@ class FileWriterFree(FileWriterState):
         self.change_state(writer, busy_state)
 
     def write_async(self, writer, rain_it_component):
-        queue = Queue(maxsize=0)
+        queue = Queue(maxsize=10)
         queue.put(rain_it_component)
         self.set_write_queue(queue)
         asyncio.get_event_loop().run_in_executor(None, self.async_file_write, writer, queue)

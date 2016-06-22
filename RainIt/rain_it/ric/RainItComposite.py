@@ -30,3 +30,6 @@ class RainItComposite(RainItComponent):
                 component.gpio_write(device_settings)
             except StopIteration:
                 break
+
+    def __eq__(self, other):
+        return other is not None and self.components == other.components

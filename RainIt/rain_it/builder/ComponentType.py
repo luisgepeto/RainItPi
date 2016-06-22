@@ -7,6 +7,9 @@ class ComponentType(Enum):
     active_procedure = 3
     device_settings = 4
 
+    def get_name(self):
+        return self.name
+
     def get_pickle_name(self):
         return self.name
 

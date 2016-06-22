@@ -27,3 +27,8 @@ class Pattern(RainItComponent):
 
     def get_pickle_form(self):
         return self
+
+    def __eq__(self, other):
+        return other is not None \
+               and self.pattern_id == other.pattern_id \
+               and self.conversion_parameter == other.conversion_parameter

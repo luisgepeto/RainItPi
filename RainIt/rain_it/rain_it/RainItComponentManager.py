@@ -1,5 +1,6 @@
 import time
 
+from builder.ComponentType import ComponentType
 from builder.DemoBuilder import DemoBuilder
 from builder.FileBuilder import FileBuilder
 from builder.RainItDirector import RainItDirector
@@ -14,14 +15,34 @@ class RainItComponentManager(object):
         self.file_director = RainItDirector(FileBuilder(), all_writers)
         self.demo_director = RainItDirector(DemoBuilder(), all_writers)
 
-    def gpio_continous_write_component(self, rain_it_component, device_settings):
-        start_time = time.time()
-        current_time = start_time
-        while rain_it_component is not None \
-                and not rain_it_component.is_expired(device_settings.minutes_refresh_rate) \
-                and not current_time - start_time > device_settings.minutes_refresh_rate:
-            current_time = time.time()
-            rain_it_component.gpio_write(device_settings)
+    def gpio_write_test(self, test_pattern, test_routine, device_settings, is_new):
+        force_pattern = is_new[ComponentType.test_pattern.get_name()]
+        force_routine = is_new[ComponentType.test_routine.get_name()]
+        if self.is_valid(test_pattern, device_settings.minutes_refresh_rate) \
+                and self.is_valid(test_routine, device_settings.minutes_refresh_rate):
+            if test_pattern.time_stamp >= test_routine.time_stamp:
+                if force_pattern:
+                    test_pattern.gpio_force_write(device_settings)
+                else:
+                    test_pattern.gpio_write(device_settings)
+            else:
+                if force_routine:
+                    test_routine.gpio_force_write(device_settings)
+                else:
+                    test_routine.gpio_write(device_settings)
+        elif self.is_valid(test_pattern, device_settings.minutes_refresh_rate):
+            if force_pattern:
+                test_pattern.gpio_force_write(device_settings)
+            else:
+                test_pattern.gpio_write(device_settings)
+        elif self.is_valid(test_routine, device_settings.minutes_refresh_rate):
+            if force_routine:
+                test_routine.gpio_force_write(device_settings)
+            else:
+                test_routine.gpio_write(device_settings)
+
+    def is_valid(self, rain_it_component, expire_minutes):
+        return rain_it_component is not None and not rain_it_component.is_expired(expire_minutes)
 
     def file_write_component(self, rain_it_component):
         if rain_it_component is not None:
@@ -52,3 +73,15 @@ class RainItComponentManager(object):
         if active_procedure is None:
             active_procedure = self.file_director.get_active_procedure()
         return active_procedure
+
+    def get_component(self, component_type):
+        if component_type is ComponentType.test_pattern:
+            return self.get_test_pattern()
+        elif component_type is ComponentType.test_routine:
+            return self.get_test_routine()
+        elif component_type is ComponentType.active_procedure:
+            return self.get_active_procedure()
+        elif component_type is ComponentType.device_settings:
+            return self.get_device_settings()
+        else:
+            pass

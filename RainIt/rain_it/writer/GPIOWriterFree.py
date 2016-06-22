@@ -17,7 +17,7 @@ class GPIOWriterFree(GPIOWriterState):
     def write_async(self, writer, rain_it_component, device_settings):
         event = threading.Event()
         self.set_write_event(event)
-        queue = Queue(maxsize=0)
+        queue = Queue(maxsize=10)
         queue.put({"rain_it_component": rain_it_component, "device_settings": device_settings})
         self.set_write_queue(queue)
         asyncio.get_event_loop().run_in_executor(None, self.async_gpio_write, writer, queue, event)
@@ -38,7 +38,8 @@ class GPIOWriterFree(GPIOWriterState):
         self.change_state(writer, free_state)
 
     def blocking_function(self, pattern, device_settings, event):
-        print('writing gpio')
+        clock_delay = device_settings.millisecond_clock_delay / 1000
+        latch_delay = device_settings.millisecond_latch_delay / 1000
         if pattern.matrix is not None:
             for matrix_line in pattern.matrix:
                 for element in matrix_line:
@@ -49,7 +50,6 @@ class GPIOWriterFree(GPIOWriterState):
                     elif element == False:
                         element = 0
                     print(element, end="", flush=True)
-                    time.sleep(device_settings.millisecond_clock_delay/1000)
+                    time.sleep(clock_delay)
                 print()
-                time.sleep(device_settings.millisecond_latch_delay/1000)
-        print('done writing gpio')
+                time.sleep(latch_delay)
