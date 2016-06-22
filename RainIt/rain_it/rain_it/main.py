@@ -7,5 +7,6 @@ from rain_it.RainItCommand import RainItCommand
 if __name__ == '__main__':
     command = RainItCommand()
     while True:
-        command.execute()
+        command.update_components()
+        command.print_components()
 
