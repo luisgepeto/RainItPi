@@ -1,3 +1,4 @@
+from configparser import ConfigParser
 from builder.RainItBuilder import RainItBuilder
 from datetime import datetime
 
@@ -6,8 +7,14 @@ class DemoBuilder(RainItBuilder):
     initial_pattern_id = 0
     initial_routine_id = 0
 
+    def __init__(self):
+        self.config = ConfigParser()
+        self.config.read("..\\rainit.config")
+
     def get_device_settings(self):
-        return {"MinutesRefreshRate": 5, "MillisecondLatchDelay": 2, "MillisecondClockDelay": 1}
+        return {"MinutesRefreshRate": self.config.getint("DeviceSettings", "MinutesRefreshRate"),
+                "MillisecondLatchDelay": self.config.getint("DeviceSettings", "MillisecondLatchDelay"),
+                "MillisecondClockDelay": self.config.getint("DeviceSettings", "MillisecondClockDelay")}
 
     def get_test_pattern(self):
         DemoBuilder.initial_pattern_id += 1

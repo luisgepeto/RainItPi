@@ -1,3 +1,4 @@
+from configparser import ConfigParser
 from builder.RainItBuilder import RainItBuilder
 from adapter.ServiceAdapter import ServiceAdapter
 import json
@@ -5,10 +6,12 @@ import json
 
 class ServiceBuilder(RainItBuilder):
 
-    base_url = "http://localhost:100/api/"
-
     def __init__(self):
-        self.service_adapter = ServiceAdapter(self.base_url)
+        config = ConfigParser()
+        config.read("..\\rainit.config")
+        base_url = config.get("Services", "BaseUrl")
+        self.service_adapter = ServiceAdapter(base_url)
+
 
     def get_device_settings(self):
         return self.service_adapter.try_get("device/settings")
