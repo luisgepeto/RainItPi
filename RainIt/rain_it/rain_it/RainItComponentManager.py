@@ -1,5 +1,3 @@
-import time
-
 from builder.ComponentType import ComponentType
 from builder.DemoBuilder import DemoBuilder
 from builder.FileBuilder import FileBuilder

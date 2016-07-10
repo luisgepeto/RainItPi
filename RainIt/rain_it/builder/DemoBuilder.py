@@ -1,3 +1,4 @@
+import os
 from configparser import ConfigParser
 from builder.RainItBuilder import RainItBuilder
 from datetime import datetime
@@ -9,7 +10,8 @@ class DemoBuilder(RainItBuilder):
 
     def __init__(self):
         self.config = ConfigParser()
-        self.config.read("..\\rainit.config")
+        config_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', "rainit.config")
+        self.config.read(config_path)
 
     def get_device_settings(self):
         return {"MinutesRefreshRate": self.config.getint("DeviceSettings", "MinutesRefreshRate"),

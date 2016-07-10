@@ -1,5 +1,4 @@
 import time
-
 from builder.ComponentType import ComponentType
 from rain_it.RainItComponentManager import RainItComponentManager
 
@@ -9,7 +8,7 @@ class RainItCommand(object):
         self.manager = RainItComponentManager()
         self.all_components = []
         self.previous_time = time.time()
-        self.is_new = {}
+        self.new_dict = {}
 
     def update_components(self):
         current_time = time.time()
@@ -21,11 +20,13 @@ class RainItCommand(object):
             self.previous_time = current_time
 
     def print_components(self):
+        refresh_rate = self.retrieve_component(ComponentType.device_settings).minutes_refresh_rate
         test_pattern = self.retrieve_component(ComponentType.test_pattern)
         test_routine = self.retrieve_component(ComponentType.test_routine)
-        refresh_rate = self.retrieve_component(ComponentType.device_settings).minutes_refresh_rate
-        if self.manager.is_valid(test_pattern, refresh_rate) or self.manager.is_valid(test_routine, refresh_rate):
-            if self.manager.is_valid(test_pattern, refresh_rate):
+        is_test_pattern_valid = self.manager.is_valid(test_pattern, refresh_rate)
+        is_test_routine_valid = self.manager.is_valid(test_routine, refresh_rate)
+        if is_test_pattern_valid or is_test_routine_valid:
+            if is_test_pattern_valid:
                 self.gpio_write(ComponentType.test_pattern)
             else:
                 self.gpio_write(ComponentType.test_routine)
@@ -36,7 +37,7 @@ class RainItCommand(object):
         device_settings = self.retrieve_component(ComponentType.device_settings)
         current_component = self.retrieve_component(component_type)
         if current_component is not None:
-            if self.get_new(component_type):
+            if self.is_new(component_type):
                 current_component.gpio_force_write(device_settings)
                 self.set_new(component_type, False)
             else:
@@ -63,18 +64,16 @@ class RainItCommand(object):
 
     def append_component(self, new_component):
         if new_component is not None:
-            is_inserted = False
             for index, component in enumerate(self.all_components):
                 if component.component_type == new_component.component_type:
-                    is_inserted = True
                     self.all_components[index] = new_component
-            if not is_inserted:
-                self.all_components.append(new_component)
+                    return
+            self.all_components.append(new_component)
 
     def set_new(self, component_type, is_new):
-        self.is_new[component_type.get_name()] = is_new
+        self.new_dict[component_type.get_name()] = is_new
 
-    def get_new(self, component_type):
-        if component_type.get_name() in self.is_new:
-            return self.is_new[component_type.get_name()]
+    def is_new(self, component_type):
+        if component_type.get_name() in self.new_dict:
+            return self.new_dict[component_type.get_name()]
         return False

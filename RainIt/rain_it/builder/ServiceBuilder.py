@@ -1,3 +1,4 @@
+import os
 from configparser import ConfigParser
 from builder.RainItBuilder import RainItBuilder
 from adapter.ServiceAdapter import ServiceAdapter
@@ -8,7 +9,8 @@ class ServiceBuilder(RainItBuilder):
 
     def __init__(self):
         config = ConfigParser()
-        config.read("..\\rainit.config")
+        config_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', "rainit.config")
+        config.read(config_path)
         base_url = config.get("Services", "BaseUrl")
         self.service_adapter = ServiceAdapter(base_url)
 

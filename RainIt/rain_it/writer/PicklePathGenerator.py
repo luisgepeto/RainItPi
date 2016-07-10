@@ -1,12 +1,12 @@
-from configparser import ConfigParser
-from builder.ComponentType import ComponentType
 import os
+from configparser import ConfigParser
 
 
 class PicklePathGenerator(object):
     def __init__(self):
         self.config = ConfigParser()
-        self.config.read("..\\rainit.config")
+        config_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', "rainit.config")
+        self.config.read(config_path)
         self.base_directory = self.config.get("Pickle", "BaseDirectory")
 
     def get_full_pickle_path(self, component_type):
