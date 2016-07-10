@@ -12,5 +12,5 @@ class HardwareAdapter(object):
                     cpu_serial = line[10:26]
             f.close()
         except:
-            cpu_serial = "0123456789ABCDEF"
+            cpu_serial = "SERIALERROR00000"
         return cpu_serial
