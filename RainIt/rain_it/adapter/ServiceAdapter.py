@@ -1,4 +1,7 @@
 import json
+import os
+from configparser import ConfigParser
+
 import requests
 from requests.exceptions import RequestException
 from adapter.AuthenticationResult import AuthenticationResult
@@ -10,6 +13,10 @@ class ServiceAdapter(object):
     def __init__(self, base_uri):
         self.base_uri = base_uri
         self.authentication_result = None
+        config = ConfigParser()
+        config_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', "rainit.config")
+        config.read(config_path)
+        self.seconds_timeout = config.get("Services", "SecondsTimeout")
 
     def authenticate(self):
         serial = HardwareAdapter().get_serial()
@@ -45,7 +52,7 @@ class ServiceAdapter(object):
         authorization_header = None
         if needs_authentication:
             authorization_header = self.get_authorization_header()
-        r = requests.get(self.base_uri + api_url, headers=authorization_header)
+        r = requests.get(self.base_uri + api_url, headers=authorization_header, timeout=self.seconds_timeout)
         if r.status_code == 200:
             json_result = r.json()
             return json_result
@@ -69,7 +76,7 @@ class ServiceAdapter(object):
             if authorization_header is None:
                 authorization_header = {}
             authorization_header["content-type"] = "application/json"
-        r = requests.post(self.base_uri + api_url, headers=authorization_header, data=data)
+        r = requests.post(self.base_uri + api_url, headers=authorization_header, data=data, timeout=self.seconds_timeout)
         if r.status_code == 200:
             json_result = r.json()
             return json_result
