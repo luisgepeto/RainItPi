@@ -5,7 +5,7 @@ from configparser import ConfigParser
 import requests
 from requests.exceptions import RequestException
 from adapter.AuthenticationResult import AuthenticationResult
-from adapter.HardwareAdapter import HardwareAdapter
+from adapter.HardwareWrapper import HardwareWrapper
 
 
 class ServiceAdapter(object):
@@ -16,10 +16,10 @@ class ServiceAdapter(object):
         config = ConfigParser()
         config_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', "rainit.config")
         config.read(config_path)
-        self.seconds_timeout = config.get("Services", "SecondsTimeout")
+        self.seconds_timeout = config.getint("Services", "SecondsTimeout")
 
     def authenticate(self):
-        serial = HardwareAdapter().get_serial()
+        serial = HardwareWrapper().get_serial()
         try:
             json_result = self.post("account/login/" + serial, needs_authentication=False);
         except RequestException:

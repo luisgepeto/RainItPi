@@ -34,11 +34,11 @@ class RainItComponent(IExpirable, IPickleable):
             file_writer.write(self)
 
     @abstractmethod
-    def gpio_write(self, device_settings):
+    def gpio_write(self, device_settings, hardware_wrapper):
         pass
 
     @abstractmethod
-    def gpio_force_write(self, device_settings):
+    def gpio_force_write(self, device_settings, hardware_wrapper):
         pass
 
     def get_writer_of_type(self, writer_type):

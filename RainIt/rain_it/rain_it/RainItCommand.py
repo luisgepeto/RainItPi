@@ -1,4 +1,6 @@
 import time
+
+from adapter.HardwareWrapper import HardwareWrapper
 from builder.ComponentType import ComponentType
 from rain_it.RainItComponentManager import RainItComponentManager
 
@@ -9,6 +11,8 @@ class RainItCommand(object):
         self.all_components = []
         self.previous_time = time.time()
         self.new_dict = {}
+        self.hardware_wrapper = HardwareWrapper()
+        self.hardware_wrapper.initialize_gpio()
 
     def update_components(self):
         current_time = time.time()
@@ -38,10 +42,10 @@ class RainItCommand(object):
         current_component = self.retrieve_component(component_type)
         if current_component is not None:
             if self.is_new(component_type):
-                current_component.gpio_force_write(device_settings)
+                current_component.gpio_force_write(device_settings, self.hardware_wrapper)
                 self.set_new(component_type, False)
             else:
-                current_component.gpio_write(device_settings)
+                current_component.gpio_write(device_settings, self.hardware_wrapper)
 
     def update_component(self, component_type):
         current_component = self.retrieve_component(component_type)

@@ -12,10 +12,10 @@ class DeviceSettings(RainItComponent):
     def get_pickle_form(self):
         return self
 
-    def gpio_force_write(self, device_settings):
+    def gpio_force_write(self, device_settings, hardware_wrapper):
         pass
 
-    def gpio_write(self, device_settings):
+    def gpio_write(self, device_settings, hardware_wrapper):
         pass
 
     def __eq__(self, other):
