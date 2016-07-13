@@ -12,7 +12,9 @@ class RainItCommand(object):
         self.previous_time = time.time()
         self.new_dict = {}
         self.hardware_wrapper = HardwareWrapper()
-        self.hardware_wrapper.initialize_gpio()
+
+    def init(self):
+        self.hardware_wrapper.gpio_initialize()
 
     def update_components(self):
         current_time = time.time()
@@ -81,3 +83,6 @@ class RainItCommand(object):
         if component_type.get_name() in self.new_dict:
             return self.new_dict[component_type.get_name()]
         return False
+
+    def exit(self):
+        self.hardware_wrapper.gpio_cleanup()

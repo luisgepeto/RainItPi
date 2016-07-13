@@ -6,7 +6,13 @@ from rain_it.RainItCommand import RainItCommand
 
 if __name__ == '__main__':
     command = RainItCommand()
-    while True:
-        command.update_components()
-        command.print_components()
+    command.init()
+    try:
+        while True:
+            command.update_components()
+            command.print_components()
+    except KeyboardInterrupt:
+        print("keyboard interrupt")
+    finally:
+        command.exit()
 

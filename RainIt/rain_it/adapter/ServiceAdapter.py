@@ -19,7 +19,7 @@ class ServiceAdapter(object):
         self.seconds_timeout = config.getint("Services", "SecondsTimeout")
 
     def authenticate(self):
-        serial = HardwareWrapper().get_serial()
+        serial = HardwareWrapper().get_serial_number()
         try:
             json_result = self.post("account/login/" + serial, needs_authentication=False);
         except RequestException:

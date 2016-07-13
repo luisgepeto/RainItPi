@@ -21,7 +21,7 @@ class HardwareWrapper(object):
         self.latch_transition = config.getint("Hardware", "LatchTransition")
         self.default_serial = config.get("Hardware", "DefaultSerial")
 
-    def initialize_gpio(self):
+    def gpio_initialize(self):
         try:
             GPIO.setup(self.clock_channel, self.gpio_out)
             GPIO.setup(self.latch_channel, self.gpio_out)
@@ -46,7 +46,7 @@ class HardwareWrapper(object):
             pass
         print()
 
-    def get_serial(self):
+    def get_serial_number(self):
         cpu_serial = "0000000000000000"
         try:
             f = open('/proc/cpuinfo', 'r')
@@ -57,3 +57,10 @@ class HardwareWrapper(object):
         except:
             cpu_serial = self.default_serial
         return cpu_serial
+
+    def gpio_cleanup(self):
+        try:
+            GPIO.cleanup()
+        except:
+            pass
+
