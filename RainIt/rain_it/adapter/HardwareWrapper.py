@@ -23,6 +23,7 @@ class HardwareWrapper(object):
 
     def gpio_initialize(self):
         try:
+            GPIO.setmode(self.gpio_mode)
             GPIO.setup(self.clock_channel, self.gpio_out)
             GPIO.setup(self.latch_channel, self.gpio_out)
             GPIO.setup(self.serial_channel, self.gpio_out)
