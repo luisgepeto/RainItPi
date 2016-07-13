@@ -12,7 +12,7 @@ if __name__ == '__main__':
             command.update_components()
             command.print_components()
     except KeyboardInterrupt:
-        print("keyboard interrupt")
+        pass
     finally:
         command.exit()
 
