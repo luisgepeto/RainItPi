@@ -11,7 +11,7 @@ if __name__ == '__main__':
         while True:
             command.update_components()
             command.print_components()
-    except:
+    except KeyboardInterrupt:
         print("keyboard interrupt")
     finally:
         command.exit()

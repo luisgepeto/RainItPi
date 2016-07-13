@@ -13,6 +13,9 @@ class DemoBuilder(RainItBuilder):
         config_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', "rainit.config")
         self.config.read(config_path)
 
+    def get_null_component(self):
+        return self.get_matrix(0, None)
+
     def get_device_settings(self):
         return {"MinutesRefreshRate": self.config.getint("DeviceSettings", "MinutesRefreshRate"),
                 "MillisecondLatchDelay": self.config.getint("DeviceSettings", "MillisecondLatchDelay"),
@@ -40,7 +43,7 @@ class DemoBuilder(RainItBuilder):
         sample_matrix = []
         for i in range(10):
             current_line = []
-            for j in range(10):
+            for j in range(10000):
                 current_line.append(pattern_id)
             sample_matrix.append(current_line)
         return sample_matrix

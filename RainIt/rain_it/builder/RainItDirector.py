@@ -9,6 +9,13 @@ class RainItDirector(object):
         self.pattern_factory = PatternFactory()
         self.writers = writers
 
+    def get_null_component(self):
+        pattern_as_matrix = self.rain_it_builder.read_data_source(None)
+        pattern_result = self.rain_it_builder.build_pattern(matrix=pattern_as_matrix,
+                                                            pattern_factory=self.pattern_factory,
+                                                            component_type=ComponentType.test_pattern)
+        return self.add_writers(pattern_result)
+
     def get_test_pattern(self):
         result = self.rain_it_builder.read_data_source(ComponentType.test_pattern)
         if result is None:

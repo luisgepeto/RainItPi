@@ -85,4 +85,7 @@ class RainItCommand(object):
         return False
 
     def exit(self):
+        device_settings = self.retrieve_component(ComponentType.device_settings)
+        null_component = self.manager.get_component(None)
+        null_component.gpio_force_write(device_settings, self.hardware_wrapper)
         self.hardware_wrapper.gpio_cleanup()

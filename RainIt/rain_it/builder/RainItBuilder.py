@@ -18,7 +18,10 @@ class RainItBuilder(metaclass=ABCMeta):
         elif component_type is ComponentType.device_settings:
             return self.get_device_settings()
         else:
-            pass
+            return self.get_null_component()
+
+    def get_null_component(self):
+        pass
 
     @abstractmethod
     def get_device_settings(self):

@@ -46,6 +46,9 @@ class RainItComponentManager(object):
             active_procedure = self.file_director.get_active_procedure()
         return active_procedure
 
+    def get_null_component(self):
+        return self.demo_director.get_null_component()
+
     def get_component(self, component_type):
         if component_type is ComponentType.test_pattern:
             return self.get_test_pattern()
@@ -56,4 +59,4 @@ class RainItComponentManager(object):
         elif component_type is ComponentType.device_settings:
             return self.get_device_settings()
         else:
-            pass
+            return self.get_null_component()
