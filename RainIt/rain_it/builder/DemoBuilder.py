@@ -41,9 +41,10 @@ class DemoBuilder(RainItBuilder):
 
     def get_matrix(self, pattern_id, conversion_parameter):
         sample_matrix = []
-        for i in range(10):
+        for i in range(1):
             current_line = []
-            for j in range(10000):
+            #TODO read this value from device settings or config file
+            for j in range(1000):
                 current_line.append(pattern_id)
             sample_matrix.append(current_line)
         return sample_matrix
