@@ -6,9 +6,9 @@ from rain_it.RainItCommand import RainItCommand
 
 if __name__ == '__main__':
     command = RainItCommand()
-    command.init()
+    command.initialize()
     try:
-        while True:
+        while command.can_continue():
             command.update_components()
             command.print_components()
     except KeyboardInterrupt:

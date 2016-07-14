@@ -1,6 +1,7 @@
 import time
 
 from adapter.HardwareWrapper import HardwareWrapper
+from adapter.MessagePipe import MessagePipe
 from builder.ComponentType import ComponentType
 from rain_it.RainItComponentManager import RainItComponentManager
 
@@ -12,9 +13,14 @@ class RainItCommand(object):
         self.previous_time = time.time()
         self.new_dict = {}
         self.hardware_wrapper = HardwareWrapper()
+        self.message_pipe = MessagePipe()
 
-    def init(self):
+    def initialize(self):
         self.hardware_wrapper.gpio_initialize()
+        self.message_pipe.pipe_initialize()
+
+    def can_continue(self):
+        return not self.message_pipe.read()
 
     def update_components(self):
         current_time = time.time()
