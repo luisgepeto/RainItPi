@@ -13,13 +13,6 @@ class RainItComponentManager(object):
         self.file_director = RainItDirector(FileBuilder(), all_writers)
         self.demo_director = RainItDirector(DemoBuilder(), all_writers)
 
-    def is_valid(self, rain_it_component, expire_minutes):
-        return rain_it_component is not None and not rain_it_component.is_expired(expire_minutes)
-
-    def file_write_component(self, rain_it_component):
-        if rain_it_component is not None:
-            rain_it_component.file_write()
-
     def get_device_settings(self):
         device_settings = self.service_director.get_device_settings()
         if device_settings is None:

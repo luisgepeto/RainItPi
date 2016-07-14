@@ -14,3 +14,8 @@ class IExpirable(metaclass=ABCMeta):
         if self.time_stamp is None:
             return True
         return self.time_stamp + datetime.timedelta(minutes=expire_minutes) < utc_now
+
+    def is_most_recent(self, other_expirable):
+        if other_expirable is None or other_expirable.time_stamp is None:
+            return True
+        return self.time_stamp > other_expirable.time_stamp
