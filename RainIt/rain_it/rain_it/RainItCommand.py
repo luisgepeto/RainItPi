@@ -9,7 +9,7 @@ from rain_it.RainItComponentManager import RainItComponentManager
 class RainItCommand(object):
     def __init__(self):
         self.manager = RainItComponentManager()
-        self.all_components = []
+        self.all_components = {}
         self.previous_time = time.time()
         self.new_dict = {}
         self.hardware_wrapper = HardwareWrapper()
@@ -41,15 +41,11 @@ class RainItCommand(object):
         if not new_component == current_component:
             if new_component is not None:
                 new_component.file_write()
-                self.append_component(new_component)
+            self.append_component(new_component, component_type)
             self.set_new(component_type, True)
 
-    def append_component(self, new_component):
-        for index, component in enumerate(self.all_components):
-            if component.component_type == new_component.component_type:
-                self.all_components[index] = new_component
-                return
-        self.all_components.append(new_component)
+    def append_component(self, new_component, component_type):
+        self.all_components[component_type.get_name()] = new_component
 
     def print_components(self):
         test_pattern = self.retrieve_component(ComponentType.test_pattern)
@@ -79,9 +75,9 @@ class RainItCommand(object):
         self.hardware_wrapper.gpio_cleanup()
 
     def retrieve_component(self, component_type):
-        for component in self.all_components:
-            if component.component_type is component_type:
-                return component
+        if component_type.get_name() in self.all_components:
+            return self.all_components[component_type.get_name()]
+        return None
 
     def set_new(self, component_type, is_new):
         self.new_dict[component_type.get_name()] = is_new

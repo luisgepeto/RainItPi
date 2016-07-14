@@ -56,6 +56,8 @@ class ServiceAdapter(object):
         if r.status_code == 200:
             json_result = r.json()
             return json_result
+        elif r.status_code == 404:
+            return None
         else:
             raise RequestException("An exception occurred when making the get request for " + api_url)
 
@@ -80,6 +82,8 @@ class ServiceAdapter(object):
         if r.status_code == 200:
             json_result = r.json()
             return json_result
+        elif r.status_code == 404:
+            return None
         else:
             raise RequestException("An exception occurred when making the post request for " + api_url)
 
