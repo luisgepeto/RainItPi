@@ -44,9 +44,6 @@ class RainItCommand(object):
             self.append_component(new_component, component_type)
             self.set_new(component_type, True)
 
-    def append_component(self, new_component, component_type):
-        self.all_components[component_type.get_name()] = new_component
-
     def print_components(self):
         test_pattern = self.retrieve_component(ComponentType.test_pattern)
         test_routine = self.retrieve_component(ComponentType.test_routine)
@@ -56,13 +53,17 @@ class RainItCommand(object):
             elif test_routine is not None:
                 self.gpio_write(ComponentType.test_routine)
         else:
-            self.gpio_write(ComponentType.active_procedure)
+            is_null_test_new = self.is_new(ComponentType.test_pattern) or self.is_new(ComponentType.test_routine)
+            if is_null_test_new:
+                self.set_new(ComponentType.test_pattern, False)
+                self.set_new(ComponentType.test_routine, False)
+            self.gpio_write(ComponentType.active_procedure, force_write=is_null_test_new)
 
-    def gpio_write(self, component_type):
+    def gpio_write(self, component_type, force_write = False):
         device_settings = self.retrieve_component(ComponentType.device_settings)
         current_component = self.retrieve_component(component_type)
         if current_component is not None:
-            if self.is_new(component_type):
+            if force_write or self.is_new(component_type):
                 current_component.gpio_force_write(device_settings, self.hardware_wrapper)
                 self.set_new(component_type, False)
             else:
@@ -73,6 +74,9 @@ class RainItCommand(object):
         null_component = self.manager.get_component(None)
         null_component.gpio_force_write(device_settings, self.hardware_wrapper)
         self.hardware_wrapper.gpio_cleanup()
+
+    def append_component(self, new_component, component_type):
+        self.all_components[component_type.get_name()] = new_component
 
     def retrieve_component(self, component_type):
         if component_type.get_name() in self.all_components:

@@ -1,6 +1,7 @@
 from ric.RainItComponent import RainItComponent
 from writer.FileWriter import FileWriter
 from writer.GPIOWriter import GPIOWriter
+from interfaces.IExpirable import IExpirable
 
 
 class Pattern(RainItComponent):
@@ -29,6 +30,10 @@ class Pattern(RainItComponent):
         return self
 
     def __eq__(self, other):
-        return other is not None \
-               and self.pattern_id == other.pattern_id \
-               and self.conversion_parameter == other.conversion_parameter
+        pattern_equal = other is not None \
+            and self.pattern_id == other.pattern_id \
+            and self.conversion_parameter == other.conversion_parameter
+        if pattern_equal:
+            if isinstance(self, IExpirable) and isinstance(other, IExpirable):
+                return other is not None and self.time_stamp == other.time_stamp
+        return pattern_equal
