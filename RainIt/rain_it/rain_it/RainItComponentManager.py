@@ -16,34 +16,39 @@ class RainItComponentManager(object):
 
     def get_device_settings(self):
         try:
-            device_settings = self.service_director.get_device_settings()
+            return self.service_director.get_device_settings()
         except RequestException:
             try:
-                device_settings = self.file_director.get_device_settings()
-            except:
-                device_settings = self.demo_director.get_device_settings()
-        return device_settings
+                return self.file_director.get_device_settings()
+            except IOError:
+                return self.demo_director.get_device_settings()
 
     def get_test_pattern(self):
         try:
-            test_pattern = self.service_director.get_test_pattern()
+            return self.service_director.get_test_pattern()
         except RequestException:
-            test_pattern = self.file_director.get_test_pattern()
-        return test_pattern
+            try:
+                return self.file_director.get_test_pattern()
+            except IOError:
+                return None
 
     def get_test_routine(self):
         try:
-            test_routine = self.service_director.get_test_routine()
+            return self.service_director.get_test_routine()
         except RequestException:
-            test_routine = self.file_director.get_test_routine()
-        return test_routine
+            try:
+                return self.file_director.get_test_routine()
+            except IOError:
+                return None
 
     def get_active_procedure(self):
         try:
-            active_procedure = self.service_director.get_active_procedure()
+            return self.service_director.get_active_procedure()
         except RequestException:
-            active_procedure = self.file_director.get_active_procedure()
-        return active_procedure
+            try:
+                return self.file_director.get_active_procedure()
+            except IOError:
+                return None
 
     def get_null_component(self):
         return self.demo_director.get_null_component()

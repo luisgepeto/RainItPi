@@ -17,7 +17,7 @@ class MessagePipe(object):
             pipe_fd = os.open(self.pipe_path, os.O_RDONLY | os.O_NONBLOCK)
             self.pipe = os.fdopen(pipe_fd)
         except:
-            print("error creating pipe")
+            print("An error occurred creating PIPE")
 
     def read(self):
         if self.pipe is not None:

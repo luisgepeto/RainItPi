@@ -27,12 +27,7 @@ class FileBuilder(RainItBuilder):
 
     def get_pickle_file(self, component_type):
         pickle_path = PicklePathGenerator().get_full_pickle_path(component_type)
-        file_content = ""
-        try:
-            file_content = open(pickle_path, 'rb')
-        except IOError:
-            pass
-        return file_content
+        return open(pickle_path, 'rb')
 
     def build_pattern(self, pattern_id=0, conversion_parameter=None, matrix=None, path=None, pattern_factory=None,
                       component_type=None):
