@@ -73,16 +73,18 @@ class RainItCommand(object):
         current_component = self.retrieve_component(component_type)
         if current_component is not None:
             if force_write or self.is_new(component_type):
-                current_component.gpio_force_write(device_settings, self.hardware_wrapper)
+                self.clean_output()
                 self.set_new(component_type, False)
-            else:
-                current_component.gpio_write(device_settings, self.hardware_wrapper)
+            current_component.gpio_write(device_settings, self.hardware_wrapper)
 
     def exit(self):
+        self.clean_output()
+        self.hardware_wrapper.gpio_cleanup()
+
+    def clean_output(self):
         device_settings = self.retrieve_component(ComponentType.device_settings)
         null_component = self.manager.get_component(None)
         null_component.gpio_force_write(device_settings, self.hardware_wrapper)
-        self.hardware_wrapper.gpio_cleanup()
 
     def append_component(self, new_component, component_type):
         self.all_components[component_type.get_name()] = new_component
