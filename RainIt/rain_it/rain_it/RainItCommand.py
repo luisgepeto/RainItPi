@@ -47,7 +47,9 @@ class RainItCommand(object):
     def print_components(self):
         test_pattern = self.retrieve_component(ComponentType.test_pattern)
         test_routine = self.retrieve_component(ComponentType.test_routine)
-        if test_pattern is not None or test_routine is not None:
+        device_settings = self.retrieve_component(ComponentType.device_settings)
+        if (test_pattern is not None and not test_pattern.is_expired(device_settings.minutes_refresh_rate, True)) or\
+                (test_routine is not None and not test_routine.is_expired(device_settings.minutes_refresh_rate, True)):
             if test_pattern is not None and test_pattern.is_most_recent(test_routine):
                 self.gpio_write(ComponentType.test_pattern)
             elif test_routine is not None:

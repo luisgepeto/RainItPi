@@ -1,3 +1,5 @@
+import datetime
+
 from ric.PatternFactory import PatternFactory
 from builder.ComponentType import ComponentType
 from builder.FileBuilder import FileBuilder
@@ -28,6 +30,8 @@ class RainItDirector(object):
                                                             pattern_factory=self.pattern_factory,
                                                             component_type=ComponentType.test_pattern)
         sample_time_stamp = result["SampleTimeStamp"]
+        retrieved_time_stamp = datetime.datetime.utcnow()
+        pattern_result.set_retrieved_time_stamp(retrieved_time_stamp)
         if sample_time_stamp is not None:
             pattern_result.set_time_stamp(sample_time_stamp)
         return self.add_writers(pattern_result)
@@ -45,6 +49,8 @@ class RainItDirector(object):
         routine_result = self.get_routine_from_dict(routine_dict, ComponentType.test_routine)
         if routine_dict is not None:
             sample_time_stamp = routine_dict["SampleTimeStamp"]
+            retrieved_time_stamp = datetime.datetime.utcnow()
+            routine_result.set_retrieved_time_stamp(retrieved_time_stamp)
             if sample_time_stamp is not None:
                 routine_result.set_time_stamp(sample_time_stamp)
         return self.add_writers(routine_result)
