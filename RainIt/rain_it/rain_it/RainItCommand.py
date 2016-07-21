@@ -47,9 +47,7 @@ class RainItCommand(object):
     def print_components(self):
         test_pattern = self.retrieve_component(ComponentType.test_pattern)
         test_routine = self.retrieve_component(ComponentType.test_routine)
-        device_settings = self.retrieve_component(ComponentType.device_settings)
-        if (test_pattern is not None and not test_pattern.is_expired(device_settings.minutes_refresh_rate, True)) or\
-                (test_routine is not None and not test_routine.is_expired(device_settings.minutes_refresh_rate, True)):
+        if self.has_active_test_components():
             if test_pattern is not None and test_pattern.is_most_recent(test_routine):
                 self.gpio_write(ComponentType.test_pattern)
             elif test_routine is not None:
@@ -60,6 +58,15 @@ class RainItCommand(object):
                 self.set_new(ComponentType.test_pattern, False)
                 self.set_new(ComponentType.test_routine, False)
             self.gpio_write(ComponentType.active_procedure, force_write=is_null_test_new)
+
+    def has_active_test_components(self):
+        return self.has_active_test_component(ComponentType.test_pattern) or\
+               self.has_active_test_component(ComponentType.test_routine)
+
+    def has_active_test_component(self, component_type):
+        test_component = self.retrieve_component(component_type)
+        device_settings = self.retrieve_component(ComponentType.device_settings)
+        return test_component is not None and not test_component.is_expired(device_settings.minutes_refresh_rate, True)
 
     def gpio_write(self, component_type, force_write = False):
         device_settings = self.retrieve_component(ComponentType.device_settings)
